@@ -1,4 +1,3 @@
-// database.js
 import pg from 'pg';
 const { Client } = pg;
 
@@ -20,13 +19,25 @@ export async function setupDatabase() {
         await masterClient.connect();
         console.log("Connected to the PostgreSQL server successfully.");
 
-        // Create a new database
-        await masterClient.query(`CREATE DATABASE ${dbName};`);
-        console.log(`Database ${dbName} created successfully.`);
+        // Check if database exists
+        const resDb = await masterClient.query(`SELECT 1 FROM pg_database WHERE datname='${dbName}';`);
+        if (resDb.rowCount === 0) {
+            // Create a new database if not exists
+            await masterClient.query(`CREATE DATABASE ${dbName};`);
+            console.log(`Database ${dbName} created successfully.`);
+        } else {
+            console.log(`Database ${dbName} already exists.`);
+        }
 
-        // Create a new user with encrypted password
-        await masterClient.query(`CREATE USER ${dbUser} WITH ENCRYPTED PASSWORD '${dbUserPassword}';`);
-        console.log(`User ${dbUser} created successfully.`);
+        // Check if user exists
+        const resUser = await masterClient.query(`SELECT 1 FROM pg_roles WHERE rolname='${dbUser}';`);
+        if (resUser.rowCount === 0) {
+            // Create a new user with encrypted password if not exists
+            await masterClient.query(`CREATE USER ${dbUser} WITH ENCRYPTED PASSWORD '${dbUserPassword}';`);
+            console.log(`User ${dbUser} created successfully.`);
+        } else {
+            console.log(`User ${dbUser} already exists.`);
+        }
 
         // Grant all privileges on the new database to the new user
         await masterClient.query(`GRANT ALL PRIVILEGES ON DATABASE ${dbName} TO ${dbUser};`);
