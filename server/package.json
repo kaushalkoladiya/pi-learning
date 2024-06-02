@@ -4,7 +4,9 @@
   "description": "learning app for students and a lot to do for professors and admin",
   "main": "index.js",
   "scripts": {
-    "test": "npm test"
+    "test": "npm test",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -14,5 +16,17 @@
     "learning"
   ],
   "author": "escape_coder",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "pg": "^8.11.5",
+    "sequelize": "^6.37.3",
+    "sqlite3": "^5.1.7"
+  },
+  "type": "module",
+  "devDependencies": {
+    "nodemon": "^3.1.2"
+  }
 }
