@@ -1,12 +1,22 @@
 import express from 'express';
 import sequelize from './database.js';
 import userRouter from './routers/userRouter.js';
+import uploadRouter from './routers/uploadRouter.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
-const PORT = 3000;
 
 app.use(express.json());
 app.use('/api', userRouter);
+app.use('/api/uploads', uploadRouter);
+
+// Global error handler
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Something broke!');
+});
 
 async function startServer() {
     try {
@@ -18,8 +28,8 @@ async function startServer() {
         console.log('Database synced.');
 
         // Start the server
-        app.listen(PORT, () => {
-            console.log(`Server running on http://localhost:${PORT}`);
+        app.listen(process.env.PORT, () => {
+            console.log(`Server running on http://localhost:${process.env.PORT}`);
         });
     } catch (error) {
         console.error('Failed to start the application:', error);
