@@ -6,6 +6,10 @@ const app = express();
 const PORT = 3000;
 
 app.use(express.json());
+app.get('/', (req, res) => {
+    res.send('Hello, your server is running!');
+});
+
 app.use('/api', userRouter);
 
 async function startServer() {
