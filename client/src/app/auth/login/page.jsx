@@ -1,11 +1,10 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Box, TextField, Button, Typography, Paper, Divider, Grid } from '@mui/material';
+import { Box, TextField, Button, Typography, Paper, Grid } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import '../signup/styles.css';
 import axios from 'axios';
-
 
 const Login = () => {
   const navigate = useRouter();
@@ -23,11 +22,11 @@ const Login = () => {
   };
 
   return (
-    <div>
+    <div className="auth-container-wrapper">
       <div className="snow"></div>
       <Box className="auth-container">
         <Box className="auth-image">
-          <img src="./320.webp" alt="Description of image" className="auth-image-content" />
+          <img src="/images/320.webp" alt="Description of image" className="auth-image-content" />
         </Box>
         <Box className="auth-form-container" component={Paper} elevation={6} sx={{ width: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '30px' }}>
           <Box component="form" onSubmit={handleLogin} sx={{ width: '100%' }}>
@@ -35,14 +34,9 @@ const Login = () => {
               Sign in
             </Typography>
             <Grid container spacing={2} justifyContent="space-between" className="btn-group">
-              <Grid item xs={12} sm={6}>
-                
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                
-              </Grid>
+              <Grid item xs={12} sm={6}></Grid>
+              <Grid item xs={12} sm={6}></Grid>
             </Grid>
-            
             <TextField
               margin="normal"
               required
@@ -81,7 +75,7 @@ const Login = () => {
                 <Button variant="text" size="small">Forgot password?</Button>
               </Grid>
               <Grid item>
-                <Button variant="text" size="small" onClick={() => navigate.push('/signup')}>{"Don't have an account? Sign Up"}</Button>
+                <Button variant="text" size="small" onClick={() => navigate.push('/auth/signup')}>{"Don't have an account? Sign Up"}</Button>
               </Grid>
             </Grid>
           </Box>

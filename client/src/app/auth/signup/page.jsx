@@ -36,7 +36,7 @@ const Signup = () => {
       <div className="snow"></div>
       <Box className="auth-container">
         <Box className="auth-image">
-          <img src="./320.webp" alt="Description of " className="auth-image-content" />
+          <img src="/images/320.webp" alt="Description of " className="auth-image-content" />
         </Box>
         <Box className="auth-form-container" component={Paper} elevation={6} sx={{ width: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px' }}>
           <Box component="form" onSubmit={handleSignup} sx={{ width: '100%' }}>
@@ -116,7 +116,7 @@ const Signup = () => {
             </Button>
             <Grid container justifyContent="center">
               <Grid item>
-                <Button variant="text" size="small" onClick={() => router.push('/login')}>{"Already have an account? Sign In"}</Button>
+                <Button variant="text" size="small" onClick={() => router.push('/auth/login')}>{"Already have an account? Sign In"}</Button>
               </Grid>
             </Grid>
           </Box>

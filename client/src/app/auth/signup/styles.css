@@ -1,15 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap");
 
 body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  width: 100%;
-  background: #222431;
-  padding: 40px 20px;
-  overflow: hidden; /* Prevent scrollbars */
   font-family: "Quicksand", sans-serif;
+  background-color: #222431;
+  color: #ffffff;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Prevent scrollbars */
 }
 
 .auth-container-wrapper {
@@ -28,7 +25,6 @@ body {
   width: min(700px, 95%);
   height: auto;
   position: relative;
-  z-index: 2;
 }
 
 .auth-image {
@@ -36,11 +32,13 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: #333344;
 }
 
 .auth-image-content {
-  width: 100%;
+  max-width: 100%;
   height: auto;
+  border-radius: 0 0 0 20px;
 }
 
 .snow {
@@ -194,4 +192,34 @@ a {
 
 a:hover {
   color: rgb(13, 133, 185);
+}
+
+/* New Styles for Admin, Instructor, and Student Pages */
+
+.app-bar {
+  background-color: #333344;
+}
+
+.hero {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #444455;
+  padding: 20px;
+}
+
+.hero img {
+  max-width: 100%;
+  height: auto;
+}
+
+.container {
+  padding: 40px;
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  background-color: #333344;
+  color: #ffffff;
 }
