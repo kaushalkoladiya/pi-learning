@@ -38,7 +38,7 @@ Course.init({
   timestamps: true  
 });
 
-// Define relationships
+
 Course.belongsTo(User, { as: 'Instructor', foreignKey: 'instructorId' });
 User.hasMany(Course, { foreignKey: 'instructorId' });
 

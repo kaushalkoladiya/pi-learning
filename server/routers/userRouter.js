@@ -1,7 +1,11 @@
 import express from 'express';
 import User from '../models/userModel.js';
+const { getProfile } = require('../controllers/UserController');
+const authenticate = require('../middleware/AuthMiddleware');
 
 const userRouter = express.Router();
+
+router.get('/profile', authenticate, getProfile);
 
 userRouter.get('/', async (req, res) => {
   console.log('Request received');
