@@ -8,10 +8,11 @@ import { useRouter } from 'next/navigation';
 
 const Signup = () => {
   const router = useRouter();
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
   const [error, setError] = useState('');
 
   const handleSignup = async (e) => {
@@ -21,9 +22,9 @@ const Signup = () => {
       return;
     }
     try {
-      await axios.post('http://localhost:5000/register', { email, password: newPassword, phone: phoneNumber });
+      await axios.post('http://localhost:5000/register', { firstName, lastName, email, password: newPassword });
       console.log('User registered');
-      navigate('/login');
+      router.push('/login');
     } catch (error) {
       console.error('Registration failed');
       setError('Registration failed. Please try again.');
@@ -35,11 +36,11 @@ const Signup = () => {
       <div className="snow"></div>
       <Box className="auth-container">
         <Box className="auth-image">
-          <img src="client\frontend\images\kali.jpg" alt="Description of " className="auth-image-content" />
+          <img src="./320.webp" alt="Description of " className="auth-image-content" />
         </Box>
-        <Box className="auth-form-container" component={Paper} elevation={6} sx={{ width: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '30px' }}>
+        <Box className="auth-form-container" component={Paper} elevation={6} sx={{ width: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px' }}>
           <Box component="form" onSubmit={handleSignup} sx={{ width: '100%' }}>
-            <Typography variant="h5" component="h1" gutterBottom align="center">
+            <Typography variant="h5" component="h1" gutterBottom align="center" sx={{ mb: 2 }}>
               Sign up
             </Typography>
             {error && (
@@ -51,11 +52,33 @@ const Signup = () => {
               margin="normal"
               required
               fullWidth
+              id="firstName"
+              label="First Name"
+              name="firstName"
+              autoComplete="given-name"
+              autoFocus
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="lastName"
+              label="Last Name"
+              name="lastName"
+              autoComplete="family-name"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
               id="email"
               label="Email Address"
               name="email"
               autoComplete="email"
-              autoFocus
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -83,29 +106,17 @@ const Signup = () => {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="phoneNumber"
-              label="Phone Number"
-              type="tel"
-              id="phoneNumber"
-              autoComplete="tel"
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
-            />
             <Button
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+              sx={{ mt: 2, mb: 1 }}
             >
               Sign Up
             </Button>
             <Grid container justifyContent="center">
               <Grid item>
-                <Button variant="text" size="small" onClick={() => router.push('/about')}>{"Already have an account? Sign In"}</Button>
+                <Button variant="text" size="small" onClick={() => router.push('/login')}>{"Already have an account? Sign In"}</Button>
               </Grid>
             </Grid>
           </Box>
