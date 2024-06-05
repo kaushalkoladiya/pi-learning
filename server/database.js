@@ -12,3 +12,6 @@ const sequelize = new Sequelize({
 });
 
 export default sequelize;
+
+// database.js postgres conn
+

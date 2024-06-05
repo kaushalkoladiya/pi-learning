@@ -1,5 +1,6 @@
 import express from 'express';
 import sequelize from './database.js';
+import authRoutes from './routers/authRoutes.js';
 import userRouter from './routers/userRouter.js';
 import uploadRouter from './routers/uploadRouter.js';
 import dotenv from 'dotenv';
@@ -9,7 +10,12 @@ dotenv.config();
 const app = express();
 
 app.use(express.json());
+app.get('/', (req, res) => {
+    res.send('Hello, your server is running!');
+});
+
 app.use('/api', userRouter);
+app.use('/api/auth', authRoutes);
 app.use('/api/uploads', uploadRouter);
 
 // Global error handler
