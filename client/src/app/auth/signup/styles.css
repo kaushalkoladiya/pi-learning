@@ -22,7 +22,7 @@ body {
   background: #f6f6f6;
   border-radius: 20px;
   overflow: hidden;
-  width: min(700px, 95%);
+  width: min(900px, 95%); /* Updated width */
   height: auto;
   position: relative;
 }
@@ -222,4 +222,43 @@ footer {
   padding: 20px;
   background-color: #333344;
   color: #ffffff;
+}
+
+.main-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+}
+
+.main-content .text {
+  flex: 1;
+  padding: 20px;
+}
+
+.main-content .image {
+  flex: 1;
+  padding: 20px;
+}
+
+.main-content .image img {
+  max-width: 100%;
+  height: auto;
+}
+
+.nav-links {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+}
+
+.nav-links a {
+  color: #ffffff;
+  margin: 0 10px;
+  text-decoration: none;
+}
+
+.nav-links a:hover {
+  text-decoration: underline;
 }
