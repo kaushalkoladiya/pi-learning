@@ -1,8 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
-import sequelize from '../database.js'; // Import your database connection
+import sequelize from '../database.js'; 
 import Assignment from './AssignmentModel.js';
-import User from './userModel.js';  // Ensure the User model is imported
-
+import User from './userModel.js';  
 class Submission extends Model {}
 
 Submission.init({
@@ -40,7 +39,7 @@ Submission.init({
 });
 
 
-// Relationships
+
 Submission.belongsTo(Assignment, { foreignKey: 'assignmentId' });
 Assignment.hasMany(Submission, { foreignKey: 'assignmentId' });
 

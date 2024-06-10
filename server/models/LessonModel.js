@@ -1,6 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
-import sequelize from '../database.js'; // Make sure to import your Sequelize connection instance
-import Course from './CourseModel.js';  // Ensure the Course model is imported if it's in a different file
+import sequelize from '../database.js'; 
+import Course from './CourseModel.js';  
 
 class Lesson extends Model {}
 
@@ -33,9 +33,9 @@ Lesson.init({
   timestamps: true  
 });
 
-// Define relationships
-Lesson.belongsTo(Course, { foreignKey: 'courseId' });  // Link each lesson to a course
-Course.hasMany(Lesson, { foreignKey: 'courseId' });    // A course can have many lessons
+
+Lesson.belongsTo(Course, { foreignKey: 'courseId' }); 
+Course.hasMany(Lesson, { foreignKey: 'courseId' });   
 
 Lesson.sync();
 

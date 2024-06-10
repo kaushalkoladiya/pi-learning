@@ -1,7 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
-import sequelize from '../database.js'; // Import your Sequelize connection instance
-import User from './userModel.js';  // Import the User model if it's in a different file
-
+import sequelize from '../database.js'; 
+import User from './userModel.js';  
 class Course extends Model {}
 
 Course.init({
@@ -38,7 +37,7 @@ Course.init({
   timestamps: true  
 });
 
-// Define relationships
+
 Course.belongsTo(User, { as: 'Instructor', foreignKey: 'instructorId' });
 User.hasMany(Course, { foreignKey: 'instructorId' });
 

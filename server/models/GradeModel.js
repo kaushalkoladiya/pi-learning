@@ -1,7 +1,6 @@
-// GradesModel.js
 import { DataTypes, Model } from 'sequelize';
-import sequelize from '../database.js'; // Ensure Sequelize is properly connected
-import Submission from './SubmissionModel.js'; // Import the Submission model
+import sequelize from '../database.js'; 
+import Submission from './SubmissionModel.js'; 
 
 class Grade extends Model {}
 
@@ -32,7 +31,7 @@ Grade.init({
   tableName: 'grades'
 });
 
-// Relationship with Submission
+
 Grade.belongsTo(Submission, { foreignKey: 'submissionId' });
 Submission.hasOne(Grade, { foreignKey: 'submissionId' });
 

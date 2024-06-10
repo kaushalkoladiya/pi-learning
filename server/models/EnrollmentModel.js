@@ -1,4 +1,3 @@
-// EnrollmentsModel.js
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../database.js';
 import User from './userModel.js';
@@ -40,7 +39,7 @@ Enrollment.init({
   tableName: 'enrollments'
 });
 
-// Relationship Definitions
+
 User.hasMany(Enrollment, { foreignKey: 'userId' });
 Enrollment.belongsTo(User, { as: 'Student', foreignKey: 'userId' });
 
