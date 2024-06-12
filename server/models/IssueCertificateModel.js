@@ -35,7 +35,7 @@ IssuedCertificate.init({
   tableName: 'issued_certificates'
 });
 
-// Relationships
+
 IssuedCertificate.belongsTo(Certificate, { foreignKey: 'certificateId' });
 Certificate.hasMany(IssuedCertificate, { foreignKey: 'certificateId' });
 

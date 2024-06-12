@@ -1,6 +1,6 @@
 import express from 'express';
 import sequelize from './database.js';
-import authRoutes from './routers/authRoutes.js';
+import authRoutes from './routers/authRoute.js';
 import userRouter from './routers/userRouter.js';
 import uploadRouter from './routers/uploadRouter.js';
 import dotenv from 'dotenv';

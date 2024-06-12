@@ -1,6 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
-import sequelize from '../database.js';  // Import your database connection
-import Course from './CourseModel.js';  // Ensure the Course model is imported
+import sequelize from '../database.js';  
+import Course from './CourseModel.js';  
 
 class Assignment extends Model {}
 
@@ -16,7 +16,7 @@ Assignment.init({
   },
   description: {
     type: DataTypes.TEXT,
-    allowNull: true  // Allow null if you want the description to be optional
+    allowNull: true  
   },
   dueDate: {
     type: DataTypes.DATE,
