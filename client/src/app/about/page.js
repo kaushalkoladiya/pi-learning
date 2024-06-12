@@ -1,6 +1,11 @@
+'use client';
+
 import React from 'react'
+import { useAppSelector } from '@/redux/hooks.js';
 
 const AboutPage = () => {
+  const state = useAppSelector(state => state);
+
   return (
     <div>
       <h1>About Page</h1>
@@ -9,4 +14,4 @@ const AboutPage = () => {
   )
 }
 
-export default AboutPage
+export default React.memo(AboutPage);
