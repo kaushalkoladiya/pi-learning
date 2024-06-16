@@ -8,10 +8,10 @@ import {
 } from '../controllers/courseController.js'; 
 const courseRouter = express.Router();
 
-courseRouter.post('/courses', createCourse);
-courseRouter.get('/courses', getAllCourses);
-courseRouter.get('/courses/:id', getCourseById);
-courseRouter.put('/courses/:id', updateCourse);
-courseRouter.delete('/courses/:id', deleteCourse);
+courseRouter.post('/', createCourse);
+courseRouter.get('/', getAllCourses);
+courseRouter.get('/:id', getCourseById);
+courseRouter.put('/:id', updateCourse);
+courseRouter.delete('/:id', deleteCourse);
 
 export default courseRouter;

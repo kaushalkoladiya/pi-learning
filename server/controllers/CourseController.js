@@ -84,3 +84,63 @@ export const deleteCourse = async (req, res) => {
         res.status(500).send(error);
     }
 };
+// import Course from '../models/CourseModel.js'; // Update the path as per your structure
+
+// export const createCourse = async (req, res) => {
+//     try {
+//         const course = await Course.create(req.body);
+//         res.status(201).send(course);
+//     } catch (error) {
+//         res.status(400).send(error);
+//     }
+// };
+
+// export const getAllCourses = async (req, res) => {
+//     try {
+//         const courses = await Course.findAll();
+//         res.json(courses);
+//     } catch (error) {
+//         res.status(500).send({ error: "Error fetching courses: " + error.message });
+//     }
+// };
+
+// export const getCourseById = async (req, res) => {
+//     try {
+//         const course = await Course.findByPk(req.params.id);
+//         if (!course) {
+//             return res.status(404).send({ error: 'Course not found' });
+//         }
+//         res.send(course);
+//     } catch (error) {
+//         res.status(500).send(error);
+//     }
+// };
+
+// export const updateCourse = async (req, res) => {
+//     try {
+//         const updated = await Course.update(req.body, {
+//             where: { id: req.params.id }
+//         });
+//         if (updated[0] === 0) {
+//             return res.status(404).send({ error: 'Course not found' });
+//         }
+//         const updatedCourse = await Course.findByPk(req.params.id);
+//         res.send(updatedCourse);
+//     } catch (error) {
+//         res.status(400).send(error);
+//     }
+// };
+
+// export const deleteCourse = async (req, res) => {
+//     try {
+//         const deleted = await Course.destroy({
+//             where: { id: req.params.id }
+//         });
+//         if (deleted === 0) {
+//             return res.status(404).send({ error: 'Course not found' });
+//         }
+//         res.status(204).send();
+//     } catch (error) {
+//         res.status(500).send(error);
+//     }
+// };
