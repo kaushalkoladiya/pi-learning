@@ -25,6 +25,13 @@ const Instructor = () => {
     router.push('/admin/instructor/create');
   }
 
+  const handleView = (id) => {
+    console.log('View', id);
+
+    // Redirect to view page
+    router.push(`/admin/instructor/${id}?viewonly=true`);
+  }
+
   return (
     <Box>
       <Typography variant='h5'>
@@ -53,7 +60,7 @@ const Instructor = () => {
             </TableHead>
             <TableBody>
               <TableRow>
-                <TableCell>username</TableCell>
+                <TableCell role='button' onClick={() => handleView('Username')}>username</TableCell>
                 <TableCell>email</TableCell>
                 <TableCell>first name</TableCell>
                 <TableCell>last name</TableCell>
