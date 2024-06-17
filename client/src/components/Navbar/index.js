@@ -16,8 +16,10 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import Person4Icon from '@mui/icons-material/Person4';
 import { useRouter } from 'next/navigation';
+
+import Person4Icon from '@mui/icons-material/Person4';
+import SubjectIcon from '@mui/icons-material/Subject';
 
 const drawerWidth = 240;
 
@@ -91,6 +93,11 @@ const ADMIN_ROUTES = [
     text: 'Instructor',
     icon: <Person4Icon />,
     path: '/admin/instructor',
+  },
+  {
+    text: 'Course',
+    icon: <SubjectIcon />,
+    path: '/admin/course',
   }
 ];
 
