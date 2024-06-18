@@ -6,7 +6,7 @@ import uploadRouter from './routers/uploadRouter.js';
 import dotenv from 'dotenv';
 import courseRouter from './routers/courseRouter.js'
 import lessonRouter from './routers/lessonRouter.js'
-// import assignmentRouter from './routers/assignmentRouter.js'
+import assignmentRouter from './routers/assignmentRouter.js'
 
 dotenv.config();
 
@@ -22,7 +22,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/uploads', uploadRouter);
 app.use('/courses',courseRouter)
 app.use('/lessons', lessonRouter);
-// app.use('/assignments', assignmentRouter);
+app.use('/assignments', assignmentRouter);
 
 // Global error handler
 app.use((err, req, res, next) => {
