@@ -5,7 +5,7 @@ import {
     getCourseById,
     updateCourse,
     deleteCourse
-} from '../controllers/CourseController.js'; 
+} from '../controllers/courseController.js'; 
 const courseRouter = express.Router();
 
 courseRouter.post('/', createCourse);

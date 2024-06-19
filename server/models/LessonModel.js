@@ -10,46 +10,32 @@ Lesson.init({
     autoIncrement: true,
     primaryKey: true,
   },
-  lesson_name: {
-    type: DataTypes.STRING(100),
-    allowNull: false,
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false
   },
-  lesson_description: {
+  description: {
     type: DataTypes.TEXT,
-    allowNull: true,
+    allowNull: true  
   },
-  lesson_content: {
-    type: DataTypes.TEXT,
-    allowNull: true,
+  files: {
+    type: DataTypes.JSON, 
+    allowNull: true  
   },
-  course_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: Course,
-      key: 'id',
-    },
-    onDelete: 'CASCADE',
-  },
-  created_at: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW,
-  },
-  updated_at: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW,
-  },
+  videos: {
+    type: DataTypes.JSON, 
+    allowNull: true  
+  }
 }, {
   sequelize,
   modelName: 'Lesson',
-  tableName: 'lessons',
-  timestamps: true,
-  createdAt: 'created_at',
-  updatedAt: 'updated_at',
+  tableName: 'lessons',  
+  timestamps: true  
 });
 
-Lesson.belongsTo(Course, { foreignKey: 'course_id' }); 
-Course.hasMany(Lesson, { foreignKey: 'course_id' });   
+
+Lesson.belongsTo(Course, { foreignKey: 'courseId' }); 
+Course.hasMany(Lesson, { foreignKey: 'courseId' });   
 
 Lesson.sync();
 

@@ -1,9 +1,5 @@
 import express from 'express';
 import sequelize from './database.js';
-import User from './models/userModel.js';
-import Course from './models/CourseModel.js';
-import Lesson from './models/LessonModel.js';
-import Assignment from './models/AssignmentModel.js';
 import authRoutes from './routers/authRoute.js';
 import userRouter from './routers/userRouter.js';
 import uploadRouter from './routers/uploadRouter.js';
@@ -39,10 +35,6 @@ async function startServer() {
         await sequelize.authenticate();
         console.log('Connection has been established successfully.');
 
-        await User.sync();
-        await Course.sync();
-        await Lesson.sync();
-        await Assignment.sync();
         // Attempt to sync all models
         await sequelize.sync({ force: false });
         console.log('Database synced.');

@@ -4,10 +4,11 @@ import Joi from 'joi';
 
 // Joi validation schema for Lesson
 const lessonSchema = Joi.object({
-    lesson_name: Joi.string().required(),
-    lesson_description: Joi.string().allow(''),
-    lesson_content: Joi.string().allow(''),
-    course_id: Joi.number().integer().required()
+    name: Joi.string().required(),
+    description: Joi.string().allow(''),
+    files: Joi.string().allow(''),  // Assuming files are JSON stringified or a string path
+    videos: Joi.string().allow(''),  // Assuming videos are JSON stringified or a string path
+    courseId: Joi.number().integer().required()
 });
 
 export const createLesson = async (req, res) => {
@@ -17,7 +18,7 @@ export const createLesson = async (req, res) => {
     }
 
     // Ensure the course exists before creating a lesson
-    const course = await Course.findByPk(req.body.course_id);
+    const course = await Course.findByPk(req.body.courseId);
     if (!course) {
         return res.status(404).send({ error: 'Course not found' });
     }
@@ -63,7 +64,7 @@ export const updateLesson = async (req, res) => {
 
     // Optionally ensure course ID exists if updated
     if (req.body.courseId) {
-        const course = await Course.findByPk(req.body.course_id);
+        const course = await Course.findByPk(req.body.courseId);
         if (!course) {
             return res.status(404).send({ error: 'Course not found' });
         }

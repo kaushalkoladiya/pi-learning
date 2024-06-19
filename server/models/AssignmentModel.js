@@ -1,6 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
-import sequelize from '../database.js';
-import Course from './CourseModel.js';
+import sequelize from '../database.js';  
+import Course from './CourseModel.js';  
 
 class Assignment extends Model {}
 
@@ -10,46 +10,32 @@ Assignment.init({
     autoIncrement: true,
     primaryKey: true,
   },
-  assignment_name: {
-    type: DataTypes.STRING(100),
-    allowNull: false,
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false
   },
-  assignment_description: {
+  description: {
     type: DataTypes.TEXT,
-    allowNull: true,
+    allowNull: true  
   },
-  due_date: {
+  dueDate: {
     type: DataTypes.DATE,
-    allowNull: false,
+    allowNull: false
   },
-  course_id: {
+  courseId: {
     type: DataTypes.INTEGER,
-    allowNull: false,
     references: {
       model: Course,
-      key: 'id',
-    },
-    onDelete: 'CASCADE',
-  },
-  created_at: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW,
-  },
-  updated_at: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW,
-  },
+      key: 'id'
+    }
+  }
 }, {
   sequelize,
   modelName: 'Assignment',
-  tableName: 'assignments',
-  timestamps: true,
-  createdAt: 'created_at',
-  updatedAt: 'updated_at',
+  tableName: 'assignments'
 });
-
-Assignment.belongsTo(Course, { foreignKey: 'course_id' });
-Course.hasMany(Assignment, { foreignKey: 'course_id' });
+Assignment.belongsTo(Course, { foreignKey: 'courseId' });
+Course.hasMany(Assignment, { foreignKey: 'courseId' });
 
 Assignment.sync();
 
