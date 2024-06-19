@@ -31,6 +31,7 @@ export const getAllCourses = async (req, res) => {
         const courses = await Course.findAll();
         res.json(courses);
     } catch (error) {
+        console.log(error);
         res.status(500).send({ error: "Error fetching courses: " + error.message });
     }
 };

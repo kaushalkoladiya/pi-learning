@@ -17,6 +17,15 @@ dotenv.config();
 const app = express();
 
 app.use(express.json());
+
+app.use(function (req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    next();
+});
+
 app.get('/', (req, res) => {
     res.send('Hello, your server is running!');
 });
@@ -24,7 +33,7 @@ app.get('/', (req, res) => {
 app.use('/api', userRouter);
 app.use('/api/auth', authRoutes);
 app.use('/api/uploads', uploadRouter);
-app.use('/courses',courseRouter)
+app.use('/courses', courseRouter)
 app.use('/lessons', lessonRouter);
 app.use('/assignments', assignmentRouter);
 

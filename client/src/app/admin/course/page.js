@@ -1,34 +1,53 @@
 'use client';
 
+import { SERVER_URL } from '@/constants/routes';
 import { Box, Button, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 const Course = () => {
-  const router  = useRouter();
+  const router = useRouter();
+
+  const [courses, setCourses] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await fetch(`${SERVER_URL}/courses`);
+        const data = await response.json();
+        setCourses(data);
+      } catch (error) {
+        console.error('Error fetching courses:', error);
+      }
+    })()
+  }, []);
 
   const handleEdit = (id) => {
-    console.log('Edit', id);
-
     // Redirect to edit page
     router.push(`/admin/course/${id}`);
   }
 
-  const handleDelete = (id) => {
-    console.log('Delete', id);
-
+  const handleDelete = async (id) => {
     // Send delete request to server
+    try {
+      const response = await fetch(`${SERVER_URL}/courses/${id}`, {
+        method: 'DELETE',
+      });
 
+      if (response.status === 204) {
+        // Remove course from state
+        setCourses(courses.filter(course => course.id !== id));
+      }
+    } catch (error) {
+      console.log('Error deleting course:', error)
+    }
   };
 
   const handleCreate = () => {
     router.push('/admin/course/create');
   }
 
-  const handleView = (id) => {
-    console.log('View', id);
-
-    // Redirect to view page
+  const handleView = async (id) => {
     router.push(`/admin/course/${id}?viewonly=true`);
   };
 
@@ -39,14 +58,12 @@ const Course = () => {
       </Typography>
 
       <Box>
-        {/* Create New Button */}
         <Box>
           <Button variant="contained" color="primary" onClick={handleCreate}>
             Create New
           </Button>
         </Box>
 
-        {/* Table */}
         <Box>
           <Table>
             <TableHead>
@@ -59,24 +76,27 @@ const Course = () => {
               </TableRow>
             </TableHead>
             <TableBody >
-              <TableRow>
-                <TableCell onClick={() => handleView(10)}>Course 1</TableCell>
-                <TableCell>C1</TableCell>
-                <TableCell>Long dfesc</TableCell>
-                <TableCell>Instructor 1</TableCell>
-                <TableCell>
-                  <Button variant="contained" color="primary"
-                    onClick={() => handleEdit(1)}
-                  >
-                    Edit
-                  </Button>
-                  <Button variant="contained" color="error"
-                    onClick={() => handleDelete('Delete')}
-                  >
-                    Delete
-                  </Button>
-                </TableCell>
-              </TableRow>
+              {courses.map((course) => (
+                <TableRow>
+                  <TableCell role='button' onClick={() => handleView(course.id)}>{course.course_name}</TableCell>
+                  <TableCell>{course.course_code}</TableCell>
+                  <TableCell>{course.course_description}</TableCell>
+                  <TableCell>{course.instructor_id}</TableCell>
+                  <TableCell>
+                    <Button variant="contained" color="primary"
+                      onClick={() => handleEdit(course.id)}
+                    >
+                      Edit
+                    </Button>
+                    <Button variant="contained" color="error"
+                      onClick={() => handleDelete(course.id)}
+                    >
+                      Delete
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+
             </TableBody>
           </Table>
         </Box>

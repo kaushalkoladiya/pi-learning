@@ -1,7 +1,8 @@
 'use client';
 
+import { SERVER_URL } from '@/constants/routes';
 import styled from '@emotion/styled';
-import { Box, Button, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, InputAdornment, TextField, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 
@@ -19,10 +20,11 @@ const CreateInstructor = () => {
     email: '',
     username: '',
     password: '',
+
+    common: '',
   });
 
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log({ firstName, lastName, email, username, password });
 
@@ -52,19 +54,35 @@ const CreateInstructor = () => {
 
     // Send data to server
     try {
+      fetch(`${SERVER_URL}/api/instructors`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          first_name: firstName,
+          last_name: lastName,
+          email,
+          username,
+          password,
+        })
+      })
+        .then(async response => {
+          const data = await response.json();
+          if (!response.ok) {
+            setErrors({
+              common: data
+            });
+          }
 
-      // Redirect to instructor page
-      router.push('/admin/instructor');
+          // Redirect to instructor page
+          return router.push('/admin/instructor');
+        })
+        .catch(error => console.log(error));
+
     } catch (error) {
       console.log(error);
     }
-
-    // Clear form
-    setFirstName('');
-    setLastName('');
-    setEmail('');
-    setUsername('');
-    setPassword('');
   };
 
   return (
@@ -74,6 +92,8 @@ const CreateInstructor = () => {
       </Box>
       <Box>
         <Form onSubmit={handleSubmit}>
+          {errors.common && <Alert severity="error">{errors.common}</Alert>}
+
           <TextField
             fullWidth
             label="First Name"
@@ -114,20 +134,22 @@ const CreateInstructor = () => {
             helperText={errors.username}
           />
 
+          <TextField
+            fullWidth
+            label="Password"
+            type='password'
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            error={!!errors.password}
+            helperText={errors.password}
+          />
+
           <Box>
-            <Typography variant='caption'>
-              Password must be share with the instructor
-            </Typography>
-            <TextField
-              fullWidth
-              label="Password"
-              type='password'
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              error={!!errors.password}
-              helperText={errors.password}
-            />
+            <Alert severity="info">
+              Password must be shared with the instructor. Please note that the password is not encrypted at this stage. <b>You must note down the password and share it with the instructor.</b>
+            </Alert>
           </Box>
+
 
           <Button type="submit" variant="contained" color="primary">
             Create
@@ -144,6 +166,4 @@ const Form = styled.form`
   display: flex;
   flex-direction: column;
   gap: 16px;
-  max-width: 400px;
-  margin: 0 auto;
 `;
