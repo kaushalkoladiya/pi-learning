@@ -1,14 +1,13 @@
 import Joi from 'joi';
 import Course from '../models/CourseModel.js'; 
 
+
 // Define the validation schema for a course
 const courseSchema = Joi.object({
-    name: Joi.string().min(3).required(),
-    description: Joi.string().required(),
-    courseCode: Joi.string().required(),
-    stripeProductId: Joi.string().allow(''), // Optional fields
-    stripePriceId: Joi.string().allow(''),   // Optional fields
-    instructorId: Joi.number().integer()     // Optional fields
+    course_name: Joi.string().min(3).required(),
+    course_description: Joi.string().allow(''),
+    course_code: Joi.string().required(),
+    instructor_id: Joi.number().integer().required()
 });
 
 // CREATE a new course
