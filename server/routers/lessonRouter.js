@@ -5,7 +5,7 @@ import {
     getLessonById,
     updateLesson,
     deleteLesson
-} from '../controllers/lessonController.js'; // Make sure the path is correct
+} from '../controllers/lessonController.js';
 
 const lessonRouter = express.Router();
 
