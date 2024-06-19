@@ -5,7 +5,7 @@ import {
     getAssignmentById,
     updateAssignment,
     deleteAssignment
-} from '../controllers/assignmentController.js'; // Make sure the path is correct
+} from '../controllers/assignmentController.js'; 
 
 const router = express.Router();
 
