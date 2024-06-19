@@ -2,11 +2,14 @@
 
 import styled from '@emotion/styled';
 import { Box, Button, TextField, Typography } from '@mui/material';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useState } from 'react'
 
 const EditInstructor = () => {
   const router = useRouter();
+  const params = useSearchParams();
+
+  const isViewOnly = params.get('viewonly') === 'true';
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -64,9 +67,14 @@ const EditInstructor = () => {
   return (
     <Box>
       <Box>
-        <Typography variant="h5">Edit Instructor</Typography>
+        <Typography variant="h5">{isViewOnly ? 'View': 'Edit'} Instructor</Typography>
       </Box>
-      <Box>
+
+      <Box
+      sx={{
+        marginTop: 2
+      }}
+      >
         <Form onSubmit={handleSubmit}>
           <TextField
             fullWidth
@@ -76,6 +84,7 @@ const EditInstructor = () => {
             onChange={(e) => setFirstName(e.target.value)}
             error={!!errors.firstName}
             helperText={errors.firstName}
+            disabled={isViewOnly}
           />
 
           <TextField
@@ -86,6 +95,7 @@ const EditInstructor = () => {
             onChange={(e) => setLastName(e.target.value)}
             error={!!errors.lastName}
             helperText={errors.lastName}
+            disabled={isViewOnly}
           />
 
           <TextField
@@ -96,6 +106,7 @@ const EditInstructor = () => {
             onChange={(e) => setEmail(e.target.value)}
             error={!!errors.email}
             helperText={errors.email}
+            disabled={isViewOnly}
           />
 
           <TextField
@@ -106,11 +117,12 @@ const EditInstructor = () => {
             onChange={(e) => setUsername(e.target.value)}
             error={!!errors.username}
             helperText={errors.username}
+            disabled={isViewOnly}
           />
 
-          <Button type="submit" variant="contained" color="primary">
+          {!isViewOnly && <Button type="submit" variant="contained" color="primary">
             Change Instructor Details
-          </Button>
+          </Button>}
         </Form>
       </Box>
     </Box>
@@ -123,6 +135,4 @@ const Form = styled.form`
   display: flex;
   flex-direction: column;
   gap: 16px;
-  max-width: 400px;
-  margin: 0 auto;
 `;
