@@ -3,7 +3,7 @@ import "./globals.css";
 import StoreProvider from "./StoreProvider";
 import Navbar, { DrawerHeader } from "@/components/Navbar";
 import { Box, CssBaseline, ThemeProvider } from "@mui/material";
-import { theme } from "./theme";
+import { theme } from "../theme";
 
 const inter = Inter({ subsets: ["latin"] });
 

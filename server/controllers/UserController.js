@@ -1,13 +1,14 @@
+import bcrypt from 'bcrypt';
 import Joi from 'joi';
 import User from '../models/userModel.js';
 
 const getProfile = async (req, res) => {
-    try {
-        const user = await User.findByPk(req.user.id);
-        res.json(user);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
+  try {
+    const user = await User.findByPk(req.user.id);
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };
 
 // Joi validation schema for Instructor
@@ -19,28 +20,48 @@ const instructorSchema = Joi.object({
   last_name: Joi.string().required(),
 });
 
+// Joi validation schema for Instructor
+const updateInstructorSchema = Joi.object({
+  first_name: Joi.string().required(),
+  last_name: Joi.string().required(),
+});
+
 // CREATE a new instructor
 export const createInstructor = async (req, res) => {
   const { error } = instructorSchema.validate(req.body);
   if (error) {
-    return res.status(400).send(error.details[0].message);
+    return res.status(400).json(error.details[0].message);
   }
 
   try {
-    const instructor = await User.create({ ...req.body, user_type: 'instructor' });
-    res.status(201).send(instructor);
+
+    // encrypt password
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+    const instructor = await User.create({
+      ...req.body,
+      user_type: 'instructor',
+      password: hashedPassword
+    });
+    res.status(201).json(instructor);
   } catch (error) {
-    res.status(500).send(error);
+    console.log(error);
+    res.status(500).json(error);
   }
 };
 
 // READ all instructors
 export const getAllInstructors = async (req, res) => {
   try {
-    const instructors = await User.findAll({ where: { user_type: 'instructor' } });
+    const instructors = await User.findAll(
+      {
+        where: { user_type: 'instructor' },
+        attributes: { exclude: ['password'] }
+      }
+    );
     res.json(instructors);
   } catch (error) {
-    res.status(500).send({ error: "Error fetching instructors: " + error.message });
+    res.status(500).json({ error: "Error fetching instructors: " + error.message });
   }
 };
 
@@ -49,31 +70,31 @@ export const getInstructorById = async (req, res) => {
   try {
     const instructor = await User.findByPk(req.params.id);
     if (!instructor || instructor.user_type !== 'instructor') {
-      return res.status(404).send({ error: 'Instructor not found' });
+      return res.status(404).json({ error: 'Instructor not found' });
     }
-    res.send(instructor);
+    res.json(instructor);
   } catch (error) {
-    res.status(500).send(error);
+    res.status(500).json(error);
   }
 };
 
 // UPDATE an instructor by ID
 export const updateInstructor = async (req, res) => {
-  const { error } = instructorSchema.validate(req.body);
+  const { error } = updateInstructorSchema.validate(req.body);
   if (error) {
-    return res.status(400).send(error.details[0].message);
+    return res.status(400).json(error.details[0].message);
   }
 
   try {
     const instructor = await User.findByPk(req.params.id);
     if (!instructor || instructor.user_type !== 'instructor') {
-      return res.status(404).send({ error: 'Instructor not found' });
+      return res.status(404).json({ error: 'Instructor not found' });
     }
 
     await instructor.update(req.body);
-    res.send(instructor);
+    res.json(instructor);
   } catch (error) {
-    res.status(400).send(error);
+    res.status(400).json(error);
   }
 };
 
@@ -84,11 +105,12 @@ export const deleteInstructor = async (req, res) => {
       where: { id: req.params.id, user_type: 'instructor' }
     });
     if (deleted === 0) {
-      return res.status(404).send({ error: 'Instructor not found' });
+      return res.status(404).json({ error: 'Instructor not found' });
     }
-    res.status(204).send();
+    res.status(204).json({});
   } catch (error) {
-    res.status500().send(error);
+    console.log(error);
+    res.status(500).json({error: "Cannot delete instructor, make sure the instructor is not teaching any course!"});
   }
 };
 

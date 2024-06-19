@@ -1,15 +1,35 @@
 'use client';
 
+import { SERVER_URL } from '@/constants/routes';
 import styled from '@emotion/styled';
-import { Box, Button, TextField, Typography } from '@mui/material';
-import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useState } from 'react'
+import { Alert, Box, Button, TextField, Typography } from '@mui/material';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import React, { useEffect, useState } from 'react'
 
 const EditInstructor = () => {
   const router = useRouter();
-  const params = useSearchParams();
+  const searchParams = useSearchParams();
+  const params = useParams();
 
-  const isViewOnly = params.get('viewonly') === 'true';
+  const isViewOnly = searchParams.get('viewonly') === 'true';
+
+  useEffect(() => {
+    const fetchData = async () => { 
+      const response = await fetch(`${SERVER_URL}/api/instructors/${params.id}`);
+      const data = await response.json();
+
+      console.log(response, data)
+
+      setFirstName(data.first_name);
+      setLastName(data.last_name);
+      setEmail(data.email);
+      setUsername(data.username);
+    };
+
+    if (params.id) {
+      fetchData();
+    }
+  }, []);
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -20,6 +40,8 @@ const EditInstructor = () => {
     lastName: '',
     email: '',
     username: '',
+
+    common: '',
   });
 
 
@@ -47,35 +69,42 @@ const EditInstructor = () => {
       return;
     }
 
+    fetch(`${SERVER_URL}/api/instructors/${params.id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        first_name: firstName,
+        last_name: lastName,
+      })
+    })
+    .then(async response => {
+      const data = await response.json();
 
-    // Send data to server
-    try {
-
-      // Redirect to instructor page
-      router.push('/admin/instructor');
-    } catch (error) {
-      console.log(error);
-    }
-
-    // Clear form
-    setFirstName('');
-    setLastName('');
-    setEmail('');
-    setUsername('');
+      if (!response.ok) {
+        setErrors({ common: data });
+      } else {
+        // Redirect to instructor page
+        router.push('/admin/instructor');
+      }
+    });
   };
 
   return (
     <Box>
       <Box>
-        <Typography variant="h5">{isViewOnly ? 'View': 'Edit'} Instructor</Typography>
+        <Typography variant="h5">{isViewOnly ? 'View' : 'Edit'} Instructor</Typography>
       </Box>
 
       <Box
-      sx={{
-        marginTop: 2
-      }}
+        sx={{
+          marginTop: 2
+        }}
       >
         <Form onSubmit={handleSubmit}>
+          {errors.common && <Alert severity="error">{errors.common}</Alert>}
+
           <TextField
             fullWidth
             label="First Name"
@@ -106,7 +135,7 @@ const EditInstructor = () => {
             onChange={(e) => setEmail(e.target.value)}
             error={!!errors.email}
             helperText={errors.email}
-            disabled={isViewOnly}
+            disabled={true}
           />
 
           <TextField
@@ -117,7 +146,7 @@ const EditInstructor = () => {
             onChange={(e) => setUsername(e.target.value)}
             error={!!errors.username}
             helperText={errors.username}
-            disabled={isViewOnly}
+            disabled={true}
           />
 
           {!isViewOnly && <Button type="submit" variant="contained" color="primary">
