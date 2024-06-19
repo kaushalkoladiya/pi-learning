@@ -1,63 +1,36 @@
+'use client';
+
 import React, { useEffect, useState } from 'react';
 import { Box, Button, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 const LessonsPage = () => {
   const router = useRouter();
   const [lessons, setLessons] = useState([]);
 
   useEffect(() => {
-    const fetchLessons = async () => {
-      try {
-        const res = await fetch('/api/lessons');
-        if (res.ok) {
-          const data = await res.json();
-          setLessons(data);
-        } else {
-          throw new Error('Failed to fetch lessons');
-        }
-      } catch (error) {
-        console.error('Error fetching lessons:', error);
-      }
-    };
-    fetchLessons();
+    fetch('/api/lessons')
+      .then((response) => response.json())
+      .then((data) => setLessons(data))
+      .catch((error) => console.error('Error fetching lessons:', error));
   }, []);
 
-  const handleEdit = (id) => {
-    router.push(`/admin/lessons/${id}`);
-  };
-
-  const handleDelete = async (id) => {
-    try {
-      const res = await fetch(`/api/lessons/${id}`, {
-        method: 'DELETE',
-      });
-      if (res.ok) {
-        setLessons(lessons.filter((lesson) => lesson.id !== id));
-      } else {
-        throw new Error('Failed to delete lesson');
-      }
-    } catch (error) {
-      console.error('Error deleting lesson:', error);
-    }
-  };
-
-  const handleCreate = () => {
+  const handleCreateLesson = () => {
     router.push('/admin/lessons/create');
   };
 
   return (
     <Box>
-      <Typography variant="h4">Lessons</Typography>
-      <Button variant="contained" color="primary" onClick={handleCreate}>
-        Create New Lesson
+      <Typography variant="h4" gutterBottom>Lessons</Typography>
+      <Button variant="contained" color="primary" onClick={handleCreateLesson}>
+        Create Lesson
       </Button>
       <Table>
         <TableHead>
           <TableRow>
             <TableCell>ID</TableCell>
-            <TableCell>Lesson Name</TableCell>
-            <TableCell>Course Name</TableCell>
+            <TableCell>Name</TableCell>
+            <TableCell>Description</TableCell>
             <TableCell>Actions</TableCell>
           </TableRow>
         </TableHead>
@@ -66,13 +39,14 @@ const LessonsPage = () => {
             <TableRow key={lesson.id}>
               <TableCell>{lesson.id}</TableCell>
               <TableCell>{lesson.lesson_name}</TableCell>
-              <TableCell>{lesson.Course ? lesson.Course.course_name : '-'}</TableCell>
+              <TableCell>{lesson.lesson_description}</TableCell>
               <TableCell>
-                <Button variant="contained" color="primary" onClick={() => handleEdit(lesson.id)}>
-                  Edit
-                </Button>
-                <Button variant="contained" color="error" onClick={() => handleDelete(lesson.id)}>
-                  Delete
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => router.push(`/admin/lessons/${lesson.id}`)}
+                >
+                  View
                 </Button>
               </TableCell>
             </TableRow>

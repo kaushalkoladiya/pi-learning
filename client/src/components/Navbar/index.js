@@ -98,6 +98,11 @@ const ADMIN_ROUTES = [
     text: 'Course',
     icon: <SubjectIcon />,
     path: '/admin/course',
+  },
+  {
+    text: 'Lesson',
+    icon: <SubjectIcon />,
+    path: '/admin/lessons',
   }
 ];
 

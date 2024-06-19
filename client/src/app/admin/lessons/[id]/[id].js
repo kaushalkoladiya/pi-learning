@@ -1,42 +1,36 @@
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import { Box, Typography } from '@mui/material';
-import LessonForm from '../../../components/LessonForm';
+'use client';
 
-const EditLessonPage = () => {
+import React, { useEffect, useState } from 'react';
+import { Box, Typography, Button } from '@mui/material';
+import { useRouter, useParams } from 'next/navigation';
+
+const LessonDetailPage = () => {
   const router = useRouter();
-  const { id } = router.query;
+  const { id } = useParams();
   const [lesson, setLesson] = useState(null);
 
   useEffect(() => {
-    const fetchLesson = async () => {
-      try {
-        const res = await fetch(`/api/lessons/${id}`); // api path here please
-        if (res.ok) {
-          const data = await res.json();
-          setLesson(data);
-        } else {
-          throw new Error('Lesson not found');
-        }
-      } catch (error) {
-        console.error('Error fetching lesson:', error);
-      }
-    };
-    if (id) {
-      fetchLesson();
-    }
+    fetch(`/api/lessons/${id}`)
+      .then((response) => response.json())
+      .then((data) => setLesson(data))
+      .catch((error) => console.error('Error fetching lesson:', error));
   }, [id]);
+
+  if (!lesson) {
+    return <Typography>Loading...</Typography>;
+  }
 
   return (
     <Box>
-      <Typography variant="h4">Edit Lesson</Typography>
-      {lesson ? (
-        <LessonForm initialLesson={lesson} />
-      ) : (
-        <Typography variant="body1">Loading... Please wait for Pi-Learning minions</Typography>
-      )}
+      <Typography variant="h4" gutterBottom>Lesson Detail</Typography>
+      <Typography variant="h6">{lesson.lesson_name}</Typography>
+      <Typography>{lesson.lesson_description}</Typography>
+      <Typography>{lesson.lesson_content}</Typography>
+      <Button variant="contained" color="primary" onClick={() => router.push('/admin/lessons')}>
+        Back to Lessons
+      </Button>
     </Box>
   );
 };
 
-export default EditLessonPage;
+export default LessonDetailPage;

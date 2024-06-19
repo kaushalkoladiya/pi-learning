@@ -1,0 +1,11 @@
+{
+  "name": "pi-learning",
+  "version": "1.0.0",
+  "description": "backend\r - npm i\r - create db in pgadmin4 / commandline\r - set user , database, password in .env file\r - run script.sql file\r Backend and Frontend app for Pi learning",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
