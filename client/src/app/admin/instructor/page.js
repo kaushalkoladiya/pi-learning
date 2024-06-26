@@ -53,7 +53,7 @@ const Instructor = () => {
             </TableHead>
             <TableBody>
               <TableRow>
-                <TableCell>username</TableCell>
+                <TableCell>username</TableCell>  
                 <TableCell>email</TableCell>
                 <TableCell>first name</TableCell>
                 <TableCell>last name</TableCell>

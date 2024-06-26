@@ -51,7 +51,7 @@ const EditCourse = () => {
     // Send data to server
 
     // Redirect to course page
-    router.push('/admin/course');
+    router.push('/admin/lesson');
   };
 
   return (

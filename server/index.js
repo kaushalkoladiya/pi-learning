@@ -8,9 +8,9 @@ import authRoutes from './routers/authRoute.js';
 import userRouter from './routers/userRouter.js';
 import uploadRouter from './routers/uploadRouter.js';
 import dotenv from 'dotenv';
-import courseRouter from './routers/courseRouter.js'
-import lessonRouter from './routers/lessonRouter.js'
-import assignmentRouter from './routers/assignmentRouter.js'
+import courseRouter from './routers/courseRouter.js';
+import lessonRouter from './routers/lessonRouter.js';
+import assignmentRouter from './routers/assignmentRouter.js';
 
 dotenv.config();
 
@@ -24,9 +24,9 @@ app.get('/', (req, res) => {
 app.use('/api', userRouter);
 app.use('/api/auth', authRoutes);
 app.use('/api/uploads', uploadRouter);
-app.use('/courses',courseRouter)
-app.use('/lessons', lessonRouter);
-app.use('/assignments', assignmentRouter);
+app.use('/courses', courseRouter); //  Prefixed with /api
+app.use('/api/lessons', lessonRouter); // Prfxd with /api
+app.use('/api/assignments', assignmentRouter); // Prfxd with /api
 
 // Global error handler
 app.use((err, req, res, next) => {
@@ -43,7 +43,7 @@ async function startServer() {
         await Course.sync();
         await Lesson.sync();
         await Assignment.sync();
-        // Attempt to sync all models
+        //sync all models
         await sequelize.sync({ force: false });
         console.log('Database synced.');
 

@@ -4,50 +4,49 @@ import React, { useEffect, useState } from 'react';
 import { Box, Button, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
 
-const LessonsPage = () => {
+const AssignmentsPage = () => {
   const router = useRouter();
-  const [lessons, setLessons] = useState([]);
+  const [assignments, setAssignments] = useState([]);
 
   useEffect(() => {
-    fetch('/api/lessons')
+    fetch('/api/assignments')
       .then((response) => response.json())
-      .then((data) => setLessons(data))
-      .catch((error) => console.error('Error fetching lessons:', error));
+      .then((data) => setAssignments(data))
+      .catch((error) => console.error('Error fetching assignments:', error));
   }, []);
 
-  const handleCreateLesson = () => {
-    router.push('/admin/lessons/create');
+  const handleCreateAssignment = () => {
+    router.push('/admin/assignments/create');
   };
 
   const handleEdit = (id) => {
     console.log('Edit', id);
-
-    router.push(`/admin/lessons/${id}`);
-  }
+    router.push(`/admin/assignments/${id}`);
+  };
 
   const handleDelete = async (id) => {
-    const confirmed = confirm('Are you sure you want to delete this lesson?');
+    const confirmed = confirm('Are you sure you want to delete this assignment?');
     if (confirmed) {
       try {
-        const response = await fetch(`/api/lessons/${id}`, {
+        const response = await fetch(`/api/assignments/${id}`, {
           method: 'DELETE',
         });
         if (response.ok) {
-          setLessons((prevLessons) => prevLessons.filter((lesson) => lesson.id !== id));
+          setAssignments((prevAssignments) => prevAssignments.filter((assignment) => assignment.id !== id));
         } else {
-          console.error('Failed to delete lesson');
+          console.error('Failed to delete assignment');
         }
       } catch (error) {
-        console.error('Error deleting lesson:', error);
+        console.error('Error deleting assignment:', error);
       }
     }
   };
 
   return (
     <Box>
-      <Typography variant="h4" gutterBottom>Lessons</Typography>
-      <Button variant="contained" color="primary" onClick={handleCreateLesson}>
-        Create Lesson
+      <Typography variant="h4" gutterBottom>Assignments</Typography>
+      <Button variant="contained" color="primary" onClick={handleCreateAssignment}>
+        Create Assignment
       </Button>
       <Table>
         <TableHead>
@@ -55,15 +54,17 @@ const LessonsPage = () => {
             <TableCell>ID</TableCell>
             <TableCell>Name</TableCell>
             <TableCell>Description</TableCell>
+            <TableCell>Due Date</TableCell>
             <TableCell>Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
         <TableRow> 
         { /* dummy d but buttons setup*/}
-                <TableCell>JS2</TableCell>  
-                <TableCell>Advanced JavaScript PROG - 8760</TableCell>
-                <TableCell>Advanced JavaScript Spring 2024</TableCell>
+                <TableCell>JSA-1</TableCell>  
+                <TableCell>Calculator App</TableCell>
+                <TableCell>Advanced JavaScript Spring 2024 Calculator App</TableCell>
+                <TableCell>June 19 2024</TableCell>
                 
                 <TableCell>
                 <Button variant="contained" color="primary"
@@ -78,30 +79,31 @@ const LessonsPage = () => {
                   </Button>
                 </TableCell>
               </TableRow>
-          {lessons.map((lesson) => (
-            <TableRow key={lesson.id}>
-              <TableCell>{lesson.id}</TableCell>
-              <TableCell>{lesson.lesson_name}</TableCell>
-              <TableCell>{lesson.lesson_description}</TableCell>
+          {assignments.map((assignment) => (
+            <TableRow key={assignment.id}>
+              <TableCell>{assignment.id}</TableCell>
+              <TableCell>{assignment.assignment_name}</TableCell>
+              <TableCell>{assignment.assignment_description}</TableCell>
+              <TableCell>{assignment.due_date}</TableCell>
               <TableCell>
                 <Button
                   variant="contained"
                   color="primary"
-                  onClick={() => handleEdit(lesson.id)}
+                  onClick={() => handleEdit(assignment.id)}
                 >
                   Edit
                 </Button>
                 <Button
                   variant="contained"
                   color="error"
-                  onClick={() => handleDelete(lesson.id)}
+                  onClick={() => handleDelete(assignment.id)}
                 >
                   Delete
                 </Button>
                 <Button
                   variant="contained"
                   color="default"
-                  onClick={() => router.push(`/admin/lessons/${lesson.id}`)}
+                  onClick={() => router.push(`/admin/assignments/${assignment.id}`)}
                 >
                   View
                 </Button>
@@ -114,4 +116,4 @@ const LessonsPage = () => {
   );
 };
 
-export default LessonsPage;
+export default AssignmentsPage;
