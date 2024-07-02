@@ -1,15 +1,18 @@
 'use client';
 
+import InstructorsDropdown from '@/components/InstructorsDropdown';
+import { SERVER_URL } from '@/constants/routes';
 import styled from '@emotion/styled';
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material';
-import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useState } from 'react'
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import React, { useEffect, useState } from 'react'
 
 const EditCourse = () => {
   const router = useRouter();
-  const params = useSearchParams();
+  const params = useParams();
+  const searchParams = useSearchParams();
 
-  const isViewOnly = params.get('viewonly') === 'true';
+  const isViewOnly = searchParams.get('viewonly') === 'true';
 
   const [courseName, setCourseName] = useState('');
   const [shortCode, setShortCode] = useState('');
@@ -23,9 +26,32 @@ const EditCourse = () => {
     instructor: '',
   });
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    const fetchCourse = async () => {
+      try {
+        const response = await fetch(`${SERVER_URL}/courses/${params.id}`);
+        const data = await response.json();
+
+        setCourseName(data.course_name);
+        setShortCode(data.course_code);
+        setDescription(data.course_description);
+        setInstructor(data.instructor_id);
+      } catch (error) {
+        console.log(error)
+      }
+    };
+
+    if (params.id) {
+      fetchCourse();
+    }
+  }, []);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({ courseName, shortCode, description, instructor });
+
+    if (isViewOnly) {
+      return;
+    }
 
     // Validate form
     const errors = {};
@@ -49,6 +75,24 @@ const EditCourse = () => {
 
 
     // Send data to server
+    try {
+      const response = await fetch(`${SERVER_URL}/courses/${params.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          course_name: courseName,
+          course_code: shortCode,
+          course_description: description,
+          instructor_id: instructor,
+        }),
+      });
+
+      router.push('/admin/course');
+    } catch (error) {
+      console.log(error)
+    }
 
     // Redirect to course page
     router.push('/admin/lesson');
@@ -60,7 +104,7 @@ const EditCourse = () => {
         <Typography variant="h5">{isViewOnly ? 'View' : 'Edit'} Instructor</Typography>
       </Box>
       <Box>
-      <Form onSubmit={handleSubmit}>
+        <Form onSubmit={handleSubmit}>
           <TextField
             fullWidth
             label="Course Name"
@@ -92,22 +136,11 @@ const EditCourse = () => {
             error={!!errors.description}
             helperText={errors.description}
             disabled={isViewOnly}
+            multiline
+            rows={4}
           />
 
-          <FormControl fullWidth>
-            <InputLabel id="instructor">Instructor</InputLabel>
-            <Select
-              labelId="instructor"
-              value={instructor}
-              label="Instructor"
-              onChange={(e) => setInstructor(e.target.value)}
-              disabled={isViewOnly}
-            >
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
-            </Select>
-          </FormControl>
+          <InstructorsDropdown selectedInstructor={instructor} onChange={setInstructor} />
 
           {!isViewOnly && <Button type="submit" variant="contained" color="primary">
             Edit

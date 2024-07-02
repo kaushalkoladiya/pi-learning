@@ -9,3 +9,5 @@ export const ROUTES = {
   UNAUTHORIZED: '/401',
   SERVER_ERROR: '/500',
 };
+
+export const SERVER_URL = 'http://localhost:8000';

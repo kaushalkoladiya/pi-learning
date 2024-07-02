@@ -1,28 +1,53 @@
 'use client';
 
-import { Box, Button, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
+import { SERVER_URL } from '@/constants/routes';
+import { Close } from '@mui/icons-material';
+import { Alert, Box, Button, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 const Instructor = () => {
-  const router  = useRouter();
+  const router = useRouter();
+
+  const [instructors, setInstructors] = useState([]);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch(`${SERVER_URL}/api/instructors`);
+      const data = await response.json();
+
+      setInstructors(data);
+    }
+
+    fetchData();
+  }, []);
 
   const handleEdit = (id) => {
-    console.log('Edit', id);
-
     // Redirect to edit page
     router.push(`/admin/instructor/${id}`);
   }
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     console.log('Delete', id);
 
-    // Send delete request to server
+    const response = await fetch(`${SERVER_URL}/api/instructors/${id}`, {
+      method: 'DELETE',
+    })
 
+    const data = await response.json();
+
+    data.error && setError(data.error)
+    response.ok && setInstructors(instructors.filter(instructor => instructor.id !== id));
   };
 
   const handleCreate = () => {
     router.push('/admin/instructor/create');
+  }
+
+  const handleView = (id) => {
+    // Redirect to view page
+    router.push(`/admin/instructor/${id}?viewonly=true`);
   }
 
   return (
@@ -40,7 +65,8 @@ const Instructor = () => {
         </Box>
 
         {/* Table */}
-        <Box>
+        <Box my={2}>
+          {error && <Alert severity="error" onClose={() => setError('')}>{error}</Alert>}
           <Table>
             <TableHead>
               <TableRow>
@@ -52,24 +78,26 @@ const Instructor = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              <TableRow>
-                <TableCell>username</TableCell>  
-                <TableCell>email</TableCell>
-                <TableCell>first name</TableCell>
-                <TableCell>last name</TableCell>
-                <TableCell>
-                  <Button variant="contained" color="primary"
-                    onClick={() => handleEdit(1)}
-                  >
-                    Edit
-                  </Button>
-                  <Button variant="contained" color="error"
-                    onClick={() => handleDelete('Delete')}
-                  >
-                    Delete
-                  </Button>
-                </TableCell>
-              </TableRow>
+              {instructors.map((instructor) => (
+                <TableRow>
+                  <TableCell role='button' onClick={() => handleView(instructor.id)}>{instructor.username}</TableCell>
+                  <TableCell>{instructor.email}</TableCell>
+                  <TableCell>{instructor.first_name}</TableCell>
+                  <TableCell>{instructor.last_name}</TableCell>
+                  <TableCell>
+                    <Button variant="contained" color="primary"
+                      onClick={() => handleEdit(instructor.id)}
+                    >
+                      Edit
+                    </Button>
+                    <Button variant="contained" color="error"
+                      onClick={() => handleDelete(instructor.id)}
+                    >
+                      Delete
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </Box>
