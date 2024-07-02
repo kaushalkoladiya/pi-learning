@@ -95,6 +95,7 @@ const EditCourse = () => {
     }
 
     // Redirect to course page
+    router.push('/admin/lesson');
   };
 
   return (

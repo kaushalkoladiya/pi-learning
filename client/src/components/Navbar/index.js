@@ -10,6 +10,8 @@ import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
+import MenuBookIcon from '@mui/icons-material/MenuBook'; //Icon for lessons tab
+import AssignmentIcon from '@mui/icons-material/Assignment'; // Icon for assignments tab
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ListItem from '@mui/material/ListItem';
@@ -98,6 +100,16 @@ const ADMIN_ROUTES = [
     text: 'Course',
     icon: <SubjectIcon />,
     path: '/admin/course',
+  },
+  {
+    text: 'Lesson',
+    icon: <MenuBookIcon/>,
+    path: '/admin/lessons',
+  },
+  {
+    text: 'Assingments',
+    icon: <AssignmentIcon/>,
+    path: '/admin/assignments',
   }
 ];
 
