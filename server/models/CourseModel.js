@@ -1,6 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
-import sequelize from '../database.js'; // Import your Sequelize connection instance
-import User from './userModel.js';  // Import the User model if it's in a different file
+import sequelize from '../database.js'; 
+import User from './userModel.js';  
 
 class Course extends Model {}
 
@@ -10,38 +10,49 @@ Course.init({
     autoIncrement: true,
     primaryKey: true,
   },
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false
+  course_name: {
+    type: DataTypes.STRING(100),
+    allowNull: false,
   },
-  description: {
+  course_description: {
     type: DataTypes.TEXT,
-    allowNull: false
+    allowNull: true,
   },
-  courseCode: {
-    type: DataTypes.STRING,
+  course_code: {
+    type: DataTypes.STRING(20),
     unique: true,
-    allowNull: false
+    allowNull: false,
   },
-  stripeProductId: {
-    type: DataTypes.STRING,
-    allowNull: true 
+  instructor_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: User,
+      key: 'id',
+    },
+    onDelete: 'RESTRICT',
   },
-  stripePriceId: {
-    type: DataTypes.STRING, 
-    allowNull: true  
-  }
+  created_at: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+  },
+  updated_at: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+  },
 }, {
   sequelize,
   modelName: 'Course',
-  tableName: 'courses',  
-  timestamps: true  
+  tableName: 'courses',
+  timestamps: true,
+  createdAt: 'created_at',
+  updatedAt: 'updated_at',
 });
 
-
-Course.belongsTo(User, { as: 'Instructor', foreignKey: 'instructorId' });
-User.hasMany(Course, { foreignKey: 'instructorId' });
+Course.belongsTo(User, { as: 'Instructor', foreignKey: 'instructor_id' });
+User.hasMany(Course, { foreignKey: 'instructor_id' });
 
 Course.sync();
 
 export default Course;
+

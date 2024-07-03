@@ -1,59 +1,86 @@
-const pool = require('../config/db');
+import Joi from 'joi';
+import Course from '../models/CourseModel.js'; 
 
-const getAllCourses = async (req, res) => {
+
+// Define the validation schema for a course
+const courseSchema = Joi.object({
+    course_name: Joi.string().min(3).required(),
+    course_code: Joi.string().trim().required(),
+    course_description: Joi.string().trim().required(),
+    instructor_id: Joi.number().integer().required()
+});
+
+// CREATE a new course
+export const createCourse = async (req, res) => {
+    const { error } = courseSchema.validate(req.body);
+    if (error) {
+        return res.status(400).json(error.details[0].message);
+    }
+
     try {
-        const result = await pool.query('SELECT * FROM courses');
-        res.json({ courses: result.rows });
-    } catch (err) {
-        res.status(500).json({ message: err.message });
+        const course = await Course.create(req.body);
+        res.status(201).send(course);
+    } catch (error) {
+        res.status(400).send(error);
     }
 };
 
-const getCourseById = async (req, res) => {
+// READ all courses
+export const getAllCourses = async (req, res) => {
     try {
-        const result = await pool.query('', [req.params.id]);
-        if (result.rows.length === 0) {
-            return res.status(404).json({ message: 'Course not found' });
+        const courses = await Course.findAll();
+        res.json(courses);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ error: "Error fetching courses: " + error.message });
+    }
+};
+
+// READ a single course by ID
+export const getCourseById = async (req, res) => {
+    try {
+        const course = await Course.findByPk(req.params.id);
+        if (!course) {
+            return res.status(404).send({ error: 'Course not found' });
         }
-        res.json(result.rows[0]);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
+        res.send(course);
+    } catch (error) {
+        res.status(500).send(error);
     }
 };
 
-const createCourse = async (req, res) => {
-    const { course_name, course_description, course_code, instructor_id } = req.body; // integrate or look for alternative for instructor_id in DB
+// UPDATE a course by ID
+export const updateCourse = async (req, res) => {
+    const { error } = courseSchema.validate(req.body);
+    if (error) {
+        return res.status(400).json(error.details[0].message);
+    }
+
     try {
-        const result = await pool.query(
-            'INSERT INTO courses (course_name, course_description, course_code, instructor_id) VALUES (, , , ) RETURNING *', //try sample data
-            [course_name, course_description, course_code, instructor_id]
-        );
-        res.status(201).json({ message: 'Course created successfully', course: result.rows[0] });
-    } catch (err) {
-        res.status(500).json({ message: err.message });
+        const updated = await Course.update(req.body, {
+            where: { id: req.params.id }
+        });
+        if (updated[0] === 0) {
+            return res.status(404).send({ error: 'Course not found' });
+        }
+        const updatedCourse = await Course.findByPk(req.params.id);
+        res.send(updatedCourse);
+    } catch (error) {
+        res.status(400).send(error);
     }
 };
 
-const updateCourse = async (req, res) => {
-    const { course_name, course_description, course_code } = req.body;
+// DELETE a course by ID
+export const deleteCourse = async (req, res) => {
     try {
-        const result = await pool.query(
-            'UPDATE courses SET course_name = , course_description = , course_code =  WHERE id =  RETURNING *', // try data
-            [course_name, course_description, course_code, req.params.id]
-        );
-        res.json({ message: 'Course updated successfully', course: result.rows[0] });
-    } catch (err) {
-        res.status(500).json({ message: err.message });
+        const deleted = await Course.destroy({
+            where: { id: req.params.id }
+        });
+        if (deleted === 0) {
+            return res.status(404).send({ error: 'Course not found' });
+        }
+        res.status(204).send();
+    } catch (error) {
+        res.status(500).send(error);
     }
 };
-
-const deleteCourse = async (req, res) => {
-    try {
-        await pool.query('DELETE FROM courses WHERE id = ', [req.params.id]); // empty id try sample data
-        res.json({ message: 'Course deleted successfully' });
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-};
-
-module.exports = { getAllCourses, getCourseById, createCourse, updateCourse, deleteCourse };
