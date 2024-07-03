@@ -3,6 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Button, TextField, Typography } from '@mui/material';
 import { useRouter, useParams } from 'next/navigation';
+import { SERVER_URL } from '@/constants/routes';
+import CoursesDropdown from '@/components/CourseDropdown';
 
 const EditAssignmentPage = () => {
   const router = useRouter();
@@ -20,14 +22,14 @@ const EditAssignmentPage = () => {
   });
 
   useEffect(() => {
-    fetch(`/api/assignments/${id}`)
+    fetch(`${SERVER_URL}/api/assignments/${id}`)
       .then((response) => response.json())
       .then((data) => {
         setAssignment(data);
         setAssignmentName(data.assignment_name);
         setAssignmentDescription(data.assignment_description);
         setDueDate(data.due_date);
-        setCourseId(data.course_id.toString()); 
+        setCourseId(data.course_id);
       })
       .catch((error) => console.error('Error fetching assignment:', error));
   }, [id]);
@@ -46,7 +48,7 @@ const EditAssignmentPage = () => {
     if (!dueDate.trim()) {
       errors.dueDate = 'Due date is required';
     }
-    if (!courseId.trim()) {
+    if (!courseId) {
       errors.courseId = 'Course ID is required';
     }
     setErrors(errors);
@@ -65,7 +67,7 @@ const EditAssignmentPage = () => {
 
     try {
       // try sending updated data to the server
-      const response = await fetch(`/api/assignments/${id}`, {
+      const response = await fetch(`${SERVER_URL}/api/assignments/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -114,14 +116,13 @@ const EditAssignmentPage = () => {
             error={!!errors.dueDate}
             helperText={errors.dueDate}
           />
-          <TextField
-            fullWidth
-            label="Course ID"
-            value={courseId}
-            onChange={(e) => setCourseId(e.target.value)}
-            error={!!errors.courseId}
-            helperText={errors.courseId}
+
+          <CoursesDropdown
+            errorMessage={errors.courseId}
+            selectedCourse={courseId}
+            onChange={setCourseId}
           />
+
           <Button type="submit" variant="contained" color="primary">
             Update Assignment
           </Button>
