@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Button, TextField, Typography } from '@mui/material';
 import { useRouter, useParams } from 'next/navigation';
+import { SERVER_URL } from '@/constants/routes';
 
 const EditLessonPage = () => {
   const router = useRouter();
@@ -18,7 +19,7 @@ const EditLessonPage = () => {
   });
 
   useEffect(() => {
-    fetch(`/api/lessons/${id}`)
+    fetch(`${SERVER_URL}/api/lessons/${id}`)
       .then((response) => response.json())
       .then((data) => {
         setLesson(data);
@@ -58,7 +59,7 @@ const EditLessonPage = () => {
 
     try {
       // try sending updated data to the server
-      const response = await fetch(`/api/lessons/${id}`, {
+      const response = await fetch(`${SERVER_URL}/api/lessons/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

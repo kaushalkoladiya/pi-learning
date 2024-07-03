@@ -13,9 +13,20 @@ export const theme = createTheme({
     },
     MuiTextField: {
       defaultProps: {
-        variant: 'outlined',
-        size: 'small'
+        variant: 'outlined'
+      },
+      styleOverrides: {
+        root: {
+          marginBottom: '1rem'
+        }
       }
-    }
+    },
+    MuiFormControl: {
+      styleOverrides: {
+        root: {
+          marginBottom: '1rem'
+        }
+      }
+    },
   }
 });
