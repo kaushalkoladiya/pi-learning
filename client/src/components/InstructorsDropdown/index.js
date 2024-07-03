@@ -1,8 +1,8 @@
 import { SERVER_URL } from '@/constants/routes';
-import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import { FormControl, FormHelperText, InputLabel, MenuItem, Select } from '@mui/material';
 import React, { useEffect, useState } from 'react'
 
-const InstructorsDropdown = ({ selectedInstructor, onChange }) => {
+const InstructorsDropdown = ({ selectedInstructor, onChange, errorMessage }) => {
   const [instructorsData, setInstructorsData] = useState([]);
 
   useEffect(() => {
@@ -17,7 +17,7 @@ const InstructorsDropdown = ({ selectedInstructor, onChange }) => {
   }, []);
 
   return (
-    <FormControl fullWidth>
+    <FormControl fullWidth error={errorMessage}>
       <InputLabel id="instructor">Instructor</InputLabel>
       <Select
         labelId="instructor"
@@ -31,6 +31,7 @@ const InstructorsDropdown = ({ selectedInstructor, onChange }) => {
           </MenuItem>
         ))}
       </Select>
+      {errorMessage && <FormHelperText>Select an instructor</FormHelperText>}
     </FormControl>
   )
 }

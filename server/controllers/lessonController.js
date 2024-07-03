@@ -10,6 +10,12 @@ const lessonSchema = Joi.object({
     course_id: Joi.number().integer().required()
 });
 
+const updateLessonSchema = Joi.object({
+    lesson_name: Joi.string().required(),
+    lesson_description: Joi.string().allow(''),
+    lesson_content: Joi.string().allow(''),
+});
+
 export const createLesson = async (req, res) => {
     const { error } = lessonSchema.validate(req.body);
     if (error) {
@@ -56,7 +62,7 @@ export const getLessonById = async (req, res) => {
 };
 
 export const updateLesson = async (req, res) => {
-    const { error } = lessonSchema.validate(req.body);
+    const { error } = updateLessonSchema.validate(req.body);
     if (error) {
         return res.status(400).send(error.details[0].message);
     }

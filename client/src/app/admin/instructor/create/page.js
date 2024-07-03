@@ -1,5 +1,6 @@
 'use client';
 
+import HeadingTitle from '@/components/HeadingTitle';
 import { SERVER_URL } from '@/constants/routes';
 import styled from '@emotion/styled';
 import { Alert, Box, Button, InputAdornment, TextField, Typography } from '@mui/material';
@@ -87,9 +88,9 @@ const CreateInstructor = () => {
 
   return (
     <Box>
-      <Box>
+      <HeadingTitle>
         <Typography variant="h5">Create Instructor</Typography>
-      </Box>
+      </HeadingTitle>
       <Box>
         <Form onSubmit={handleSubmit}>
           {errors.common && <Alert severity="error">{errors.common}</Alert>}

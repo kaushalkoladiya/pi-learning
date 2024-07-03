@@ -5,8 +5,8 @@ import Course from '../models/CourseModel.js';
 // Define the validation schema for a course
 const courseSchema = Joi.object({
     course_name: Joi.string().min(3).required(),
-    course_description: Joi.string().allow(''),
-    course_code: Joi.string().required(),
+    course_code: Joi.string().trim().required(),
+    course_description: Joi.string().trim().required(),
     instructor_id: Joi.number().integer().required()
 });
 
@@ -14,7 +14,7 @@ const courseSchema = Joi.object({
 export const createCourse = async (req, res) => {
     const { error } = courseSchema.validate(req.body);
     if (error) {
-        return res.status(400).send(error.details[0].message);
+        return res.status(400).json(error.details[0].message);
     }
 
     try {
@@ -53,7 +53,7 @@ export const getCourseById = async (req, res) => {
 export const updateCourse = async (req, res) => {
     const { error } = courseSchema.validate(req.body);
     if (error) {
-        return res.status(400).send(error.details[0].message);
+        return res.status(400).json(error.details[0].message);
     }
 
     try {

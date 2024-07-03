@@ -1,9 +1,10 @@
 'use client';
 
+import HeadingTitle from '@/components/HeadingTitle';
 import InstructorsDropdown from '@/components/InstructorsDropdown';
 import { SERVER_URL } from '@/constants/routes';
 import styled from '@emotion/styled';
-import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material';
+import { Box, Button, TextField, Typography } from '@mui/material';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 
@@ -24,6 +25,8 @@ const EditCourse = () => {
     shortCode: '',
     description: '',
     instructor: '',
+
+    common: '',
   });
 
   useEffect(() => {
@@ -95,14 +98,13 @@ const EditCourse = () => {
     }
 
     // Redirect to course page
-    router.push('/admin/lesson');
   };
 
   return (
     <Box>
-      <Box>
+      <HeadingTitle>
         <Typography variant="h5">{isViewOnly ? 'View' : 'Edit'} Instructor</Typography>
-      </Box>
+      </HeadingTitle>
       <Box>
         <Form onSubmit={handleSubmit}>
           <TextField
@@ -140,7 +142,7 @@ const EditCourse = () => {
             rows={4}
           />
 
-          <InstructorsDropdown selectedInstructor={instructor} onChange={setInstructor} />
+          <InstructorsDropdown selectedInstructor={instructor} onChange={setInstructor} errorMessage={errors.instructor} />
 
           {!isViewOnly && <Button type="submit" variant="contained" color="primary">
             Edit
@@ -157,6 +159,4 @@ const Form = styled.form`
   display: flex;
   flex-direction: column;
   gap: 16px;
-  max-width: 400px;
-  margin: 0 auto;
 `;
