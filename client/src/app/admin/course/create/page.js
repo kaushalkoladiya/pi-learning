@@ -1,9 +1,10 @@
 'use client';
 
+import HeadingTitle from '@/components/HeadingTitle';
 import InstructorsDropdown from '@/components/InstructorsDropdown';
 import { SERVER_URL } from '@/constants/routes';
 import styled from '@emotion/styled';
-import { Box, Button, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, TextField, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 
@@ -20,11 +21,12 @@ const CreateCourse = () => {
     shortCode: '',
     description: '',
     instructor: '',
+
+    common: '',
   });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({ courseName, shortCode, description, instructor });
 
     // Validate form
     const errors = {};
@@ -46,10 +48,9 @@ const CreateCourse = () => {
       return;
     }
 
-
     // Send data to server
     try {
-      await fetch(`${SERVER_URL}/courses`, {
+      const data = await fetch(`${SERVER_URL}/courses`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -62,22 +63,35 @@ const CreateCourse = () => {
         }),
       });
 
-      router.push('/admin/course');
+      if (data.status === 201) {
+        return router.push('/admin/course');
+      } else {
+        const error = await data.json();
+        setErrors({ common: error });
+      }
+
+      console.log('Data:', );
+      console.log(data.body);
+
     } catch (error) {
       console.error('Error fetching course:', error);
     }
-
-    // Redirect to course page
   };
 
 
   return (
     <Box>
-      <Box>
+      <HeadingTitle>
         <Typography variant="h5">Create Course</Typography>
-      </Box>
+      </HeadingTitle>
       <Box>
         <Form onSubmit={handleSubmit}>
+          {
+            errors.common && (
+              <Alert severity="error">{errors.common}</Alert>
+            )
+          }
+
           <TextField
             fullWidth
             label="Course Name"
@@ -110,7 +124,7 @@ const CreateCourse = () => {
             helperText={errors.description}
           />
 
-          <InstructorsDropdown selectedInstructor={instructor} onChange={setInstructor} />
+          <InstructorsDropdown selectedInstructor={instructor} onChange={setInstructor} errorMessage={errors.instructor} />
 
           <Button type="submit" variant="contained" color="primary">
             Create
@@ -127,6 +141,4 @@ const Form = styled.form`
   display: flex;
   flex-direction: column;
   gap: 16px;
-  max-width: 400px;
-  margin: 0 auto;
 `;
