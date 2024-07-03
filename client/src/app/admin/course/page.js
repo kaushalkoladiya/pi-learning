@@ -1,5 +1,6 @@
 'use client';
 
+import ActionWrapper from '@/components/ActionWrapper';
 import { SERVER_URL } from '@/constants/routes';
 import { Box, Button, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
@@ -83,16 +84,19 @@ const Course = () => {
                   <TableCell>{course.course_description}</TableCell>
                   <TableCell>{course.instructor_id}</TableCell>
                   <TableCell>
-                    <Button variant="contained" color="primary"
-                      onClick={() => handleEdit(course.id)}
-                    >
-                      Edit
-                    </Button>
-                    <Button variant="contained" color="error"
-                      onClick={() => handleDelete(course.id)}
-                    >
-                      Delete
-                    </Button>
+                    <ActionWrapper>
+
+                      <Button variant="contained" color="primary"
+                        onClick={() => handleEdit(course.id)}
+                      >
+                        Edit
+                      </Button>
+                      <Button variant="contained" color="error"
+                        onClick={() => handleDelete(course.id)}
+                      >
+                        Delete
+                      </Button>
+                    </ActionWrapper>
                   </TableCell>
                 </TableRow>
               ))}
