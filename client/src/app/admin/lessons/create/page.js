@@ -65,9 +65,10 @@ const CreateLessonPage = () => {
     console.log('Response:', response);
 
     if (response.ok) {
-      // router.push('/admin/lessons');
+      router.push('/admin/lessons');
     } else {
-      console.error('Failed to create lesson');
+      const data = await response.json();
+      setErrors({ common: data.message });
     }
   };
 
@@ -82,6 +83,8 @@ const CreateLessonPage = () => {
             {errors.common}
           </Alert>
         )}
+
+<br/>
 
         <TextField
           label="Lesson Name"
