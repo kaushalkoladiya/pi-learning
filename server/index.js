@@ -1,13 +1,15 @@
 import express from 'express';
+import dotenv from 'dotenv';
+
 import sequelize from './database.js';
 import User from './models/userModel.js';
 import Course from './models/CourseModel.js';
 import Lesson from './models/LessonModel.js';
 import Assignment from './models/AssignmentModel.js';
-import authRoutes from './routers/authRoute.js';
+
+import authRoutes from './routers/authRoutes.js';
 import userRouter from './routers/userRouter.js';
 import uploadRouter from './routers/uploadRouter.js';
-import dotenv from 'dotenv';
 import courseRouter from './routers/courseRouter.js';
 import lessonRouter from './routers/lessonRouter.js';
 import assignmentRouter from './routers/assignmentRouter.js';

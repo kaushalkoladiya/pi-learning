@@ -4,16 +4,16 @@ import Joi from 'joi';
 
 // Joi validation schema for Lesson
 const lessonSchema = Joi.object({
-    lesson_name: Joi.string().required(),
-    lesson_description: Joi.string().allow(''),
-    lesson_content: Joi.string().allow(''),
+    lesson_name: Joi.string().trim().required(),
+    lesson_description: Joi.string().trim().required(),
+    lesson_content: Joi.string().trim().required(),
     course_id: Joi.number().integer().required()
 });
 
 const updateLessonSchema = Joi.object({
     lesson_name: Joi.string().required(),
-    lesson_description: Joi.string().allow(''),
-    lesson_content: Joi.string().allow(''),
+    lesson_description: Joi.string().trim().required(),
+    lesson_content: Joi.string().trim().required(),
 });
 
 export const createLesson = async (req, res) => {
