@@ -23,7 +23,8 @@ const CreateLessonPage = () => {
   });
 
 
-  const handleCreateLesson = async () => {
+  const handleCreateLesson = async (e) => {
+    e.preventDefault();
     // Validate form
     const errors = {};
 
@@ -84,7 +85,7 @@ const CreateLessonPage = () => {
           </Alert>
         )}
 
-<br/>
+        <br/>
 
         <TextField
           label="Lesson Name"
@@ -109,7 +110,8 @@ const CreateLessonPage = () => {
           value={lessonContent}
           onChange={(e) => setLessonContent(e.target.value)}
           fullWidth
-
+          multiline
+          rows={10}
           error={!!errors.lessonContent}
           helperText={errors.lessonContent}
         />
