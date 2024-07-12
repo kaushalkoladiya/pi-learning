@@ -1,4 +1,9 @@
 import express from 'express';
+import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import cors from 'cors';
+
 import sequelize from './database.js';
 import User from './models/userModel.js';
 import UserAddress from './models/UserAddressModel.js'; 
@@ -13,15 +18,9 @@ import uploadRouter from './routers/uploadRouter.js';
 import departmentRouter from './routers/departmentRouter.js';
 import countryRouter from './routers/countryRouter.js';
 import provinceRouter from './routers/provinceRouter.js';
-import dotenv from 'dotenv';
 import courseRouter from './routers/courseRouter.js';
 import lessonRouter from './routers/lessonRouter.js';
 import assignmentRouter from './routers/assignmentRouter.js';
-import authenticateToken from './middleware/AuthMiddleware.js';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import fs from 'fs';
-import cors from 'cors';
 import generateSecretKey from './utils/jwtsecretkey.js';
 import tokenRoute from './routers/tokenRoute.js';
 
