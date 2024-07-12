@@ -10,8 +10,8 @@ import CryptoJS from 'crypto-js';
 import { useDispatch } from 'react-redux';
 import { setUser } from '@/redux/userSlice';
 import { USER_ROLES } from '@/constants/roles';
-import { ROUTES} from '@/constants/routes';
-import StoreProvider from '../../StoreProvider';
+import { ROUTES } from '@/constants/routes';
+import { fetchSecretKey, loginUser } from '@/api';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -21,19 +21,12 @@ const Login = () => {
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState({});
   const [secretKey, setSecretKey] = useState('');
-  
+
 
   useEffect(() => {
-    const fetchSecretKey = async () => {
-      try {
-        const response = await axios.get(`http://localhost:${process.env.NEXT_PUBLIC_API_PORT}/api/token/key`);
-        //console.log('Fetched Secret Key:', response.data.secretKey);
-        setSecretKey(response.data.secretKey);
-      } catch (error) {
-        console.error('Error fetching secret key:', error);
-      }
-    };
-    fetchSecretKey();
+    (async () => {
+      setSecretKey(await fetchSecretKey());
+    })();
   }, []);
 
   const encryptPassword = (password) => {
@@ -58,12 +51,12 @@ const Login = () => {
     }
 
     setFieldErrors({});
-    
+
     // Encrypt the password before sending it
     const encryptedPassword = encryptPassword(password);
 
     try {
-      const response = await axios.post(`http://localhost:${process.env.NEXT_PUBLIC_API_PORT}/api/auth/login`, { email, password: encryptedPassword });
+      const response = await loginUser(email, encryptedPassword);
       const { token, user } = response.data;
       const user_type = user.user_type;
       // Save token and user type in local storage
@@ -89,7 +82,6 @@ const Login = () => {
   };
 
   return (
-    <StoreProvider>
     <div className="auth-container-wrapper">
       <div className="snow"></div>
       <Box className="auth-container">
@@ -154,7 +146,6 @@ const Login = () => {
         </Box>
       </Box>
     </div>
-    </StoreProvider>
   );
 };
 

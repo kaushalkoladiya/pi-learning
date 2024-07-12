@@ -36,6 +36,7 @@ User.init({
   gender: {
     type: DataTypes.ENUM(GENDER_TYPE.MALE, GENDER_TYPE.FEMALE, GENDER_TYPE.OTHER),
     allowNull: false,
+    defaultValue: GENDER_TYPE.MALE
   },
   date_of_birth: {
     type: DataTypes.DATE,
@@ -86,4 +87,5 @@ User.init({
 });
 
 User.sync();
+
 export default User;

@@ -2,11 +2,11 @@
 
 import { Inter } from "next/font/google";
 import "./globals.css";
-import StoreProvider from "./StoreProvider";
-import Navbar, { DrawerHeader } from "@/components/Navbar";
-import { Box, CssBaseline, ThemeProvider } from "@mui/material";
+import Navbar, { NavbarDrawer } from "@/components/Navbar";
+import { Box, ThemeProvider } from "@mui/material";
 import { theme } from "../theme";
 import { usePathname } from "next/navigation";
+import { StoreProvider } from "@/redux/store";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,10 +25,9 @@ export default function RootLayout({ children }) {
         <StoreProvider>
           <ThemeProvider theme={theme}>
             <Box sx={{ display: "flex" }}>
-              <CssBaseline />
-              {!isSignupLoginPage && <Navbar />}
+              <Navbar />
               <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-                <DrawerHeader />
+                <NavbarDrawer />
                 <Box>
                   {children}
                 </Box>

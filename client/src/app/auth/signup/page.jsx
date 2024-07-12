@@ -21,6 +21,7 @@ import {
 import { useRouter } from "next/navigation";
 import { validateForm } from "@/utils/validation";
 import CryptoJS from "crypto-js";
+import { fetchSecretKey, registerUser } from "@/api";
 
 const Signup = () => {
   const router = useRouter();
@@ -37,19 +38,9 @@ const Signup = () => {
   const [secretKey, setSecretKey] = useState("");
 
   useEffect(() => {
-    const fetchSecretKey = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:${process.env.NEXT_PUBLIC_API_PORT}/api/token/key`
-        );
-        console.log("Fetched Secret Key:", response.data.secretKey);
-        setSecretKey(response.data.secretKey);
-      } catch (error) {
-        console.error("Error fetching secret key:", error);
-      }
-    };
-
-    fetchSecretKey();
+    (async () => {
+      setSecretKey(await fetchSecretKey());
+    })();
   }, []);
 
   const encryptPassword = (password) => {
@@ -87,17 +78,14 @@ const Signup = () => {
     console.log("Encrypted Password:", encryptedPassword);
 
     try {
-      await axios.post(
-        `http://localhost:${process.env.NEXT_PUBLIC_API_PORT}/api/auth/register`,
-        {
-          password: encryptedPassword,
-          email: form.email,
-          user_type: "student",
-          first_name: form.firstName,
-          last_name: form.lastName,
-          gender: form.gender,
-        }
-      );
+      await registerUser(
+        form.email,
+        encryptedPassword,
+        form.firstName,
+        form.lastName,
+        form.gender,
+      )
+
       console.log("User registered");
       router.push("/auth/login");
     } catch (error) {

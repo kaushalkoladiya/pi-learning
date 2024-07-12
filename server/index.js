@@ -9,7 +9,6 @@ import userRouter from './routers/userRouter.js';
 import Course from './models/CourseModel.js';
 import Lesson from './models/LessonModel.js';
 import Assignment from './models/AssignmentModel.js';
-import authRoutes from './routers/authRoute.js';
 import uploadRouter from './routers/uploadRouter.js';
 import departmentRouter from './routers/departmentRouter.js';
 import countryRouter from './routers/countryRouter.js';

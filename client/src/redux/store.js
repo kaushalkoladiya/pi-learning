@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import userReducer from './userSlice';
+import { Provider } from 'react-redux';
 
 const reduxStore = configureStore({
   reducer: {
@@ -9,3 +10,6 @@ const reduxStore = configureStore({
 
 export default reduxStore;
 
+export const StoreProvider = ({ children }) => {
+  return <Provider store={reduxStore}>{children}</Provider>;
+}
