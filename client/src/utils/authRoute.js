@@ -1,5 +1,6 @@
 import { USER_ROLES } from "@/constants/roles";
 import { ROUTES } from "@/constants/routes";
+import { useAppSelector } from "@/hooks";
 
 /**
  * @info: HOC to check if user is authenticated and has the correct role

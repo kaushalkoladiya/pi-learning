@@ -1,41 +1,61 @@
 import express from 'express';
 import sequelize from './database.js';
 import User from './models/userModel.js';
+import UserAddress from './models/UserAddressModel.js'; 
+import Department from './models/DepartmentModel.js'; 
+import associateModels from './models/config/associateModels.js';
+import authRoutes from './routers/authRoutes.js';
+import userRouter from './routers/userRouter.js';
 import Course from './models/CourseModel.js';
 import Lesson from './models/LessonModel.js';
 import Assignment from './models/AssignmentModel.js';
 import authRoutes from './routers/authRoute.js';
-import userRouter from './routers/userRouter.js';
 import uploadRouter from './routers/uploadRouter.js';
+import departmentRouter from './routers/departmentRouter.js';
+import countryRouter from './routers/countryRouter.js';
+import provinceRouter from './routers/provinceRouter.js';
 import dotenv from 'dotenv';
 import courseRouter from './routers/courseRouter.js';
 import lessonRouter from './routers/lessonRouter.js';
 import assignmentRouter from './routers/assignmentRouter.js';
+import authenticateToken from './middleware/AuthMiddleware.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import fs from 'fs';
+import cors from 'cors';
+import generateSecretKey from './utils/jwtsecretkey.js';
+import tokenRoute from './routers/tokenRoute.js';
+
+// Setup __dirname equivalent for ES Modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config();
 
 const app = express();
 
+app.use(cors({
+    origin: 'http://localhost:3000',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+}));
 app.use(express.json());
-
-app.use(function (req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    res.setHeader('Access-Control-Allow-Credentials', true);
-    next();
-});
 
 app.get('/', (req, res) => {
     res.send('Hello, your server is running!');
 });
 
-app.use('/api', userRouter);
 app.use('/api/auth', authRoutes);
+app.use('/api/token', tokenRoute);
+// Apply middleware to protected routes
+app.use('/api',userRouter);
+app.use('/api/departments', departmentRouter);
+app.use('/api/provinces', provinceRouter);
+app.use('/api/countries', countryRouter);
 app.use('/api/uploads', uploadRouter);
-app.use('/courses', courseRouter); //  Prefixed with /api
-app.use('/api/lessons', lessonRouter); // Prfxd with /api
-app.use('/api/assignments', assignmentRouter); // Prfxd with /api
+app.use('/courses', courseRouter);
+app.use('/api/lessons', lessonRouter);
+app.use('/api/assignments', assignmentRouter);
 
 // Global error handler
 app.use((err, req, res, next) => {
@@ -48,13 +68,22 @@ async function startServer() {
         await sequelize.authenticate();
         console.log('Connection has been established successfully.');
 
-        await User.sync();
+        // Define associations
+        associateModels();
+
+        // Sync only specific models
+        await Department.sync({ force: false });
+        await User.sync({ force: false });
+        await UserAddress.sync({ force: false });
         await Course.sync();
         await Lesson.sync();
         await Assignment.sync();
-        //sync all models
         await sequelize.sync({ force: false });
         console.log('Database synced.');
+        
+
+        // Generate secret key if not exists
+        generateSecretKey();
 
         // Start the server
         app.listen(process.env.PORT, () => {

@@ -14,7 +14,7 @@ DROP TABLE IF EXISTS users;
 CREATE TABLE users
 (
     id                 SERIAL PRIMARY KEY,
-    username           VARCHAR(50)  NOT NULL UNIQUE,
+    username          VARCHAR(50)  NOT NULL UNIQUE,
     password           VARCHAR(100) NOT NULL,
     email              VARCHAR(100) NOT NULL UNIQUE,
     user_type          VARCHAR(20)  NOT NULL CHECK (user_type IN ('student', 'instructor', 'admin')),
@@ -106,3 +106,8 @@ CREATE TABLE issued_certificates
     created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+
+-- Insert admin to db
+INSERT INTO users (username, password, email, user_type, first_name, last_name, created_at, updated_at)
+VALUES ('Admin', 'Admin@123', 'admin@example.com', 'admin', 'ADMIN', 'TESTER', NOW(), NOW());

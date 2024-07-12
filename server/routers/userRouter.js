@@ -14,7 +14,7 @@ userRouter.get('/', async (req, res) => {
 
   console.log(users);
 
-  res.send('Hello World');
+  res.send(users);
 });
 
 // routes only for usertype- instructor
