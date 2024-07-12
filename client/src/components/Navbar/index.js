@@ -22,6 +22,9 @@ import { useRouter } from 'next/navigation';
 
 import Person4Icon from '@mui/icons-material/Person4';
 import SubjectIcon from '@mui/icons-material/Subject';
+import { Box, CssBaseline } from '@mui/material';
+import useAuth from '@/hooks/useAuth';
+import { USER_ROLES } from '@/constants/roles';
 
 const drawerWidth = 240;
 
@@ -46,7 +49,7 @@ const closedMixin = (theme) => ({
   },
 });
 
-export const DrawerHeader = styled('div')(({ theme }) => ({
+const DrawerHeader = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'flex-end',
@@ -54,6 +57,18 @@ export const DrawerHeader = styled('div')(({ theme }) => ({
   // necessary for content to be below app bar
   ...theme.mixins.toolbar,
 }));
+
+export const NavbarDrawer = () => {
+  const { isUserAdmin } = useAuth();
+
+  if (!isUserAdmin()) {
+    return null;
+  }
+
+  return (
+    <DrawerHeader />
+  )
+};
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open',
@@ -103,17 +118,18 @@ const ADMIN_ROUTES = [
   },
   {
     text: 'Lesson',
-    icon: <MenuBookIcon/>,
+    icon: <MenuBookIcon />,
     path: '/admin/lessons',
   },
   {
     text: 'Assingments',
-    icon: <AssignmentIcon/>,
+    icon: <AssignmentIcon />,
     path: '/admin/assignments',
   }
 ];
 
 const Navbar = () => {
+  const { isUserAdmin } = useAuth();
   const router = useRouter();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -130,8 +146,13 @@ const Navbar = () => {
     router.push(path);
   };
 
+  if (!isUserAdmin()) {
+    return null;
+  }
+
   return (
     <>
+      <CssBaseline />
       <AppBar position="fixed" open={open}>
         <Toolbar>
           <IconButton
@@ -153,6 +174,11 @@ const Navbar = () => {
       </AppBar>
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
+          <Box width={'100%'} pl={2}>
+            <Typography variant="h6" noWrap component="div">
+              Pi Learning
+            </Typography>
+          </Box>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>

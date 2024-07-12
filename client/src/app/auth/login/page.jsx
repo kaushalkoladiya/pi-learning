@@ -1,21 +1,36 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, TextField, Button, Typography, Paper, Grid } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import '../signup/styles.css';
 import axios from 'axios';
+import { validateEmail } from '@/utils/validation';
+import CryptoJS from 'crypto-js';
+import { useDispatch } from 'react-redux';
+import { setUser } from '@/redux/userSlice';
+import { USER_ROLES } from '@/constants/roles';
+import { ROUTES } from '@/constants/routes';
+import { fetchSecretKey, loginUser } from '@/api';
 
 const Login = () => {
+  const dispatch = useDispatch();
   const navigate = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState({});
+  const [secretKey, setSecretKey] = useState('');
 
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+
+  useEffect(() => {
+    (async () => {
+      setSecretKey(await fetchSecretKey());
+    })();
+  }, []);
+
+  const encryptPassword = (password) => {
+    return CryptoJS.AES.encrypt(password, secretKey).toString();
   };
 
   const handleLogin = async (e) => {
@@ -36,10 +51,30 @@ const Login = () => {
     }
 
     setFieldErrors({});
-    
+
+    // Encrypt the password before sending it
+    const encryptedPassword = encryptPassword(password);
+
     try {
-      const response = await axios.post('http://localhost:5000/login', { email, password });
-      console.log('Token:', response.data.token);
+      const response = await loginUser(email, encryptedPassword);
+      const { token, user } = response.data;
+      const user_type = user.user_type;
+      // Save token and user type in local storage
+      localStorage.setItem('token', token);
+      localStorage.setItem('role', user_type);
+
+      // Dispatch user info to Redux store
+      dispatch(setUser({ token, user_type }));
+
+      // Redirect based on user type
+      if (user_type === USER_ROLES.ADMIN) {
+        navigate.push(ROUTES.ADMIN);
+      } else if (user_type === USER_ROLES.INSTRUCTOR) {
+        navigate.push(ROUTES.INSTRUCTOR);
+      } else if (user_type === USER_ROLES.STUDENT) {
+        navigate.push(ROUTES.STUDENT);
+      }
+
     } catch (error) {
       console.error('Invalid credentials');
       setError('Invalid credentials. Please try again.');

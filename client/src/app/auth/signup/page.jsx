@@ -1,83 +1,134 @@
 "use client";
 
-import React, { useState } from 'react';
-import { Box, TextField, Button, Typography, Grid, Paper } from '@mui/material';
-import axios from 'axios';
-import './styles.css';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+
+import "./styles.css"; //SIGNUP CSS
+import {
+  Box,
+  TextField,
+  Button,
+  Typography,
+  Grid,
+  Paper,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Select,
+  FormHelperText,
+} from "@mui/material";
+
+import { useRouter } from "next/navigation";
+import { validateForm } from "@/utils/validation";
+import CryptoJS from "crypto-js";
+import { fetchSecretKey, registerUser } from "@/api";
 
 const Signup = () => {
   const router = useRouter();
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
+  const [form, setForm] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    gender: "",
+  });
+  const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState({});
+  const [secretKey, setSecretKey] = useState("");
 
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+  useEffect(() => {
+    (async () => {
+      setSecretKey(await fetchSecretKey());
+    })();
+  }, []);
+
+  const encryptPassword = (password) => {
+    if (!secretKey) {
+      console.error("Secret key is not available for encryption");
+      return password;
+    }
+    return CryptoJS.AES.encrypt(password, secretKey).toString();
   };
 
-  const validateName = (name) => {
-    const nameRegex = /^[a-zA-Z]+$/;
-    return nameRegex.test(name);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm({
+      ...form,
+      [name]: value,
+    });
   };
 
   const handleSignup = async (e) => {
     e.preventDefault();
-    const errors = {};
-    if (!firstName) {
-      errors.firstName = 'First name is required';
-    } else if (!validateName(firstName)) {
-      errors.firstName = 'First name cannot contain numbers';
-    }
-    if (!lastName) {
-      errors.lastName = 'Last name is required';
-    } else if (!validateName(lastName)) {
-      errors.lastName = 'Last name cannot contain numbers';
-    }
-    if (!email) {
-      errors.email = 'Email is required';
-    } else if (!validateEmail(email)) {
-      errors.email = 'Invalid email format';
-    }
-    if (!newPassword) {
-      errors.newPassword = 'Password is required';
-    }
-    if (newPassword !== confirmPassword) {
-      errors.confirmPassword = 'Passwords do not match';
+    const errors = validateForm(form);
+
+    if (form.password !== form.confirmPassword) {
+      errors.confirmPassword = "Passwords do not match";
     }
 
     if (Object.keys(errors).length > 0) {
       setFieldErrors(errors);
       return;
     }
-
     setFieldErrors({});
-    
+
+    // Encrypt the password before sending it
+    const encryptedPassword = encryptPassword(form.password);
+    console.log("Encrypted Password:", encryptedPassword);
+
     try {
-      await axios.post('http://localhost:5000/register', { firstName, lastName, email, password: newPassword });
-      console.log('User registered');
-      router.push('/login');
+      await registerUser(
+        form.email,
+        encryptedPassword,
+        form.firstName,
+        form.lastName,
+        form.gender,
+      )
+
+      console.log("User registered");
+      router.push("/auth/login");
     } catch (error) {
-      console.error('Registration failed');
-      setError('Registration failed. Please try again.');
+      console.error("Registration failed");
+
+      if (error.response && error.response.data && error.response.data.errors) {
+        setFieldErrors(error.response.data.errors);
+      } else {
+        setError("Registration failed. Please try again.");
+      }
     }
   };
 
   return (
     <div className="auth-container-wrapper">
-      <div className="snow"></div>
       <Box className="auth-container">
         <Box className="auth-image">
-          <img src="/images/pi.jpg" alt="Description of " className="auth-image-content" />
+          <img
+            src="/images/pi.jpg"
+            alt="Description of "
+            className="auth-image-content"
+          />
         </Box>
-        <Box className="auth-form-container" component={Paper} elevation={6} sx={{ width: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px' }}>
-          <Box component="form" onSubmit={handleSignup} sx={{ width: '100%' }}>
-            <Typography variant="h5" component="h1" gutterBottom align="center" sx={{ mb: 2 }}>
+        <Box
+          className="auth-form-container"
+          component={Paper}
+          elevation={6}
+          sx={{
+            width: "50%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            padding: "20px",
+          }}
+        >
+          <Box component="form" onSubmit={handleSignup} sx={{ width: "100%" }}>
+            <Typography
+              variant="h5"
+              component="h1"
+              gutterBottom
+              align="center"
+              sx={{ mb: 2 }}
+            >
               Sign Up
             </Typography>
             {error && (
@@ -87,69 +138,82 @@ const Signup = () => {
             )}
             <TextField
               margin="normal"
-              required
+              autoFocus
               fullWidth
               id="firstName"
               label="First Name"
               name="firstName"
               autoComplete="given-name"
-              autoFocus
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
+              value={form.firstName}
+              onChange={handleChange}
               error={!!fieldErrors.firstName}
               helperText={fieldErrors.firstName}
             />
             <TextField
               margin="normal"
-              required
               fullWidth
               id="lastName"
               label="Last Name"
               name="lastName"
               autoComplete="family-name"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
+              value={form.lastName}
+              onChange={handleChange}
               error={!!fieldErrors.lastName}
               helperText={fieldErrors.lastName}
             />
             <TextField
               margin="normal"
-              required
               fullWidth
               id="email"
               label="Email Address"
               name="email"
               autoComplete="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={form.email}
+              onChange={handleChange}
               error={!!fieldErrors.email}
               helperText={fieldErrors.email}
             />
+            <FormControl fullWidth margin="normal" error={!!fieldErrors.gender}>
+              <InputLabel id="gender-label">Gender</InputLabel>
+              <Select
+                labelId="gender-label"
+                id="gender"
+                name="gender"
+                value={form.gender}
+                onChange={handleChange}
+                label="Gender"
+              >
+                <MenuItem value="male">Male</MenuItem>
+                <MenuItem value="female">Female</MenuItem>
+                <MenuItem value="other">Other</MenuItem>
+              </Select>
+              {fieldErrors.gender && (
+                <FormHelperText>{fieldErrors.gender}</FormHelperText>
+              )}
+            </FormControl>
             <TextField
               margin="normal"
-              required
               fullWidth
-              name="newPassword"
-              label="New Password"
+              name="password"
+              label="Password"
               type="password"
-              id="newPassword"
-              autoComplete="new-password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              error={!!fieldErrors.newPassword}
-              helperText={fieldErrors.newPassword}
+              id="password"
+              autoComplete="password"
+              value={form.password}
+              onChange={handleChange}
+              error={!!fieldErrors.password}
+              helperText={fieldErrors.password}
             />
             <TextField
               margin="normal"
-              required
               fullWidth
               name="confirmPassword"
               label="Confirm Password"
               type="password"
               id="confirmPassword"
               autoComplete="new-password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              value={form.confirmPassword}
+              onChange={handleChange}
               error={!!fieldErrors.confirmPassword}
               helperText={fieldErrors.confirmPassword}
             />
@@ -163,7 +227,13 @@ const Signup = () => {
             </Button>
             <Grid container justifyContent="center">
               <Grid item>
-                <Button variant="text" size="small" onClick={() => router.push('/auth/login')}>{"Already have an account? Sign In"}</Button>
+                <Button
+                  variant="text"
+                  size="small"
+                  onClick={() => router.push("/auth/login")}
+                >
+                  {"Already have an account? Sign In"}
+                </Button>
               </Grid>
             </Grid>
           </Box>
