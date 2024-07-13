@@ -3,15 +3,19 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Button, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
+import { SERVER_URL } from '@/constants/routes';
+import ActionWrapper from '@/components/ActionWrapper';
 
 const LessonsPage = () => {
   const router = useRouter();
   const [lessons, setLessons] = useState([]);
 
   useEffect(() => {
-    fetch('/api/lessons')
+    fetch(`${SERVER_URL}/api/lessons`)
       .then((response) => response.json())
-      .then((data) => setLessons(data))
+      .then((data) => {
+        setLessons(data);
+      })
       .catch((error) => console.error('Error fetching lessons:', error));
   }, []);
 
@@ -20,8 +24,6 @@ const LessonsPage = () => {
   };
 
   const handleEdit = (id) => {
-    console.log('Edit', id);
-
     router.push(`/admin/lessons/${id}`);
   }
 
@@ -29,7 +31,7 @@ const LessonsPage = () => {
     const confirmed = confirm('Are you sure you want to delete this lesson?');
     if (confirmed) {
       try {
-        const response = await fetch(`/api/lessons/${id}`, {
+        const response = await fetch(`${SERVER_URL}/api/lessons/${id}`, {
           method: 'DELETE',
         });
         if (response.ok) {
@@ -55,56 +57,34 @@ const LessonsPage = () => {
             <TableCell>ID</TableCell>
             <TableCell>Name</TableCell>
             <TableCell>Description</TableCell>
+            <TableCell>Course</TableCell>
             <TableCell>Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-        <TableRow> 
-        { /* dummy d but buttons setup*/}
-                <TableCell>JS2</TableCell>  
-                <TableCell>Advanced JavaScript PROG - 8760</TableCell>
-                <TableCell>Advanced JavaScript Spring 2024</TableCell>
-                
-                <TableCell>
-                <Button variant="contained" color="primary"
-                    onClick={() => handleEdit(1)}
-                  >
-                    Edit
-                  </Button>
-                  <Button variant="contained" color="error"
-                    onClick={() => handleDelete('Delete')}
-                  >
-                    Delete
-                  </Button>
-                </TableCell>
-              </TableRow>
           {lessons.map((lesson) => (
             <TableRow key={lesson.id}>
               <TableCell>{lesson.id}</TableCell>
               <TableCell>{lesson.lesson_name}</TableCell>
               <TableCell>{lesson.lesson_description}</TableCell>
+              <TableCell>{lesson.course_id}</TableCell>
               <TableCell>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => handleEdit(lesson.id)}
-                >
-                  Edit
-                </Button>
-                <Button
-                  variant="contained"
-                  color="error"
-                  onClick={() => handleDelete(lesson.id)}
-                >
-                  Delete
-                </Button>
-                <Button
-                  variant="contained"
-                  color="default"
-                  onClick={() => router.push(`/admin/lessons/${lesson.id}`)}
-                >
-                  View
-                </Button>
+                <ActionWrapper>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => handleEdit(lesson.id)}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    onClick={() => handleDelete(lesson.id)}
+                  >
+                    Delete
+                  </Button>
+                </ActionWrapper>
               </TableCell>
             </TableRow>
           ))}

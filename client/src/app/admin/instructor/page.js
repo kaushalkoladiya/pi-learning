@@ -1,7 +1,7 @@
 'use client';
 
+import ActionWrapper from '@/components/ActionWrapper';
 import { SERVER_URL } from '@/constants/routes';
-import { Close } from '@mui/icons-material';
 import { Alert, Box, Button, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
@@ -85,16 +85,18 @@ const Instructor = () => {
                   <TableCell>{instructor.first_name}</TableCell>
                   <TableCell>{instructor.last_name}</TableCell>
                   <TableCell>
-                    <Button variant="contained" color="primary"
-                      onClick={() => handleEdit(instructor.id)}
-                    >
-                      Edit
-                    </Button>
-                    <Button variant="contained" color="error"
-                      onClick={() => handleDelete(instructor.id)}
-                    >
-                      Delete
-                    </Button>
+                    <ActionWrapper>
+                      <Button variant="contained" color="primary"
+                        onClick={() => handleEdit(instructor.id)}
+                      >
+                        Edit
+                      </Button>
+                      <Button variant="contained" color="error"
+                        onClick={() => handleDelete(instructor.id)}
+                      >
+                        Delete
+                      </Button>
+                    </ActionWrapper>
                   </TableCell>
                 </TableRow>
               ))}

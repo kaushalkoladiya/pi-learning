@@ -1,24 +1,29 @@
+import React, { useEffect } from 'react';
 import { USER_ROLES } from "@/constants/roles";
-import { ROUTES } from "@/constants/routes";
+import { ROUTES, STUDENT_ROUTES } from "@/constants/routes";
+import { usePathname, useRouter } from 'next/navigation';
 
-/**
- * @info: HOC to check if user is authenticated and has the correct role
- * @info: If user is not authenticated, redirect to login page
- * 
- * @param {string} role - role of the user
- * @param {string} path - path to redirect to
- * @param {Component} Component - component to render
- */
+function authMiddleware(Component) {
+  return function isAuth(props) {
+    const router = useRouter();
+    const pathname = usePathname();
+    const isAuthenticated = localStorage.getItem('token');
+    const userRole = localStorage.getItem('role');
 
-const authRoute = (role = USER_ROLES.USER, path = ROUTES.LOGIN) => (Component) => {
-  const isAuthenticated = localStorage.getItem('token');
-  const userRole = localStorage.getItem('role');
+    useEffect(() => {
+      if(USER_ROLES.STUDENT === userRole && !Object.values(STUDENT_ROUTES).includes(pathname)) {
+        router.replace(ROUTES.LOGIN);
+      }
 
-  if (isAuthenticated && userRole === role) {
-    return <Component />;
+      if (!isAuthenticated) {
+        router.replace(ROUTES.HOME);
+      }
+    }, []);
+
+    if (!isAuthenticated) return null;
+
+    return <Component {...props} />;
   }
-
-  window.location = path;
 };
 
-export default authRoute;
+export default authMiddleware;

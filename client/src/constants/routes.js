@@ -5,9 +5,16 @@ export const ROUTES = {
   REGISTER: '/auth/register',
   PROFILE: '/profile',
   ADMIN: '/admin',
+  INSTRUCTOR: '/instructor',
+  STUDENT: '/student',
   NOT_FOUND: '/404',
   UNAUTHORIZED: '/401',
   SERVER_ERROR: '/500',
 };
 
 export const SERVER_URL = 'http://localhost:8000';
+
+export const STUDENT_ROUTES = {
+  DASHBOARD: '/student',
+  PROFILE: '/student/profile',
+};

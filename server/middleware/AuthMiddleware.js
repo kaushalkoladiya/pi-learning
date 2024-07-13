@@ -1,19 +1,21 @@
-
 import jwt from 'jsonwebtoken';
 
-const authenticate = (req, res, next) => {
-    const token = req.headers['authorization'];
-    if (!token) {
-        return res.status(401).json({ message: 'User not authenticated' });
-    }
+const authenticateToken = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+
+    console.log('Token:', token, authHeader)
+
+    if (!token) return res.status(401).json({ message: 'Access denied. No token provided.' });
 
     try {
-        const decoded = jwt.verify(token.split(' ')[1], process.env.JWT_SECRET);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = decoded;
         next();
-    } catch (err) {
-        return res.status(401).json({ message: 'User not authenticated' });
+    } catch (error) {
+        res.status(400).json({ message: 'Invalid token.' });
     }
 };
 
-export default authenticate;
+
+export default authenticateToken;

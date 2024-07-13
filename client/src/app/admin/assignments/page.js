@@ -3,13 +3,15 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Button, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
+import { SERVER_URL } from '@/constants/routes';
+import ActionWrapper from '@/components/ActionWrapper';
 
 const AssignmentsPage = () => {
   const router = useRouter();
   const [assignments, setAssignments] = useState([]);
 
   useEffect(() => {
-    fetch('/api/assignments')
+    fetch(`${SERVER_URL}/api/assignments`)
       .then((response) => response.json())
       .then((data) => setAssignments(data))
       .catch((error) => console.error('Error fetching assignments:', error));
@@ -28,7 +30,7 @@ const AssignmentsPage = () => {
     const confirmed = confirm('Are you sure you want to delete this assignment?');
     if (confirmed) {
       try {
-        const response = await fetch(`/api/assignments/${id}`, {
+        const response = await fetch(`${SERVER_URL}/api/assignments/${id}`, {
           method: 'DELETE',
         });
         if (response.ok) {
@@ -59,26 +61,6 @@ const AssignmentsPage = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-        <TableRow> 
-        { /* dummy d but buttons setup*/}
-                <TableCell>JSA-1</TableCell>  
-                <TableCell>Calculator App</TableCell>
-                <TableCell>Advanced JavaScript Spring 2024 Calculator App</TableCell>
-                <TableCell>June 19 2024</TableCell>
-                
-                <TableCell>
-                <Button variant="contained" color="primary"
-                    onClick={() => handleEdit(1)}
-                  >
-                    Edit
-                  </Button>
-                  <Button variant="contained" color="error"
-                    onClick={() => handleDelete('Delete')}
-                  >
-                    Delete
-                  </Button>
-                </TableCell>
-              </TableRow>
           {assignments.map((assignment) => (
             <TableRow key={assignment.id}>
               <TableCell>{assignment.id}</TableCell>
@@ -86,6 +68,7 @@ const AssignmentsPage = () => {
               <TableCell>{assignment.assignment_description}</TableCell>
               <TableCell>{assignment.due_date}</TableCell>
               <TableCell>
+                <ActionWrapper>
                 <Button
                   variant="contained"
                   color="primary"
@@ -100,13 +83,7 @@ const AssignmentsPage = () => {
                 >
                   Delete
                 </Button>
-                <Button
-                  variant="contained"
-                  color="default"
-                  onClick={() => router.push(`/admin/assignments/${assignment.id}`)}
-                >
-                  View
-                </Button>
+                </ActionWrapper>
               </TableCell>
             </TableRow>
           ))}

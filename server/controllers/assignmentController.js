@@ -4,8 +4,8 @@ import Course from '../models/CourseModel.js'; // Import Course model for relati
 
 // Joi validation schema for Assignment
 const assignmentSchema = Joi.object({
-    assignment_name: Joi.string().required(),
-    assignment_description: Joi.string().allow('').optional(),
+    assignment_name: Joi.string().trim().required(),
+    assignment_description: Joi.string().trim().required(),
     due_date: Joi.date().required(),
     course_id: Joi.number().integer().required()
 });
@@ -14,7 +14,7 @@ const assignmentSchema = Joi.object({
 export const createAssignment = async (req, res) => {
     const { error } = assignmentSchema.validate(req.body);
     if (error) {
-        return res.status(400).send(error.details[0].message);
+        return res.status(400).json(error.details[0].message);
     }
 
     // Ensure the course exists before creating an assignment
@@ -62,7 +62,7 @@ export const getAssignmentById = async (req, res) => {
 export const updateAssignment = async (req, res) => {
     const { error } = assignmentSchema.validate(req.body);
     if (error) {
-        return res.status(400).send(error.details[0].message);
+        return res.status(400).json(error.details[0].message);
     }
 
     // Optionally ensure course ID exists if updated
