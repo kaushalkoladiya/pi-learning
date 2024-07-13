@@ -1,3 +1,4 @@
+import { getToken } from "@/constants";
 import axios from "axios";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -5,6 +6,10 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const axiosInstance = axios.create({
   baseURL: API_URL,
   withCredentials: true,
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": getToken(),
+  },
 });
 
 export const fetchSecretKey = async () => {
@@ -41,5 +46,11 @@ export const loginUser = async (email, password) => {
       email,
       password,
     }
+  );
+};
+
+export const getStudentDashboard = async () => {
+  return await axiosInstance.get(
+    `/api/student/dashboard`
   );
 };
