@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Button, Container, Grid, Typography, Paper, Link, Avatar, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import styles from './StudentDashboard.module.css';
 import StudentNavbar from '@/components/Navbar/StudentNavbar';
@@ -12,22 +12,29 @@ import authMiddleware from '@/utils/authRoute';
 
 const StudentDashboard = () => {
 
+  const [useDetails, setUseDetails] = useState(null);
+
   useEffect(() => {
     (async () => {
-      const data = await getStudentDashboard();
-      console.log(data);
-
+      const { data } = await getStudentDashboard();
+      setUseDetails(data.user);
     })();
   }, []);
+
+  console.log('useDetails', useDetails)
+
+  const userName = (useDetails?.first_name || "" + " " + useDetails?.last_name || "").trim();
+  console.log(userName)
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <StudentNavbar />
       <Box mt={10} className={styles.hero}>
         <Box className={styles.heroText}>
-          <Typography variant="h4">Student Name</Typography>
-          <Typography variant="body1"># Student ID</Typography>
-          <Avatar src="/profile-pic-placeholder.png" alt="Profile" className={styles.avatar} />
+          <Typography variant="h4">{(useDetails?.first_name || '' + " " + useDetails?.last_name || '').trim() || 'Unknown'}</Typography>
+          <Typography variant="body1">#{useDetails?.id || ''}</Typography>
+          <Avatar src="/profile-pic-placeholder.png" alt="Profile" className={styles.avatar}>
+          </Avatar>
         </Box>
       </Box>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
@@ -63,9 +70,9 @@ const StudentDashboard = () => {
           <Typography variant="h5" className={styles.courseList}>
             Upcoming Assignments:
           </Typography>
-          <TableContainer component={Paper} sx={{ 
-            boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)', 
-            borderRadius: '15px', 
+          <TableContainer component={Paper} sx={{
+            boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+            borderRadius: '15px',
             mt: 2,
             border: '3px solid #e0e0e0'
           }}>
