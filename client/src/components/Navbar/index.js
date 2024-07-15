@@ -25,6 +25,7 @@ import SubjectIcon from '@mui/icons-material/Subject';
 import { Box, CssBaseline } from '@mui/material';
 import useAuth from '@/hooks/useAuth';
 import { USER_ROLES } from '@/constants/roles';
+import { APP_NAME } from '@/constants';
 
 const drawerWidth = 240;
 
@@ -168,7 +169,7 @@ const Navbar = () => {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Pi Learning
+            {APP_NAME}
           </Typography>
         </Toolbar>
       </AppBar>
@@ -176,7 +177,7 @@ const Navbar = () => {
         <DrawerHeader>
           <Box width={'100%'} pl={2}>
             <Typography variant="h6" noWrap component="div">
-              Pi Learning
+              {APP_NAME}
             </Typography>
           </Box>
           <IconButton onClick={handleDrawerClose}>
