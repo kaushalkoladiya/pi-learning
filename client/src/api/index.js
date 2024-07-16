@@ -1,3 +1,4 @@
+import { getToken } from "@/constants";
 import axios from "axios";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -5,6 +6,10 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const axiosInstance = axios.create({
   baseURL: API_URL,
   withCredentials: true,
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": getToken(),
+  },
 });
 
 export const fetchSecretKey = async () => {
@@ -40,6 +45,55 @@ export const loginUser = async (email, password) => {
     {
       email,
       password,
+    }
+  );
+};
+
+export const getStudentDashboard = async () => {
+  return await axiosInstance.get(
+    `/api/student/dashboard`
+  );
+};
+
+export const getStudentCourses = async () => {
+  return await axiosInstance.get(
+    `/courses`
+  );
+};
+
+export const getCourseById = async (courseId) => {
+  return await axiosInstance.get(
+    `/courses/${courseId}`
+  );
+};
+
+export const enrollCourse = async (courseId) => {
+  return await axiosInstance.post(
+    `/courses/${courseId}/enroll`
+  );
+};
+
+export const uploadFile = async (file) => {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  return await axiosInstance.post(
+    `/api/uploads`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+};
+
+export const submitAssignment = async (id, payload) => {
+  return await axiosInstance.post(
+    `/api/assignments/submit`,
+    {
+      assignment_id: id,
+      ...payload,
     }
   );
 };

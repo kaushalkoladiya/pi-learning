@@ -7,12 +7,13 @@ import { Box, ThemeProvider } from "@mui/material";
 import { theme } from "../theme";
 import { usePathname } from "next/navigation";
 import { StoreProvider } from "@/redux/store";
+import { APP_NAME } from "@/constants";
 
 const inter = Inter({ subsets: ["latin"] });
 
 const metadata = {
-  title: "Pi Learning",
-  description: "Learn with Pi Learning",
+  title: APP_NAME,
+  description: `Learn with ${APP_NAME}`,
 };
 
 export default function RootLayout({ children }) {
@@ -24,15 +25,15 @@ export default function RootLayout({ children }) {
       <body className={inter.className}>
         <StoreProvider>
           <ThemeProvider theme={theme}>
-            <Box sx={{ display: "flex" }}>
+            <div sx={{ display: "flex" }}>
               <Navbar />
-              <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+              <Box component="main" sx={{ flexGrow: 1 }}>
                 <NavbarDrawer />
-                <Box>
+                <div>
                   {children}
-                </Box>
+                </div>
               </Box>
-            </Box>
+            </div>
           </ThemeProvider>
         </StoreProvider>
       </body>

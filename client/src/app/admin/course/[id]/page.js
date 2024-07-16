@@ -35,10 +35,10 @@ const EditCourse = () => {
         const response = await fetch(`${SERVER_URL}/courses/${params.id}`);
         const data = await response.json();
 
-        setCourseName(data.course_name);
-        setShortCode(data.course_code);
-        setDescription(data.course_description);
-        setInstructor(data.instructor_id);
+        setCourseName(data.course.course_name);
+        setShortCode(data.course.course_code);
+        setDescription(data.course.course_description);
+        setInstructor(data.course.instructor_id);
       } catch (error) {
         console.log(error)
       }
