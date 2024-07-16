@@ -7,12 +7,13 @@ import { Box, ThemeProvider } from "@mui/material";
 import { theme } from "../theme";
 import { usePathname } from "next/navigation";
 import { StoreProvider } from "@/redux/store";
+import { APP_NAME } from "@/constants";
 
 const inter = Inter({ subsets: ["latin"] });
 
 const metadata = {
-  title: "Pi Learning",
-  description: "Learn with Pi Learning",
+  title: APP_NAME,
+  description: `Learn with ${APP_NAME}`,
 };
 
 export default function RootLayout({ children }) {
