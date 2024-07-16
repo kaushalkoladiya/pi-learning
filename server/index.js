@@ -23,6 +23,7 @@ import lessonRouter from './routers/lessonRouter.js';
 import assignmentRouter from './routers/assignmentRouter.js';
 import generateSecretKey from './utils/jwtsecretkey.js';
 import tokenRoute from './routers/tokenRoute.js';
+import studentRouter from './routers/studentRouter.js';
 
 // Setup __dirname equivalent for ES Modules
 const __filename = fileURLToPath(import.meta.url);
@@ -54,6 +55,7 @@ app.use('/api/uploads', uploadRouter);
 app.use('/courses', courseRouter);
 app.use('/api/lessons', lessonRouter);
 app.use('/api/assignments', assignmentRouter);
+app.use('/api/student', studentRouter);
 
 // Global error handler
 app.use((err, req, res, next) => {
