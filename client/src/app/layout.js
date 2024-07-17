@@ -25,15 +25,15 @@ export default function RootLayout({ children }) {
       <body className={inter.className}>
         <StoreProvider>
           <ThemeProvider theme={theme}>
-            <Box sx={{ display: "flex" }}>
+            <div sx={{ display: "flex" }}>
               <Navbar />
-              <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+              <Box component="main" sx={{ flexGrow: 1 }}>
                 <NavbarDrawer />
-                <Box>
+                <div>
                   {children}
-                </Box>
+                </div>
               </Box>
-            </Box>
+            </div>
           </ThemeProvider>
         </StoreProvider>
       </body>
