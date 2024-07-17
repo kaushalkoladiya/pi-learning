@@ -44,7 +44,7 @@ User.init({
   },
   phone_number: {
     type: DataTypes.STRING(12),
-    defaultValue: 'Not Provided',
+    defaultValue: null,
   },
   department_code: { 
     type: DataTypes.STRING(3),
@@ -56,7 +56,7 @@ User.init({
   },
   biography: {
     type: DataTypes.TEXT,
-    defaultValue: 'Not Provided',
+    defaultValue: null,
   },
   home_country: {
     type: DataTypes.STRING,

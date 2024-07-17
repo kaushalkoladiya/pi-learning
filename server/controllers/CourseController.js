@@ -1,32 +1,27 @@
-import Joi from 'joi';
-// import Course from '../models/CourseModel.js';
-import User from '../models/userModel.js';
-import Enrollment from '../models/EnrollmentModel.js';
-import Assignment from '../models/AssignmentModel.js';
-import Lesson from '../models/LessonModel.js';
-import Course from '../models/CourseModel.js';
-
-
-// Define the validation schema for a course
-const courseSchema = Joi.object({
-    course_name: Joi.string().min(3).required(),
-    course_code: Joi.string().trim().required(),
-    course_description: Joi.string().trim().required(),
-    instructor_id: Joi.number().integer().required()
-});
+import Course from '../models/CourseModel.js'; 
 
 // CREATE a new course
 export const createCourse = async (req, res) => {
-    const { error } = courseSchema.validate(req.body);
-    if (error) {
-        return res.status(400).json(error.details[0].message);
-    }
+    const courseData = {
+        course_id: req.body.course_id,
+        course_title: req.body.course_title,
+        short_description: req.body.short_description,
+        long_description: req.body.long_description,
+        program_id: req.body.program_id,
+        instructor_id: req.body.instructor_id,
+        profile_pic: req.body.profile_pic
+    };
 
     try {
-        const course = await Course.create(req.body);
-        res.status(201).send(course);
-    } catch (error) {
-        res.status(400).send(error);
+        const existingCourse = await Course.findOne({ where: { course_id: courseData.course_id } });
+        if (existingCourse) {
+            return res.status(400).json({ error: 'Course ID must be unique' });
+        }
+
+        const course = await Course.create(courseData);
+        res.status(201).json(course);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
     }
 };
 
@@ -44,6 +39,20 @@ export const getAllCourses = async (req, res) => {
     } catch (error) {
         console.log(error);
         res.status(500).send({ error: "Error fetching courses: " + error.message });
+    }
+};
+
+// READ a single course by ID
+export const getCourseByProgramCode = async (req, res) => {
+    try {
+        console.log(req.params);
+        const course = await Course.findAll({ where: { program_id: req.params.code} });
+        if (!course) {
+            return res.status(404).send({ error: 'Course not found' });
+        }
+        res.send(course);
+    } catch (error) {
+        res.status(500).send(error);
     }
 };
 
@@ -84,20 +93,26 @@ export const getCourseById = async (req, res) => {
 
 // UPDATE a course by ID
 export const updateCourse = async (req, res) => {
-    const { error } = courseSchema.validate(req.body);
-    if (error) {
-        return res.status(400).json(error.details[0].message);
-    }
-
     try {
-        const updated = await Course.update(req.body, {
-            where: { id: req.params.id }
-        });
-        if (updated[0] === 0) {
+        const courseId = req.params.id;
+        const { instructor_id, short_description, long_description, profile_pic } = req.body;
+
+        // Find the course by ID
+        const course = await Course.findByPk(courseId);
+        if (!course) {
             return res.status(404).send({ error: 'Course not found' });
         }
-        const updatedCourse = await Course.findByPk(req.params.id);
-        res.send(updatedCourse);
+
+        // Update the course with the provided values
+        course.instructor_id = instructor_id;
+        course.short_description = short_description;
+        course.long_description = long_description;
+        course.profile_pic = profile_pic;
+
+        // Save the updated course
+        await course.save();
+
+        res.send(course);
     } catch (error) {
         res.status(400).send(error);
     }

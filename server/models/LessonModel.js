@@ -1,13 +1,14 @@
 import { DataTypes, Model } from 'sequelize';
+import { DATABASE_TABLES } from '../constants/tables.js';
 import sequelize from '../database.js'; 
 import Course from './CourseModel.js';  
+import Program from './ProgramModel.js';
 
 class Lesson extends Model {}
 
 Lesson.init({
-  id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
+  lesson_id: {
+    type: DataTypes.STRING,
     primaryKey: true,
   },
   lesson_name: {
@@ -16,18 +17,23 @@ Lesson.init({
   },
   lesson_description: {
     type: DataTypes.TEXT,
-    allowNull: true,
+    allowNull: false,
   },
-  lesson_content: {
-    type: DataTypes.TEXT,
-    allowNull: true,
+  program_id: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    references: {
+      model: Program,
+      key: 'program_id',
+    },
+    onDelete: 'CASCADE',
   },
   course_id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     allowNull: false,
     references: {
       model: Course,
-      key: 'id',
+      key: 'course_id',
     },
     onDelete: 'CASCADE',
   },
@@ -40,17 +46,14 @@ Lesson.init({
     defaultValue: DataTypes.NOW,
   },
 }, {
-  sequelize,
-  modelName: 'Lesson',
-  tableName: 'lessons',
+  sequelize: sequelize,
+  modelName: DATABASE_TABLES.LESSON,
   timestamps: true,
   createdAt: 'created_at',
   updatedAt: 'updated_at',
 });
 
-Lesson.belongsTo(Course, { foreignKey: 'course_id' }); 
-Course.hasMany(Lesson, { foreignKey: 'course_id' });   
-
 Lesson.sync();
 
 export default Lesson;
+

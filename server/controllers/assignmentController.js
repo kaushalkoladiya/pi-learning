@@ -1,109 +1,128 @@
-import Joi from 'joi';
-import Assignment from '../models/AssignmentModel.js';
-import Course from '../models/CourseModel.js'; // Import Course model for relational operations
-import Enrollment from '../models/EnrollmentModel.js';
-import AssignmentSubmission from '../models/AssignmentSubmissionModel.js';
-
-// Joi validation schema for Assignment
-const assignmentSchema = Joi.object({
-    assignment_name: Joi.string().trim().required(),
-    assignment_description: Joi.string().trim().required(),
-    due_date: Joi.date().required(),
-    course_id: Joi.number().integer().required()
-});
+import Assignment from "../models/AssignmentModel.js";
+import Lesson from "../models/LessonModel.js";
 
 // CREATE a new assignment
 export const createAssignment = async (req, res) => {
-    const { error } = assignmentSchema.validate(req.body);
-    if (error) {
-        return res.status(400).json(error.details[0].message);
+  const {
+    assignment_id,
+    assignment_name,
+    assignment_url,
+    due_date,
+    lesson_id,
+  } = req.body;
+  try {
+    const existingAssignment = await Assignment.findOne({
+      where: { assignment_id: req.body.assignment_id },
+    });
+    if (existingAssignment) {
+      return res.status(400).send({ error: "Assignment ID must be unique" });
     }
-
-    // Ensure the course exists before creating an assignment
-    const course = await Course.findByPk(req.body.course_id);
-    if (!course) {
-        return res.status(404).send({ error: 'Course not found' });
+    if (assignment_url === "" && due_date === "") {
+      const assignment = await Assignment.create({
+        assignment_id: assignment_id,
+        assignment_name: assignment_name,
+        lesson_id: lesson_id,
+      });
+      res.status(201).json(assignment);
+    } else if (assignment_url === "") {
+      // Create the assignment
+      const assignment = await Assignment.create({
+        assignment_id: assignment_id,
+        assignment_name: assignment_name,
+        due_date: due_date,
+        lesson_id: lesson_id,
+      });
+      res.status(201).json(assignment);
+    } else if (due_date === "") {
+      // Create the assignment
+      const assignment = await Assignment.create({
+        assignment_id: assignment_id,
+        assignment_name: assignment_name,
+        assignment_url: assignment_url,
+        lesson_id: lesson_id,
+      });
+      res.status(201).json(assignment);
+    } else {
+      // Create the assignment
+      const assignment = await Assignment.create({
+        assignment_id: assignment_id,
+        assignment_name: assignment_name,
+        assignment_url: assignment_url,
+        due_date: due_date,
+        lesson_id: lesson_id,
+      });
+      res.status(201).json(assignment);
     }
-
-    try {
-        const assignment = await Assignment.create(req.body);
-        res.status(201).send(assignment);
-    } catch (error) {
-        res.status(500).send(error);
-    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
-
 // READ all assignments
 export const getAllAssignments = async (req, res) => {
-    try {
-        const assignments = await Assignment.findAll({
-            include: [{ model: Course }] 
-        });
-        res.json(assignments);
-    } catch (error) {
-        res.status(500).send({ error: "Error fetching assignments: " + error.message });
-    }
+  try {
+    const assignments = await Assignment.findAll();
+    res.json(assignments);
+  } catch (error) {
+    res
+      .status(500)
+      .send({ error: "Error fetching assignments: " + error.message });
+  }
 };
 
 // READ a single assignment by ID
 export const getAssignmentById = async (req, res) => {
-    try {
-        const assignment = await Assignment.findByPk(req.params.id, {
-            include: [{ model: Course }] 
-        });
-        if (!assignment) {
-            return res.status(404).send({ error: 'Assignment not found' });
-        }
-        res.send(assignment);
-    } catch (error) {
-        res.status(500).send(error);
+  try {
+    const assignment = await Assignment.findByPk(req.params.id);
+    if (!assignment) {
+      return res.status(404).send({ error: "Assignment not found" });
     }
+    res.send(assignment);
+  } catch (error) {
+    res.status(500).send(error);
+  }
 };
 
 // UPDATE an assignment by ID
-export const updateAssignment = async (req, res) => {
-    const { error } = assignmentSchema.validate(req.body);
-    if (error) {
-        return res.status(400).json(error.details[0].message);
+export const updateAssignmentById = async (req, res) => {
+  console.log(req.body);
+  const { 
+    assignment_id, 
+    assignment_name, 
+    assignment_url, 
+    due_date } = req.body;
+
+  try {
+    const assignment = await Assignment.findOne({where: {assignment_id: assignment_id}});
+    if (!assignment) {
+      return res.status(404).json({ error: 'Assignment not found' });
     }
 
-    // Optionally ensure course ID exists if updated
-    if (req.body.course_id) {
-        const course = await Course.findByPk(req.body.course_id);
-        if (!course) {
-            return res.status(404).send({ error: 'Course not found' });
-        }
-    }
+    assignment.assignment_url = assignment_url;
+    assignment.due_date = due_date;
 
-    try {
-        const updated = await Assignment.update(req.body, {
-            where: { id: req.params.id }
-        });
-        if (updated[0] === 0) {
-            return res.status(404).send({ error: 'Assignment not found' });
-        }
-        const updatedAssignment = await Assignment.findByPk(req.params.id, {
-            include: [{ model: Course }]
-        });
-        res.send(updatedAssignment);
-    } catch (error) {
-        res.status(400).send(error);
-    }
+    await assignment.save();
+
+    res.status(200).json(assignment);
+  } catch (error) {
+    console.error('Error updating assignment:', error);
+    res.status(500).json({ error: 'An error occurred while updating the assignment' });
+  }
 };
+
 
 // DELETE an assignment by ID
 export const deleteAssignment = async (req, res) => {
-    try {
-        const deleted = await Assignment.destroy({
-            where: { id: req.params.id }
-        });
-        if (deleted === 0) {
-            return res.status(404).send({ error: 'Assignment not found' });
-        }
-        res.status(204).send();
-    } catch (error) {
-        res.status(500).send(error);
+  try {
+    const deleted = await Assignment.destroy({
+      where: { assignment_id: req.params.id },
+    });
+    if (deleted === 0) {
+      return res.status(404).send({ error: "Assignment not found" });
     }
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).send(error);
+  }
 };
 
 export const submitAssignment = async (req, res) => {

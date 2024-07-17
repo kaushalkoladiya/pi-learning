@@ -5,17 +5,18 @@ import {
     getAssignmentById,
     updateAssignment,
     deleteAssignment,
-    submitAssignment
+    submitAssignment,
+    updateAssignmentById,
 } from '../controllers/assignmentController.js'; 
 import authenticateToken from '../middleware/AuthMiddleware.js';
 
-const router = express.Router();
+const assignmentRouter = express.Router();
 
-router.post('/', createAssignment);
-router.get('/', getAllAssignments);
-router.get('/:id', getAssignmentById);
-router.put('/:id', updateAssignment);
-router.delete('/:id', deleteAssignment);
-router.post('/submit', authenticateToken, submitAssignment);
+assignmentRouter.post('/', createAssignment);
+assignmentRouter.get('/', getAllAssignments);
+assignmentRouter.get('/:id', getAssignmentById);
+assignmentRouter.put('/:id', updateAssignmentById);
+assignmentRouter.delete('/:id', deleteAssignment);
+assignmentRouter.post('/submit', authenticateToken, submitAssignment);
 
-export default router;
+export default assignmentRouter;

@@ -1,112 +1,158 @@
-'use client';
+"use client";
 
-import ActionWrapper from '@/components/ActionWrapper';
-import { SERVER_URL } from '@/constants/routes';
-import { Box, Button, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
-import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from "react";
+import { Alert, Box, Button, Grid, Typography } from "@mui/material";
+import { useRouter } from "next/navigation";
+import { SERVER_URL } from "@/constants/routes";
+import CardItem from "@/components/CardUI";
+import CreateCourseModal from "@/components/ModalUI/CreateCourseModal";
+import EditCourseModal from "@/components/ModalUI/EditCourseModal";
+import ViewCourseModal from "@/components/ModalUI/ViewCourseModal";
 
-const Course = () => {
+const CourseList = () => {
   const router = useRouter();
-
   const [courses, setCourses] = useState([]);
+  const [error, setError] = useState("");
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [viewModalOpen, setViewModalOpen] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState(null);
+  const [programData, setProgramData] = useState([]);
 
   useEffect(() => {
-    (async () => {
-      try {
-        const response = await fetch(`${SERVER_URL}/courses`);
-        const data = await response.json();
-        setCourses(data);
-      } catch (error) {
-        console.error('Error fetching courses:', error);
-      }
-    })()
+    fetchCourses();
   }, []);
 
-  const handleEdit = (id) => {
-    // Redirect to edit page
-    router.push(`/admin/course/${id}`);
-  }
-
-  const handleDelete = async (id) => {
-    // Send delete request to server
+  const fetchCourses = async () => {
     try {
-      const response = await fetch(`${SERVER_URL}/courses/${id}`, {
-        method: 'DELETE',
-      });
-
-      if (response.status === 204) {
-        // Remove course from state
-        setCourses(courses.filter(course => course.id !== id));
-      }
-    } catch (error) {
-      console.log('Error deleting course:', error)
+      const response = await fetch(`${SERVER_URL}/api/courses`);
+      const data = await response.json();
+      console.log(data);
+      setCourses(data);
+    } catch (err) {
+      setError("Failed to fetch courses");
     }
   };
 
-  const handleCreate = () => {
-    router.push('/admin/course/create');
-  }
 
-  const handleView = async (id) => {
-    router.push(`/admin/course/${id}?viewonly=true`);
+  const handleEdit = async(course) => {
+    setSelectedCourse(course);
+    setEditModalOpen(true);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      const response = await fetch(`${SERVER_URL}/api/courses/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        setError(data.error || "Failed to delete course");
+      } else {
+        setCourses(courses.filter((course) => course.course_id !== id));
+      }
+    } catch (err) {
+      setError("Failed to delete course");
+    }
+  };
+
+  const handleView = async (course) => {
+    setSelectedCourse(course);
+    setViewModalOpen(true);
+  };
+
+  const handleCreateModalOpen = () => {
+    setCreateModalOpen(true);
+  };
+
+  const handleCreateModalClose = () => {
+    setCreateModalOpen(false);
+  };
+
+  const handleEditModalClose = () => {
+    setEditModalOpen(false);
+    setSelectedCourse(null);
+  };
+
+  const handleViewModalClose = () => {
+    setViewModalOpen(false);
+    setSelectedCourse(null);
   };
 
   return (
-    <Box>
-      <Typography variant='h5'>
-        Courses
-      </Typography>
-
-      <Box>
-        <Box>
-          <Button variant="contained" color="primary" onClick={handleCreate}>
-            Create New
+    <Box sx={{ bgcolor: "#f5f5f5", minHeight: "100vh", py: 4 }}>
+      <Box sx={{ maxWidth: "1200px", mx: "auto", p: 3 }}>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mb={3}
+        >
+          <Typography variant="h5" component="h1" sx={{ fontWeight: "bold" }}>
+            Courses Management
+          </Typography>
+          <Button
+            size="medium"
+            variant="contained"
+            color="primary"
+            onClick={handleCreateModalOpen}
+          >
+            Create New Course
           </Button>
         </Box>
 
-        <Box>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Course Name</TableCell>
-                <TableCell>Short Code</TableCell>
-                <TableCell>Course Description</TableCell>
-                <TableCell>Instructor</TableCell>
-                <TableCell>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody >
-              {courses.map((course) => (
-                <TableRow>
-                  <TableCell role='button' onClick={() => handleView(course.id)}>{course.course_name}</TableCell>
-                  <TableCell>{course.course_code}</TableCell>
-                  <TableCell>{course.course_description}</TableCell>
-                  <TableCell>{course.instructor_id}</TableCell>
-                  <TableCell>
-                    <ActionWrapper>
+        {error && (
+          <Alert severity="error" onClose={() => setError("")}>
+            {error}
+          </Alert>
+        )}
 
-                      <Button variant="contained" color="primary"
-                        onClick={() => handleEdit(course.id)}
-                      >
-                        Edit
-                      </Button>
-                      <Button variant="contained" color="error"
-                        onClick={() => handleDelete(course.id)}
-                      >
-                        Delete
-                      </Button>
-                    </ActionWrapper>
-                  </TableCell>
-                </TableRow>
-              ))}
+        <Grid container spacing={2}>
+          {Array.isArray(courses) && courses.length > 0 ? (
+            courses.map((course) => (
+              <Grid item xs={12} sm={6} md={4} key={course?.course_id}>
+                <CardItem
+                  imageUrl={course?.profile_pic || "/default-course.png"}
+                  title={course?.course_title}
+                  subtitle={null}
+                  description={course?.short_description}
+                  onView={() => handleView(course)}
+                  onEdit={() => handleEdit(course)}
+                  onDelete={() => handleDelete(course?.course_id)}
+                />
+              </Grid>
+            ))
+          ) : (
+            <Typography variant="h6" align="center" style={{ width: "100%" }}>
+              No courses available
+            </Typography>
+          )}
+          <CreateCourseModal
+            open={createModalOpen}
+            handleClose={handleCreateModalClose}
+            refreshCourses={fetchCourses}
+          />
+          {selectedCourse && (
+          <>
+            <EditCourseModal
+              open={editModalOpen}
+              handleClose={handleEditModalClose}
+              courseData={selectedCourse}
+              refreshCourses={fetchCourses}
+            />
+            <ViewCourseModal
+              open={viewModalOpen}
+              handleClose={handleViewModalClose}
+              courseData={selectedCourse}
+            />
 
-            </TableBody>
-          </Table>
-        </Box>
+          </>
+        )}
+        </Grid>
       </Box>
     </Box>
-  )
-}
+  );
+};
 
-export default Course
+export default CourseList;
