@@ -11,40 +11,39 @@ Enrollment.init({
     autoIncrement: true,
     primaryKey: true,
   },
-  courseId: {
+  course_id: {
     type: DataTypes.INTEGER,
     references: {
       model: Course,
       key: 'id'
     }
   },
-  userId: {
+  student_id: {
     type: DataTypes.INTEGER,
     references: {
       model: User,
       key: 'id'
     }
   },
-  enrollmentDate: {
+  enrollment_date: {
     type: DataTypes.DATE,
     allowNull: false
   },
-  stripeSessionId: {
-    type: DataTypes.STRING,
-    allowNull: true
-  }
 }, {
   sequelize,
   modelName: 'Enrollment',
-  tableName: 'enrollments'
+  tableName: 'enrollments',
+  createdAt: 'created_at',
+  updatedAt: 'updated_at',
 });
 
 
-User.hasMany(Enrollment, { foreignKey: 'userId' });
-Enrollment.belongsTo(User, { as: 'Student', foreignKey: 'userId' });
+User.hasMany(Enrollment, { foreignKey: 'student_id' });
+Enrollment.belongsTo(User, { as: 'Student', foreignKey: 'student_id' });
 
-Course.hasMany(Enrollment, { foreignKey: 'courseId' });
-Enrollment.belongsTo(Course, { foreignKey: 'courseId' });
+// Enrollment relations
+Course.hasMany(Enrollment, { foreignKey: 'course_id' });
+Enrollment.belongsTo(Course, { as: 'Course', foreignKey: 'course_id' });
 
 Enrollment.sync();
 
