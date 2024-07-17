@@ -54,3 +54,46 @@ export const getStudentDashboard = async () => {
     `/api/student/dashboard`
   );
 };
+
+export const getStudentCourses = async () => {
+  return await axiosInstance.get(
+    `/courses`
+  );
+};
+
+export const getCourseById = async (courseId) => {
+  return await axiosInstance.get(
+    `/courses/${courseId}`
+  );
+};
+
+export const enrollCourse = async (courseId) => {
+  return await axiosInstance.post(
+    `/courses/${courseId}/enroll`
+  );
+};
+
+export const uploadFile = async (file) => {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  return await axiosInstance.post(
+    `/api/uploads`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+};
+
+export const submitAssignment = async (id, payload) => {
+  return await axiosInstance.post(
+    `/api/assignments/submit`,
+    {
+      assignment_id: id,
+      ...payload,
+    }
+  );
+};

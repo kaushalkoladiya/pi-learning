@@ -1,10 +1,17 @@
 import { APP_NAME } from '@/constants'
 import useAuth from '@/hooks/useAuth'
 import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material'
+import { useRouter } from 'next/navigation'
 import React from 'react'
 
 const StudentNavbar = () => {
   const { logout } = useAuth();
+  const router = useRouter();
+
+  const handleGoToCourses = () => {
+    router.push('/courses');
+  };
+
   return (
     <AppBar
       position="fixed"
@@ -20,6 +27,7 @@ const StudentNavbar = () => {
             {APP_NAME}
           </Typography>
           <Box display="flex" alignItems="center">
+            <Button color="inherit" onClick={handleGoToCourses}>Courses</Button>
             <Button color="inherit" onClick={logout}>Logout</Button>
           </Box>
         </Box>

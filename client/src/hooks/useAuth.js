@@ -35,7 +35,8 @@ const useAuth = () => {
   return {
     ...authSlice,
     isUserAdmin,
-    logout
+    logout,
+    isAuth: !!authSlice.token,
   };
 }
 
