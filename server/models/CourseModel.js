@@ -14,14 +14,17 @@ Course.init({
   course_title: {
     type: DataTypes.STRING(100),
     allowNull: false,
+    defaultValue: 'New Course',
   },
   short_description: {
     type: DataTypes.TEXT,
     allowNull: false,
+    defaultValue: 'This is a new course',
   },
   long_description: {
     type: DataTypes.TEXT,
     allowNull: false,
+    defaultValue: 'This is a new course',
   },
   program_id: {
     type: DataTypes.STRING(8),

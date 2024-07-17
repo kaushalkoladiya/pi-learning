@@ -3,7 +3,6 @@ import {
     createAssignment,
     getAllAssignments,
     getAssignmentById,
-    updateAssignment,
     deleteAssignment,
     submitAssignment,
     updateAssignmentById,
