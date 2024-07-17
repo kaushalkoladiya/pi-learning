@@ -4,8 +4,10 @@ import {
     getAllAssignments,
     getAssignmentById,
     updateAssignment,
-    deleteAssignment
+    deleteAssignment,
+    submitAssignment
 } from '../controllers/assignmentController.js'; 
+import authenticateToken from '../middleware/AuthMiddleware.js';
 
 const router = express.Router();
 
@@ -14,5 +16,6 @@ router.get('/', getAllAssignments);
 router.get('/:id', getAssignmentById);
 router.put('/:id', updateAssignment);
 router.delete('/:id', deleteAssignment);
+router.post('/submit', authenticateToken, submitAssignment);
 
 export default router;
