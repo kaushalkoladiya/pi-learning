@@ -11,7 +11,8 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, proces
       require: true,
       rejectUnauthorized: false
     }
-  }
+  },
+  logging: false,
 });
 
 export default sequelize;

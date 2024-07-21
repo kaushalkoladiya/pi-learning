@@ -16,8 +16,8 @@ AssignmentSubmission.init({
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: Course,
-      key: 'id',
+      model: Assignment,
+      key: 'assignment_id',
     },
     onDelete: 'CASCADE',
   },
@@ -26,7 +26,7 @@ AssignmentSubmission.init({
     allowNull: false,
     references: {
       model: Course,
-      key: 'id',
+      key: 'course_id',
     },
     onDelete: 'CASCADE',
   },
@@ -34,7 +34,7 @@ AssignmentSubmission.init({
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: Course,
+      model: User,
       key: 'id',
     },
     onDelete: 'CASCADE',

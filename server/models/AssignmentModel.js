@@ -1,14 +1,15 @@
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../database.js';
 import { DATABASE_TABLES } from '../constants/tables.js';
-import Lesson from './LessonModel.js';
+import Course from './CourseModel.js';
 
 class Assignment extends Model {}
 
 Assignment.init({
   assignment_id: {
-    type: DataTypes.STRING(8),
+    type: DataTypes.INTEGER,
     primaryKey: true,
+    autoIncrement: true,
   },
   assignment_name: {
     type: DataTypes.STRING(100),
@@ -27,8 +28,8 @@ Assignment.init({
     type: DataTypes.STRING(8),
     allowNull: false,
     references: {
-      model: Lesson,
-      key: 'lesson_id',
+      model: Course,
+      key: 'course_id',
     },
     onDelete: 'CASCADE',
   },

@@ -6,6 +6,7 @@ import cors from 'cors';
 
 import sequelize from './database.js';
 import associateModels from './models/config/associateModels.js';
+
 import authRoutes from './routers/authRoutes.js';
 import userRouter from './routers/userRouter.js';
 import uploadRouter from './routers/uploadRouter.js';
@@ -19,8 +20,8 @@ import courseRouter from './routers/courseRouter.js';
 import lessonRouter from './routers/lessonRouter.js';
 import assignmentRouter from './routers/assignmentRouter.js';
 import studentRouter from './routers/studentRouter.js';
-import generateSecretKey from './utils/jwtsecretkey.js';
 import tokenRoute from './routers/tokenRoute.js';
+
 import Country from './models/CountryModel.js';
 import Province from './models/ProvinceModel.js';
 import User from './models/userModel.js';
@@ -31,7 +32,12 @@ import Program from './models/ProgramModel.js';
 import Lesson from './models/LessonModel.js';
 import LessonFile from './models/LessonFileModel.js';
 import Assignment from './models/AssignmentModel.js';
-
+import AssignmentSubmission from './models/AssignmentSubmissionModel.js';
+import Enrollment from './models/EnrollmentModel.js';
+import Grade from './models/GradeModel.js';
+import Certificate from './models/CertificateModel.js';
+import IssuedCertificate from './models/IssueCertificateModel.js';
+import generateSecretKey from './utils/jwtsecretkey.js';
 
 // Setup __dirname equivalent for ES Modules
 const __filename = fileURLToPath(import.meta.url);
@@ -83,16 +89,22 @@ async function startServer() {
         associateModels();
 
         // Sync only specific models
-        await Department.sync();
-        await Country.sync();
-        await Province.sync();
         await User.sync();
         await UserAddress.sync();
         await Program.sync();
+        await Province.sync();
+        await Country.sync();
+        await Department.sync();
         await Course.sync();
+        await Assignment.sync();
         await Lesson.sync();
         await LessonFile.sync();
-        await Assignment.sync();
+        await AssignmentSubmission.sync();
+        await Enrollment.sync();
+        await Grade.sync();
+        await Certificate.sync();
+        await IssuedCertificate.sync();
+
         await sequelize.sync();
         console.log('Database synced.');
 

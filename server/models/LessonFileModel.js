@@ -8,8 +8,9 @@ class LessonFile extends Model {}
 LessonFile.init(
   {
     file_id: {
-      type: DataTypes.STRING(8),
+      type: DataTypes.INTEGER,
       primaryKey: true,
+      autoIncrement: true,
     },
     file_name: {
       type: DataTypes.STRING(100),
@@ -20,7 +21,7 @@ LessonFile.init(
       allowNull: false,
     },
     lesson_id: {
-      type: DataTypes.STRING(8),
+      type: DataTypes.INTEGER,
       references: {
         model: Lesson,
         key: "lesson_id",
