@@ -1,111 +1,205 @@
-'use client';
+"use client";
 
-import ActionWrapper from '@/components/ActionWrapper';
-import { SERVER_URL } from '@/constants/routes';
-import { Alert, Box, Button, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
-import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react'
+import CreateInstructorModal from "@/components/ModalUI";
+import EditModal from "@/components/ModalUI/EditModal";
+import ViewModal from "@/components/ModalUI/ViewModal";
+import CardItem from "@/components/CardUI";
+import { SERVER_URL } from "@/constants/routes";
+import { Alert, Box, Button, Grid, Typography } from "@mui/material";
+import ActionWrapper from "@/components/ActionWrapper";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 const Instructor = () => {
   const router = useRouter();
-
   const [instructors, setInstructors] = useState([]);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [viewModalOpen, setViewModalOpen] = useState(false);
+  const [selectedInstructor, setSelectedInstructor] = useState(null);
+  const [selectedInstructorAddress, setSelectedInstructorAddress] =
+    useState(null);
+  const [selectedInstructorDepartment, setSelectedInstructorDepartment] =
+    useState(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch(`${SERVER_URL}/api/instructors`);
-      const data = await response.json();
-
-      setInstructors(data);
-    }
-
-    fetchData();
+    fetchInstructors();
   }, []);
 
-  const handleEdit = (id) => {
-    // Redirect to edit page
-    router.push(`/admin/instructor/${id}`);
-  }
-
-  const handleDelete = async (id) => {
-    console.log('Delete', id);
-
-    const response = await fetch(`${SERVER_URL}/api/instructors/${id}`, {
-      method: 'DELETE',
-    })
-
-    const data = await response.json();
-
-    data.error && setError(data.error)
-    response.ok && setInstructors(instructors.filter(instructor => instructor.id !== id));
+  const fetchInstructors = async () => {
+    try {
+      const response = await fetch(`${SERVER_URL}/api/instructors`);
+      const data = await response.json();
+      setInstructors(data);
+    } catch (err) {
+      setError("Failed to fetch instructors");
+    }
   };
 
-  const handleCreate = () => {
-    router.push('/admin/instructor/create');
-  }
+  const fetchInstructorAddress = async (instructorId) => {
+    try {
+      const response = await fetch(
+        `${SERVER_URL}/api/user_address/${instructorId}`
+      );
+      const data = await response.json();
+      return data;
+    } catch (err) {
+      console.error("Failed to fetch instructor address", err);
+      return null;
+    }
+  };
 
-  const handleView = (id) => {
-    // Redirect to view page
-    router.push(`/admin/instructor/${id}?viewonly=true`);
-  }
+  const fetchInstructorDepartment = async (departmentCode) => {
+    try {
+      const response = await fetch(
+        `${SERVER_URL}/api/departments/${departmentCode}`
+      );
+      const data = await response.json();
+      return data;
+    } catch (err) {
+      console.error("Failed to fetch instructor department", err);
+      return null;
+    }
+  };
+
+  const handleEdit = async (instructor) => {
+    const addressData = await fetchInstructorAddress(instructor.id);
+    setSelectedInstructor(instructor);
+    setSelectedInstructorAddress(addressData);
+    setEditModalOpen(true);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      const response = await fetch(`${SERVER_URL}/api/instructors/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        setError(data.error || "Failed to delete instructor");
+      } else {
+        setInstructors(
+          instructors.filter((instructor) => instructor.id !== id)
+        );
+      }
+    } catch (err) {
+      setError("Failed to delete instructor");
+    }
+  };
+
+  const handleView = async (instructor) => {
+    const addressData = await fetchInstructorAddress(instructor.id);
+    if (instructor.department_code !== "null") {
+      const departmentData = await fetchInstructorDepartment(
+        instructor.department_code
+      );
+      setSelectedInstructorDepartment(departmentData);
+    }
+    setSelectedInstructor(instructor);
+    setSelectedInstructorAddress(addressData);
+
+    setViewModalOpen(true);
+  };
+
+  const handleModalOpen = () => {
+    setModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setModalOpen(false);
+  };
+
+  const handleEditModalClose = () => {
+    setEditModalOpen(false);
+    setSelectedInstructor(null);
+  };
+
+  const handleViewModalClose = () => {
+    setViewModalOpen(false);
+    setSelectedInstructor(null);
+    setSelectedInstructorAddress(null);
+    setSelectedInstructorDepartment(null);
+  };
 
   return (
-    <Box>
-      <Typography variant='h5'>
-        Instructors
-      </Typography>
-
-      <Box>
-        {/* Create New Button */}
-        <Box>
-          <Button variant="contained" color="primary" onClick={handleCreate}>
-            Create New
+    <Box sx={{ bgcolor: "#f5f5f5", minHeight: "100vh", py: 4 }}>
+      <Box sx={{ maxWidth: "1200px", mx: "auto", p: 3 }}>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mb={3}
+        >
+          <Typography variant="h5" component="h1" sx={{ fontWeight: "bold" }}>
+            Instructors Management
+          </Typography>
+          <Button
+            size="medium"
+            variant="contained"
+            color="primary"
+            onClick={handleModalOpen}
+          >
+            Create New Instructor
           </Button>
         </Box>
 
-        {/* Table */}
-        <Box my={2}>
-          {error && <Alert severity="error" onClose={() => setError('')}>{error}</Alert>}
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Username</TableCell>
-                <TableCell>Email</TableCell>
-                <TableCell>First Name</TableCell>
-                <TableCell>Last Name</TableCell>
-                <TableCell>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {instructors.map((instructor) => (
-                <TableRow>
-                  <TableCell role='button' onClick={() => handleView(instructor.id)}>{instructor.username}</TableCell>
-                  <TableCell>{instructor.email}</TableCell>
-                  <TableCell>{instructor.first_name}</TableCell>
-                  <TableCell>{instructor.last_name}</TableCell>
-                  <TableCell>
-                    <ActionWrapper>
-                      <Button variant="contained" color="primary"
-                        onClick={() => handleEdit(instructor.id)}
-                      >
-                        Edit
-                      </Button>
-                      <Button variant="contained" color="error"
-                        onClick={() => handleDelete(instructor.id)}
-                      >
-                        Delete
-                      </Button>
-                    </ActionWrapper>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Box>
+        {error && (
+          <Alert severity="error" onClose={() => setError("")}>
+            {error}
+          </Alert>
+        )}
+
+        <Grid container spacing={2}>
+          {Array.isArray(instructors) && instructors.length > 0 ? (
+            instructors.map((instructor) => (
+              <Grid item xs={12} sm={6} md={4} key={instructor?.id}>
+                <CardItem
+                  imageUrl={instructor?.profile_pic || "/default-profile.png"}
+                  title={`${instructor?.first_name} ${instructor?.last_name}`}
+                  subtitle={null} // No subtitle for instructor
+                  description={
+                    instructor?.biography || "No biography available"}
+                    onView={() => handleView(instructor)}
+                    onEdit={() => handleEdit(instructor)}
+                    onDelete={() => handleDelete(instructor?.id)}
+                />
+              </Grid>
+            ))
+          ) : (
+            <Typography variant="h6" align="center" style={{ width: "100%" }}>
+              No instructors available
+            </Typography>
+          )}
+        </Grid>
+
+        <CreateInstructorModal
+          open={modalOpen}
+          handleClose={handleModalClose}
+          refreshInstructors={fetchInstructors}
+        />
+        {selectedInstructor && (
+          <>
+            <EditModal
+              open={editModalOpen}
+              handleClose={handleEditModalClose}
+              userData={selectedInstructor}
+              addressData={selectedInstructorAddress}
+              refreshUsers={fetchInstructors}
+            />
+            <ViewModal
+              open={viewModalOpen}
+              handleClose={handleViewModalClose}
+              userData={selectedInstructor}
+              addressData={selectedInstructorAddress}
+              departmentData={selectedInstructorDepartment}
+            />
+          </>
+        )}
       </Box>
     </Box>
-  )
-}
+  );
+};
 
-export default Instructor
+export default Instructor;

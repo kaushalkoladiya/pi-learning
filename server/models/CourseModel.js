@@ -1,36 +1,52 @@
 import { DataTypes, Model } from 'sequelize';
-import sequelize from '../database.js'; 
-import User from './userModel.js';  
+import { DATABASE_TABLES } from '../constants/tables.js';
+import sequelize from '../database.js';
+import Program from './ProgramModel.js';
+import User from './userModel.js';
 
 class Course extends Model {}
 
 Course.init({
-  id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
+  course_id: {
+    type: DataTypes.STRING,
     primaryKey: true,
   },
-  course_name: {
+  course_title: {
     type: DataTypes.STRING(100),
     allowNull: false,
+    defaultValue: 'New Course',
   },
-  course_description: {
+  short_description: {
     type: DataTypes.TEXT,
-    allowNull: true,
-  },
-  course_code: {
-    type: DataTypes.STRING(20),
-    unique: true,
     allowNull: false,
+    defaultValue: 'This is a new course',
+  },
+  long_description: {
+    type: DataTypes.TEXT,
+    allowNull: false,
+    defaultValue: 'This is a new course',
+  },
+  program_id: {
+    type: DataTypes.STRING(8),
+    references: {
+      model: Program,
+      key: 'program_id',
+    },
+    allowNull: false,
+    onDelete: 'CASCADE',
   },
   instructor_id: {
     type: DataTypes.INTEGER,
-    allowNull: false,
     references: {
       model: User,
       key: 'id',
     },
+    allowNull: false,
     onDelete: 'RESTRICT',
+  },
+  profile_pic: {
+    type: DataTypes.STRING,
+    allowNull: true,
   },
   created_at: {
     type: DataTypes.DATE,
@@ -41,18 +57,15 @@ Course.init({
     defaultValue: DataTypes.NOW,
   },
 }, {
-  sequelize,
-  modelName: 'Course',
-  tableName: 'courses',
+  sequelize: sequelize,
+  modelName: DATABASE_TABLES.COURSE,
   timestamps: true,
   createdAt: 'created_at',
   updatedAt: 'updated_at',
 });
 
-Course.belongsTo(User, { as: 'Instructor', foreignKey: 'instructor_id' });
-User.hasMany(Course, { foreignKey: 'instructor_id' });
-
 Course.sync();
 
 export default Course;
+
 
