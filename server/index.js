@@ -38,6 +38,7 @@ import Grade from './models/GradeModel.js';
 import Certificate from './models/CertificateModel.js';
 import IssuedCertificate from './models/IssueCertificateModel.js';
 import generateSecretKey from './utils/jwtsecretkey.js';
+import instructorRouter from './routers/instructorRouter.js';
 
 // Setup __dirname equivalent for ES Modules
 const __filename = fileURLToPath(import.meta.url);
@@ -73,6 +74,7 @@ app.use('/api/lessons', lessonRouter);
 app.use('/api/lessonFiles', lessonFileRouter)
 app.use('/api/assignments', assignmentRouter);
 app.use('/api/student', studentRouter);
+app.use('/api/instructor', instructorRouter);
 
 // Global error handler
 app.use((err, req, res, next) => {
