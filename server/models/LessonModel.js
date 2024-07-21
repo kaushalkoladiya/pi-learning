@@ -1,14 +1,15 @@
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../database.js'; 
 import Course from './CourseModel.js';  
+import Program from './ProgramModel.js';
 
 class Lesson extends Model {}
 
 Lesson.init({
-  id: {
+  lesson_id: {
     type: DataTypes.INTEGER,
-    autoIncrement: true,
     primaryKey: true,
+    autoIncrement: true,
   },
   lesson_name: {
     type: DataTypes.STRING(100),
@@ -18,9 +19,14 @@ Lesson.init({
     type: DataTypes.TEXT,
     allowNull: true,
   },
-  lesson_content: {
-    type: DataTypes.TEXT,
-    allowNull: true,
+  program_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: Program,
+      key: 'program_id',
+    },
+    onDelete: 'CASCADE',
   },
   course_id: {
     type: DataTypes.INTEGER,

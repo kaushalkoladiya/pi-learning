@@ -1,14 +1,15 @@
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../database.js';
+import { DATABASE_TABLES } from '../constants/tables.js';
 import Course from './CourseModel.js';
 
 class Assignment extends Model {}
 
 Assignment.init({
-  id: {
+  assignment_id: {
     type: DataTypes.INTEGER,
-    autoIncrement: true,
     primaryKey: true,
+    autoIncrement: true,
   },
   assignment_name: {
     type: DataTypes.STRING(100),
@@ -27,7 +28,7 @@ Assignment.init({
     allowNull: false,
     references: {
       model: Course,
-      key: 'id',
+      key: 'course_id',
     },
     onDelete: 'CASCADE',
   },
