@@ -4,30 +4,40 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import cors from 'cors';
 
-import sequelize from './database.js'; 
+import sequelize from './database.js';
 import associateModels from './models/config/associateModels.js';
 
-import generateSecretKey from './utils/jwtsecretkey.js';
+import authRoutes from './routers/authRoutes.js';
+import userRouter from './routers/userRouter.js';
+import uploadRouter from './routers/uploadRouter.js';
+import departmentRouter from './routers/departmentRouter.js';
+import countryRouter from './routers/countryRouter.js';
+import provinceRouter from './routers/provinceRouter.js';
+import userAddressRouter from './routers/userAddressRouter.js';
+import programRouter from './routers/programRouter.js';
+import lessonFileRouter from './routers/lessonFileRouter.js';
+import courseRouter from './routers/courseRouter.js';
+import lessonRouter from './routers/lessonRouter.js';
+import assignmentRouter from './routers/assignmentRouter.js';
+import studentRouter from './routers/studentRouter.js';
+import tokenRoute from './routers/tokenRoute.js';
 
 import Country from './models/CountryModel.js';
 import Province from './models/ProvinceModel.js';
 import User from './models/userModel.js';
 import UserAddress from './models/UserAddressModel.js';
 import Department from './models/DepartmentModel.js';
-import authRoutes from './routers/authRoutes.js';
-import userRouter from './routers/userRouter.js';
 import Course from './models/CourseModel.js';
+import Program from './models/ProgramModel.js';
 import Lesson from './models/LessonModel.js';
+import LessonFile from './models/LessonFileModel.js';
 import Assignment from './models/AssignmentModel.js';
-import uploadRouter from './routers/uploadRouter.js';
-import departmentRouter from './routers/departmentRouter.js';
-import countryRouter from './routers/countryRouter.js';
-import provinceRouter from './routers/provinceRouter.js';
-import courseRouter from './routers/courseRouter.js';
-import lessonRouter from './routers/lessonRouter.js';
-import assignmentRouter from './routers/assignmentRouter.js';
-import studentRouter from './routers/studentRouter.js';
-import tokenRoute from './routers/tokenRoute.js';
+import AssignmentSubmission from './models/AssignmentSubmissionModel.js';
+import Enrollment from './models/EnrollmentModel.js';
+import Grade from './models/GradeModel.js';
+import Certificate from './models/CertificateModel.js';
+import IssuedCertificate from './models/IssueCertificateModel.js';
+import generateSecretKey from './utils/jwtsecretkey.js';
 
 // Setup __dirname equivalent for ES Modules
 const __filename = fileURLToPath(import.meta.url);
@@ -51,13 +61,16 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/token', tokenRoute);
 // Apply middleware to protected routes
-app.use('/api',userRouter);
+app.use('/api', userRouter);
 app.use('/api/departments', departmentRouter);
 app.use('/api/provinces', provinceRouter);
 app.use('/api/countries', countryRouter);
 app.use('/api/uploads', uploadRouter);
-app.use('/courses', courseRouter);
+app.use('/api/user_address', userAddressRouter);
+app.use('/api/programs', programRouter);
+app.use('/api/courses', courseRouter);
 app.use('/api/lessons', lessonRouter);
+app.use('/api/lessonFiles', lessonFileRouter)
 app.use('/api/assignments', assignmentRouter);
 app.use('/api/student', studentRouter);
 
@@ -94,7 +107,6 @@ async function startServer() {
 
         await sequelize.sync();
         console.log('Database synced.');
-        
 
         // Generate secret key if not exists
         generateSecretKey();

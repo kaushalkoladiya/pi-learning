@@ -15,16 +15,17 @@ Assignment.init({
     type: DataTypes.STRING(100),
     allowNull: false,
   },
-  assignment_description: {
-    type: DataTypes.TEXT,
+  assignment_url: {
+    type: DataTypes.STRING(255),
     allowNull: true,
+    defaultValue: "NULL"
   },
   due_date: {
     type: DataTypes.DATE,
-    allowNull: false,
+    allowNull: true,
   },
-  course_id: {
-    type: DataTypes.INTEGER,
+  lesson_id: {
+    type: DataTypes.STRING(8),
     allowNull: false,
     references: {
       model: Course,
@@ -36,22 +37,14 @@ Assignment.init({
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,
   },
-  updated_at: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW,
-  },
 }, {
-  sequelize,
-  modelName: 'Assignment',
-  tableName: 'assignments',
+  sequelize: sequelize,
+  modelName: DATABASE_TABLES.ASSIGNMENT,
   timestamps: true,
   createdAt: 'created_at',
-  updatedAt: 'updated_at',
 });
-
-Assignment.belongsTo(Course, { foreignKey: 'course_id' });
-Course.hasMany(Assignment, { foreignKey: 'course_id' });
 
 Assignment.sync();
 
 export default Assignment;
+

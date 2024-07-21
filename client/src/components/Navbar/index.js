@@ -10,8 +10,8 @@ import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
-import MenuBookIcon from '@mui/icons-material/MenuBook'; //Icon for lessons tab
-import AssignmentIcon from '@mui/icons-material/Assignment'; // Icon for assignments tab
+import MenuBookIcon from '@mui/icons-material/MenuBook'; 
+import AssignmentIcon from '@mui/icons-material/Assignment'; 
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ListItem from '@mui/material/ListItem';
@@ -26,6 +26,7 @@ import { Box, CssBaseline } from '@mui/material';
 import useAuth from '@/hooks/useAuth';
 import { USER_ROLES } from '@/constants/roles';
 import { APP_NAME } from '@/constants';
+import { SchoolSharp } from '@mui/icons-material';
 
 const drawerWidth = 240;
 
@@ -111,6 +112,11 @@ const ADMIN_ROUTES = [
     text: 'Instructor',
     icon: <Person4Icon />,
     path: '/admin/instructor',
+  },
+  {
+    text: 'Programs',
+    icon: <SchoolSharp/>,
+    path: '/admin/program',
   },
   {
     text: 'Course',
