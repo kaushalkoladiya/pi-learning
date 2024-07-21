@@ -1,15 +1,16 @@
 import { DataTypes, Model } from 'sequelize';
-import { DATABASE_TABLES } from '../constants/tables.js';
-import sequelize from '../database.js';
+import sequelize from '../database.js'; 
+import User from './userModel.js';  
 import Program from './ProgramModel.js';
-import User from './userModel.js';
+import { DATABASE_TABLES } from '../constants/tables.js';
 
 class Course extends Model {}
 
 Course.init({
   course_id: {
-    type: DataTypes.STRING,
+    type: DataTypes.INTEGER,
     primaryKey: true,
+    autoIncrement: true,
   },
   course_title: {
     type: DataTypes.STRING(100),
@@ -26,8 +27,13 @@ Course.init({
     allowNull: false,
     defaultValue: 'This is a new course',
   },
+  long_description: {
+    type: DataTypes.TEXT,
+    allowNull: false,
+    defaultValue: 'This is a new course',
+  },
   program_id: {
-    type: DataTypes.STRING(8),
+    type: DataTypes.INTEGER,
     references: {
       model: Program,
       key: 'program_id',

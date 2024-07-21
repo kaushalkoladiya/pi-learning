@@ -8,8 +8,9 @@ class Lesson extends Model {}
 
 Lesson.init({
   lesson_id: {
-    type: DataTypes.STRING,
+    type: DataTypes.INTEGER,
     primaryKey: true,
+    autoIncrement: true,
   },
   lesson_name: {
     type: DataTypes.STRING(100),
@@ -20,7 +21,7 @@ Lesson.init({
     allowNull: false,
   },
   program_id: {
-    type: DataTypes.STRING,
+    type: DataTypes.INTEGER,
     allowNull: false,
     references: {
       model: Program,

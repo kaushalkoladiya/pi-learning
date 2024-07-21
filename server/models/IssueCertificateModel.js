@@ -1,7 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../database.js';
-import Certificate from './CertificatesModel.js';
 import User from './userModel.js';
+import Certificate from './CertificateModel.js';
 
 class IssuedCertificate extends Model {}
 

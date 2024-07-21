@@ -1,6 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../database.js'; 
-import Submission from './SubmissionModel.js'; 
+import AssignmentSubmission from './AssignmentSubmissionModel.js';
 
 class Grade extends Model {}
 
@@ -21,7 +21,7 @@ Grade.init({
   submissionId: {
     type: DataTypes.INTEGER,
     references: {
-      model: Submission,
+      model: AssignmentSubmission,
       key: 'id'
     }
   }
@@ -32,8 +32,8 @@ Grade.init({
 });
 
 
-Grade.belongsTo(Submission, { foreignKey: 'submissionId' });
-Submission.hasOne(Grade, { foreignKey: 'submissionId' });
+Grade.belongsTo(AssignmentSubmission, { foreignKey: 'submissionId' });
+AssignmentSubmission.hasOne(Grade, { foreignKey: 'submissionId' });
 
 Grade.sync();
 
