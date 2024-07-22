@@ -2,6 +2,7 @@ import { DataTypes, Model } from 'sequelize';
 import sequelize from '../database.js';
 import { DATABASE_TABLES } from '../constants/tables.js';
 import Course from './CourseModel.js';
+import Lesson from './LessonModel.js';
 
 class Assignment extends Model {}
 
@@ -23,6 +24,15 @@ Assignment.init({
   due_date: {
     type: DataTypes.DATE,
     allowNull: true,
+  },
+  lesson_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: Lesson,
+      key: 'lesson_id',
+    },
+    onDelete: 'CASCADE',
   },
   course_id: {
     type: DataTypes.STRING(8),

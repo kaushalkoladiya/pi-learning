@@ -9,6 +9,7 @@ Program.init({
   program_id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
+    autoIncrement: true,
   },
   program_title: {
     type: DataTypes.STRING,

@@ -56,6 +56,11 @@ AssignmentSubmission.init({
     type: DataTypes.STRING(255),
     allowNull: true,
   },
+  feedback: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+    defaultValue: 'No feedback provided.',
+  },
   created_at: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,
