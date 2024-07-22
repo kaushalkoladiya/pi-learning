@@ -24,7 +24,7 @@ Assignment.init({
     type: DataTypes.DATE,
     allowNull: true,
   },
-  lesson_id: {
+  course_id: {
     type: DataTypes.STRING(8),
     allowNull: false,
     references: {
@@ -37,11 +37,16 @@ Assignment.init({
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,
   },
+  updated_at: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+  },
 }, {
   sequelize: sequelize,
   modelName: DATABASE_TABLES.ASSIGNMENT,
   timestamps: true,
   createdAt: 'created_at',
+  updatedAt: 'updated_at',
 });
 
 Assignment.sync();
