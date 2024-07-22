@@ -22,7 +22,8 @@ export const createInstructor = async (req, res) => {
     const existingEmail = await User.findOne({
       where: { email: req.body.email },
     });
-    if (existingEmail.id) {
+    
+    if (existingEmail != null && existingEmail.id) {
       return res.status(400).json({ error: "Email ID must be unique" });
     }
 

@@ -7,8 +7,9 @@ class Program extends Model {}
 
 Program.init({
   program_id: {
-    type: DataTypes.STRING,
+    type: DataTypes.INTEGER,
     primaryKey: true,
+    autoIncrement: true,
   },
   program_title: {
     type: DataTypes.STRING,

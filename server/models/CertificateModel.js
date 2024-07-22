@@ -18,7 +18,7 @@ Certificate.init({
     type: DataTypes.INTEGER,
     references: {
       model: Course,
-      key: 'id'
+      key: 'course_id'
     }
   }
 }, {

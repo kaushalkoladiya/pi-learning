@@ -15,7 +15,7 @@ Enrollment.init({
     type: DataTypes.INTEGER,
     references: {
       model: Course,
-      key: 'id'
+      key: 'course_id'
     }
   },
   student_id: {
@@ -29,6 +29,14 @@ Enrollment.init({
     type: DataTypes.DATE,
     allowNull: false
   },
+  created_at: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+  },
+  updated_at: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+  }
 }, {
   sequelize,
   modelName: 'Enrollment',

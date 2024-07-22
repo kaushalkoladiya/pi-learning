@@ -1,5 +1,4 @@
 import Assignment from "../models/AssignmentModel.js";
-import Lesson from "../models/LessonModel.js";
 
 // CREATE a new assignment
 export const createAssignment = async (req, res) => {

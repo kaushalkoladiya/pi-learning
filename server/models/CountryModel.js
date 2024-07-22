@@ -6,7 +6,7 @@ class Country extends Model {}
 
 Country.init({
   code: {
-    type: DataTypes.STRING(5),
+    type: DataTypes.STRING(3),
     primaryKey: true,
     allowNull: false,
   },
