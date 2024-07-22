@@ -4,6 +4,7 @@ import {
     getAllCourses,
     getCourseById,
     getCourseByProgramCode,
+    getCourseDetailsById,
     updateCourse,
     deleteCourse,
     createEnrollment
@@ -14,6 +15,7 @@ const courseRouter = express.Router();
 courseRouter.post('/', createCourse);
 courseRouter.get('/', getAllCourses);
 courseRouter.get('/:id', getCourseById);
+courseRouter.get('/details/:id',getCourseDetailsById);
 courseRouter.get('/programCode/:code', getCourseByProgramCode);
 courseRouter.put('/:id', updateCourse);
 courseRouter.delete('/:id', deleteCourse);

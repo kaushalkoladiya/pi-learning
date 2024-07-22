@@ -25,7 +25,6 @@ import axios from "axios";
 
 const CreateCourseModal = ({ open, handleClose, refreshCourses }) => {
   const [form, setForm] = useState({
-    courseId: "",
     courseTitle: "",
     programId: "",
     instructorId: "",
@@ -36,7 +35,6 @@ const CreateCourseModal = ({ open, handleClose, refreshCourses }) => {
   });
 
   const [errors, setErrors] = useState({
-    courseId: "",
     courseTitle: "",
     programId: "",
     instructorId: "",
@@ -98,7 +96,7 @@ const CreateCourseModal = ({ open, handleClose, refreshCourses }) => {
           "Content-Type": "multipart/form-data",
         },
       });
-      const imageURL = 'https://pilearningcapstone.blob.core.windows.net/pi-learning/' + response.data[0].blobName;;
+      const imageURL = 'https://pilearningcapstone.blob.core.windows.net/pi-learning/' + response.data[0].blobName;
       setForm((prevForm) => ({
         ...prevForm,
         profilePicUrl: imageURL,
@@ -132,7 +130,6 @@ const CreateCourseModal = ({ open, handleClose, refreshCourses }) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          course_id: form.courseId,
           course_title: form.courseTitle,
           program_id: form.programId,
           instructor_id: form.instructorId,
@@ -146,7 +143,7 @@ const CreateCourseModal = ({ open, handleClose, refreshCourses }) => {
       console.log(data.error);
       if (!response.ok) {
         if (data.error) {
-          setErrors((prevErrors) => ({ ...prevErrors, courseId: data.error }));
+          setErrors((prevErrors) => ({ ...prevErrors, common: data.error }));
         } else {
           setErrors((prevErrors) => ({ ...prevErrors, common: data.message }));
         }
@@ -161,7 +158,6 @@ const CreateCourseModal = ({ open, handleClose, refreshCourses }) => {
 
   const handleClear = () => {
     setForm({
-      courseId: "",
       courseTitle: "",
       programId: "",
       instructorId: "",
@@ -194,15 +190,6 @@ const CreateCourseModal = ({ open, handleClose, refreshCourses }) => {
                 <Typography variant="h6" mb={2}>
                   Course Information
                 </Typography>
-                <TextField
-                  fullWidth
-                  label="Course ID"
-                  name="courseId"
-                  value={form.courseId}
-                  onChange={handleChange}
-                  error={!!errors.courseId}
-                  helperText={errors.courseId}
-                />
                 <TextField
                   fullWidth
                   label="Course Title"

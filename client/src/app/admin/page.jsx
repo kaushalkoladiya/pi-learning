@@ -4,6 +4,7 @@ import { Box, Typography, Toolbar } from '@mui/material';
 import useAuth from '@/hooks/useAuth';
 
 const AdminDashboard = () => {
+
   const { isUserAdmin, isAuth } = useAuth();
 
   if (!isAuth) {
@@ -27,6 +28,9 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
+
+
+
 
 
 

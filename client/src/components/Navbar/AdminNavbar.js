@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React from 'react'
 import { styled } from '@mui/material/styles';
@@ -27,29 +27,29 @@ const drawerWidth = 240;
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
-  transition: theme.transitions.create('width', {
+  transition: theme.transitions.create("width", {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.enteringScreen,
   }),
-  overflowX: 'hidden',
+  overflowX: "hidden",
 });
 
 const closedMixin = (theme) => ({
-  transition: theme.transitions.create('width', {
+  transition: theme.transitions.create("width", {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
-  overflowX: 'hidden',
+  overflowX: "hidden",
   width: `calc(${theme.spacing(7)} + 1px)`,
-  [theme.breakpoints.up('sm')]: {
+  [theme.breakpoints.up("sm")]: {
     width: `calc(${theme.spacing(8)} + 1px)`,
   },
 });
 
-const DrawerHeader = styled('div')(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'flex-end',
+const DrawerHeader = styled("div")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "flex-end",
   padding: theme.spacing(0, 1),
   // necessary for content to be below app bar
   ...theme.mixins.toolbar,
@@ -62,72 +62,70 @@ export const NavbarDrawer = () => {
     return null;
   }
 
-  return (
-    <DrawerHeader />
-  )
+  return <DrawerHeader />;
 };
 
 const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== 'open',
+  shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
   zIndex: theme.zIndex.drawer + 1,
-  transition: theme.transitions.create(['width', 'margin'], {
+  transition: theme.transitions.create(["width", "margin"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
   ...(open && {
     marginLeft: drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['width', 'margin'], {
+    transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
   }),
 }));
 
-const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
-  ({ theme, open }) => ({
-    width: drawerWidth,
-    flexShrink: 0,
-    whiteSpace: 'nowrap',
-    boxSizing: 'border-box',
-    ...(open && {
-      ...openedMixin(theme),
-      '& .MuiDrawer-paper': openedMixin(theme),
-    }),
-    ...(!open && {
-      ...closedMixin(theme),
-      '& .MuiDrawer-paper': closedMixin(theme),
-    }),
+const Drawer = styled(MuiDrawer, {
+  shouldForwardProp: (prop) => prop !== "open",
+})(({ theme, open }) => ({
+  width: drawerWidth,
+  flexShrink: 0,
+  whiteSpace: "nowrap",
+  boxSizing: "border-box",
+  ...(open && {
+    ...openedMixin(theme),
+    "& .MuiDrawer-paper": openedMixin(theme),
   }),
-);
+  ...(!open && {
+    ...closedMixin(theme),
+    "& .MuiDrawer-paper": closedMixin(theme),
+  }),
+}));
 
 const ADMIN_ROUTES = [
   {
-    text: 'Instructor',
+    text: "Instructor",
     icon: <Person4Icon />,
-    path: '/admin/instructor',
+    path: "/admin/instructor",
   },
   {
-    text: 'Programs',
+    text: "Programs",
     icon: <SchoolSharp />,
-    path: '/admin/program',
+    path: "/admin/program",
   },
   {
-    text: 'Course',
+    text: "Course",
     icon: <SubjectIcon />,
-    path: '/admin/course',
+    path: "/admin/course",
   },
   {
-    text: 'Lesson',
+    text: "Lesson",
     icon: <MenuBookIcon />,
-    path: '/admin/lessons',
+    path: "/admin/lessons",
   },
   {
-    text: 'Assingments',
+    text: "Assingments",
     icon: <AssignmentIcon />,
-    path: '/admin/assignments',
-  }
+    path: "/admin/assignments",
+  },
 ];
 
 const AdminNavbar = () => {
@@ -136,6 +134,11 @@ const AdminNavbar = () => {
 
   const handleRoute = (path) => {
     router.push(path);
+  };
+
+  const handleLogout = () => {
+    logout();
+    router.push("/auth/login/");
   };
 
   if (!isUserAdmin()) {
@@ -161,7 +164,7 @@ const AdminNavbar = () => {
       </AppBar>
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
-          <Box width={'100%'} pl={2}>
+          <Box width={"100%"} pl={2}>
             <Typography variant="h6" noWrap component="div">
               {APP_NAME}
             </Typography>
@@ -170,33 +173,39 @@ const AdminNavbar = () => {
         <Divider />
         <List>
           {ADMIN_ROUTES.map((route, index) => (
-            <ListItem key={route.text} disablePadding sx={{ display: 'block' }}
+            <ListItem
+              key={route.text}
+              disablePadding
+              sx={{ display: "block" }}
               onClick={() => handleRoute(route.path)}
             >
               <ListItemButton
                 sx={{
                   minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
+                  justifyContent: open ? "initial" : "center",
                   px: 2.5,
                 }}
               >
                 <ListItemIcon
                   sx={{
                     minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
+                    mr: open ? 3 : "auto",
+                    justifyContent: "center",
                   }}
                 >
                   {route.icon}
                 </ListItemIcon>
-                <ListItemText primary={route.text} sx={{ opacity: open ? 1 : 0 }} />
+                <ListItemText
+                  primary={route.text}
+                  sx={{ opacity: open ? 1 : 0 }}
+                />
               </ListItemButton>
             </ListItem>
           ))}
         </List>
       </Drawer>
     </>
-  )
-}
+  );
+};
 
 export default AdminNavbar;
