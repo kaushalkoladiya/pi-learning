@@ -2,13 +2,8 @@ import Program from '../models/ProgramModel.js';
 
 export const createProgram = async (req, res) => {
   try {
-    const existingProgramID = await Program.findOne({ where: { program_id: req.body.program_id } });
-        if (existingProgramID.program_id) {
-            return res.status(400).json({ error: 'Program ID must be unique' });
-        }
-    const { program_id, program_title, short_description, long_description, price, department_code, duration_in_months, profile_pic } = req.body;
+    const {program_title, short_description, long_description, price, department_code, duration_in_months, profile_pic } = req.body;
     const newProgram = await Program.create({
-      program_id,
       program_title,
       short_description,
       long_description,

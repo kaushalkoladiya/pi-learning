@@ -1,6 +1,6 @@
 // components/teacher/StudentList.js
 import React, { useEffect, useState } from 'react';
-import { Typography, List, ListItem, ListItemText } from '@mui/material';
+import { Typography, List, ListItem, ListItemText, Box } from '@mui/material';
 import { getStudentsByCourse } from '@/api/instructor';
 
 const StudentList = ({ courseId }) => {
@@ -14,7 +14,7 @@ const StudentList = ({ courseId }) => {
   }, []);
 
   return (
-    <div>
+    <Box>
       <Typography variant="h6" gutterBottom>
         Students
       </Typography>
@@ -22,14 +22,14 @@ const StudentList = ({ courseId }) => {
         {students.length > 0 ? (
           students.map((student) => (
             <ListItem key={student.id}>
-              <ListItemText primary={`${student.first_name} ${student.last_name}`} secondary={student.email} />
+              <ListItemText primary={`${student.first_name} ${student.last_name}`} />
             </ListItem>
           ))
         ) : (
           <Typography variant="body2">No students enrolled in this course.</Typography>
         )}
       </List>
-    </div>
+    </Box>
   );
 };
 

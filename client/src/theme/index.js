@@ -28,5 +28,14 @@ export const theme = createTheme({
         }
       }
     },
+    MuiList: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#f9f9f9',
+          padding: 0,
+          borderRadius: '4px'
+        }
+      }
+    },
   }
 });

@@ -8,6 +8,7 @@ const LessonList = ({ courseId }) => {
   useEffect(() => {
     (async () => {
       const lessonsResponse = await getLessonsByCourse(courseId);
+      
       setLessons(lessonsResponse.data);
     })();
   }, []);

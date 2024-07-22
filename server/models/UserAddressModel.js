@@ -31,7 +31,7 @@ UserAddress.init({
   province_code: {
     type: DataTypes.STRING,
     references: {
-      model: Province,  // Reference the Province model
+      model: Province,
       key: 'code',
     },
     allowNull: false,

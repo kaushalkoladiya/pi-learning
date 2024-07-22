@@ -5,6 +5,7 @@ import AssignmentList from './AssignmentList';
 import LessonList from './LessonList';
 import { getCoursesByInstructor } from '@/api/instructor';
 import CourseDetails from './CourseDetails';
+import PublishedAssignments from './PublishedAssignments';
 
 const InstructorDashboard = () => {
   const [courses, setCourses] = useState([]);
@@ -52,13 +53,13 @@ const InstructorDashboard = () => {
       {selectedCourse && courseDetails && (
         <Box my={2}>
           <CourseDetails course={courseDetails} />
-          <Paper elevation={3} sx={{ mb: 2, padding: '16px', width: '100%' }}>
+          <Paper elevation={3} sx={{ mb: 2, padding: '16px' }}>
             <StudentList courseId={selectedCourse} />
           </Paper>
-          <Paper elevation={3} sx={{ mb: 2, padding: '16px', width: '100%' }}>
-            <AssignmentList courseId={selectedCourse} />
+          <Paper elevation={3} sx={{ mb: 2, padding: '16px' }}>
+            <PublishedAssignments courseId={selectedCourse} />
           </Paper>
-          <Paper elevation={3} sx={{ mb: 2, padding: '16px', width: '100%' }}>
+          <Paper elevation={3} sx={{ mb: 2, padding: '16px' }}>
             <LessonList courseId={selectedCourse} />
           </Paper>
         </Box>

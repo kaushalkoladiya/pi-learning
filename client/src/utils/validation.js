@@ -5,7 +5,6 @@ const passwordRegex =
 const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
 const phoneRegex = /^\d{3}-\d{3}-\d{4}$/;
 const zipCodeRegex = /^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$/;
-const programIdRegex = /^[A-Z]{4}\d{4}$/;
 const priceRegex = /^\d+(\.\d{1,2})?$/;
 const titleRegex = /^[a-zA-Z\s]+$/;
 const fileNameRegex = /^[a-zA-Z0-9_]+(\.[a-zA-Z]{2,4})$/;
@@ -18,7 +17,6 @@ export const validateDate = (date) => dateRegex.test(date);
 export const validatePhoneNumber = (phoneNumber) =>
   phoneRegex.test(phoneNumber);
 export const validateZipCode = (zipCode) => zipCodeRegex.test(zipCode);
-export const validateProgramId = (programId) => programIdRegex.test(programId);
 export const validatePrice = (price) =>
   priceRegex.test(price) && parseFloat(price) > 0;
 export const validateTitle = (title) => titleRegex.test(title);
@@ -28,33 +26,46 @@ export const validateAssigmentFileName = (assignmentName) => assignmentFileRegex
 export const validateField = (fieldName, value) => {
   switch (fieldName) {
     case "firstName":
+    case "firstName":
       if (!value) {
         return "First name is required";
+        return "First name is required";
       } else if (!validateName(value)) {
+        return "First name contains only letters";
         return "First name contains only letters";
       }
       break;
     case "lastName":
+    case "lastName":
       if (!value) {
         return "Last name is required";
+        return "Last name is required";
       } else if (!validateName(value)) {
+        return "Last name contains only letters";
         return "Last name contains only letters";
       }
       break;
     case "gender":
+    case "gender":
       if (!value) {
+        return "Gender is required";
         return "Gender is required";
       }
       break;
     case "email":
+    case "email":
       if (!value) {
         return "Email is required";
+        return "Email is required";
       } else if (!validateEmail(value)) {
+        return "Fill correct email format (something@gmail.com)";
         return "Fill correct email format (something@gmail.com)";
       }
       break;
     case "password":
+    case "password":
       if (!value) {
+        return "Password is required";
         return "Password is required";
       } else if (!validatePassword(value)) {
         return "Password must be at least 8 characters long, and include uppercase, lowercase, number, and special character";
@@ -136,20 +147,6 @@ export const validateField = (fieldName, value) => {
         return "Duration must be greater than zero.";
       }
       break;
-    case "programId":
-      if (!value) {
-        return "Program ID is required";
-      } else if (!validateProgramId(value)) {
-        return "Program ID must contain 4 letters first and 4 digits last (e.g., PROG1234)";
-      }
-      break;
-    case "courseId":
-      if (!value) {
-        return "Course ID is required";
-      } else if (!validateProgramId(value)) {
-        return "Course ID must contain 4 letters first and 4 digits last (e.g., COUR1234)";
-      }
-      break;
     case "courseTitle":
       if (!value) {
         return "Course title is required";
@@ -210,11 +207,14 @@ export const validateField = (fieldName, value) => {
       }
       break;
       case "dueDate":
+      case "dueDate":
       if (!value) {
+        return "Due Date is required";
         return "Due Date is required";
       }
       break;
     default:
+      return "";
       return "";
   }
 };

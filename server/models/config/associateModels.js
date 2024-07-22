@@ -58,6 +58,12 @@ const associateModels = () => {
 
   LessonFile.belongsTo(Lesson, { foreignKey: "lesson_id" });
   Lesson.hasMany(LessonFile, { foreignKey: "lesson_id" });
+
+  Assignment.belongsTo(Course, { foreignKey: "course_id" });
+  Course.hasMany(Assignment, { foreignKey: "course_id" });
+
+  Assignment.belongsTo(Lesson, { foreignKey: "lesson_id" });
+  Lesson.hasMany(Assignment, { foreignKey: "lesson_id" });
 };
 
 export default associateModels;

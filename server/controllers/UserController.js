@@ -22,7 +22,8 @@ export const createInstructor = async (req, res) => {
     const existingEmail = await User.findOne({
       where: { email: req.body.email },
     });
-    if (existingEmail.id) {
+    
+    if (existingEmail != null && existingEmail.id) {
       return res.status(400).json({ error: "Email ID must be unique" });
     }
 
@@ -95,8 +96,8 @@ export const updateInstructor = async (req, res) => {
       const existingPhoneNumber = await User.findOne({
         where: { phone_number: req.body.phone_number },
       });
-      console.log(existingPhoneNumber.id != req.params.id)
-      if (existingPhoneNumber.id != req.params.id) {
+      
+      if (existingPhoneNumber != null && existingPhoneNumber.id != req.params.id) {
         return res.status(400).json({ error: "Phone Number must be unique" });
       }
     }

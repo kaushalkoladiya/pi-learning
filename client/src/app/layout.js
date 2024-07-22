@@ -26,7 +26,7 @@ export default function RootLayout({ children }) {
         <StoreProvider>
           <ThemeProvider theme={theme}>
             <div sx={{ display: "flex" }}>
-              <Navbar />
+            {!isSignupLoginPage && <Navbar />}
               <Box component="main" sx={{ flexGrow: 1 }}>
                 <NavbarDrawer />
                 <div>

@@ -27,11 +27,6 @@ Course.init({
     allowNull: false,
     defaultValue: 'This is a new course',
   },
-  long_description: {
-    type: DataTypes.TEXT,
-    allowNull: false,
-    defaultValue: 'This is a new course',
-  },
   program_id: {
     type: DataTypes.INTEGER,
     references: {

@@ -44,3 +44,32 @@ export const getLessonsByCourse = async (courseId) => {
   }
 };
 
+export const getSubmissionsByAssignment = async (assignmentId) => {
+  try {
+    return await axiosInstance.get(
+      `/api/instructor/courses/assignments/${assignmentId}/submissions`
+    );
+  } catch (error) {
+    console.error("Error fetching submissions:", error);
+    return null;
+  }
+};
+
+export const submitGrade = async (assignmentId, submissionId, grade, feedback) => {
+  return await axiosInstance.put(
+    `/api/instructor/courses/assignments/${assignmentId}/submissions/${submissionId}`,
+    { grade, feedback }
+  );
+};
+
+export const getAssignmentById = async (assignmentId) => {
+  return await axiosInstance.get(
+    `/api/instructor/assignment/${assignmentId}`
+  );
+};
+
+export const getUserSubmissionsByAssignment = async (assignmentId, userId) => {
+  return await axiosInstance.get(
+    `/api/instructor/assignments/${assignmentId}/students/${userId}/submissions`
+  );
+};
