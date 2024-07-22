@@ -5,7 +5,6 @@ const passwordRegex =
 const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
 const phoneRegex = /^\d{3}-\d{3}-\d{4}$/;
 const zipCodeRegex = /^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$/;
-const programIdRegex = /^[A-Z]{4}\d{4}$/;
 const priceRegex = /^\d+(\.\d{1,2})?$/;
 const titleRegex = /^[a-zA-Z\s]+$/;
 const fileNameRegex = /^[a-zA-Z0-9_]+(\.[a-zA-Z]{2,4})$/;
@@ -18,7 +17,6 @@ export const validateDate = (date) => dateRegex.test(date);
 export const validatePhoneNumber = (phoneNumber) =>
   phoneRegex.test(phoneNumber);
 export const validateZipCode = (zipCode) => zipCodeRegex.test(zipCode);
-export const validateProgramId = (programId) => programIdRegex.test(programId);
 export const validatePrice = (price) =>
   priceRegex.test(price) && parseFloat(price) > 0;
 export const validateTitle = (title) => titleRegex.test(title);
@@ -134,20 +132,6 @@ export const validateField = (fieldName, value) => {
         return "Duration is required";
       } else if (value <= 0) {
         return "Duration must be greater than zero.";
-      }
-      break;
-    case "programId":
-      if (!value) {
-        return "Program ID is required";
-      } else if (!validateProgramId(value)) {
-        return "Program ID must contain 4 letters first and 4 digits last (e.g., PROG1234)";
-      }
-      break;
-    case "courseId":
-      if (!value) {
-        return "Course ID is required";
-      } else if (!validateProgramId(value)) {
-        return "Course ID must contain 4 letters first and 4 digits last (e.g., COUR1234)";
       }
       break;
     case "courseTitle":

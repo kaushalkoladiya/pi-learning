@@ -17,7 +17,7 @@ const AdminDashboard = () => {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <Navbar />
+      { /*<Navbar /> */}
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <Toolbar />
         <Typography variant="h4">Admin Dashboard</Typography>

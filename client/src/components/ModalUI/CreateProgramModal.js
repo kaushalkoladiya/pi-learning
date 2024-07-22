@@ -25,7 +25,6 @@ import axios from "axios";
 
 const CreateProgramModal = ({ open, handleClose, refreshPrograms }) => {
   const [form, setForm] = useState({
-    programId: "",
     programTitle: "",
     price: "",
     durationInMonths: "",
@@ -37,7 +36,6 @@ const CreateProgramModal = ({ open, handleClose, refreshPrograms }) => {
   });
 
   const [errors, setErrors] = useState({
-    programId: "",
     programTitle: "",
     price: "",
     durationInMonths: "",
@@ -89,7 +87,7 @@ const CreateProgramModal = ({ open, handleClose, refreshPrograms }) => {
           "Content-Type": "multipart/form-data",
         },
       });
-      const imageURL = 'https://pilearningcapstone.blob.core.windows.net/pi-learning/' + response.data[0].blobName;;
+      const imageURL = 'https://pilearningcapstone.blob.core.windows.net/pi-learning/' + response.data[0].blobName;
       setForm((prevForm) => ({
         ...prevForm,
         profilePicUrl: imageURL,
@@ -123,7 +121,6 @@ const CreateProgramModal = ({ open, handleClose, refreshPrograms }) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          program_id: form.programId,
           program_title: form.programTitle,
           price: form.price,
           duration_in_months: form.durationInMonths,
@@ -137,7 +134,7 @@ const CreateProgramModal = ({ open, handleClose, refreshPrograms }) => {
       const data = await response.json();
       if (!response.ok) {
         if (data.error) {
-          setErrors((prevErrors) => ({ ...prevErrors, programId: data.error }));
+          setErrors((prevErrors) => ({ ...prevErrors, common: data.error }));
         } else {
           setErrors((prevErrors) => ({ ...prevErrors, common: data.message }));
         }
@@ -152,7 +149,6 @@ const CreateProgramModal = ({ open, handleClose, refreshPrograms }) => {
 
   const handleClear = () => {
     setForm({
-      programId: "",
       programTitle: "",
       price: "",
       durationInMonths: "",
@@ -186,15 +182,6 @@ const CreateProgramModal = ({ open, handleClose, refreshPrograms }) => {
                 <Typography variant="h6" mb={2}>
                   Program Information
                 </Typography>
-                <TextField
-                  fullWidth
-                  label="Program ID"
-                  name="programId"
-                  value={form.programId}
-                  onChange={handleChange}
-                  error={!!errors.programId}
-                  helperText={errors.programId}
-                />
                 <TextField
                   fullWidth
                   label="Program Title"
