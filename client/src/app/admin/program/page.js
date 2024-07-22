@@ -9,6 +9,7 @@ import CreateProgramModal from "@/components/ModalUI/CreateProgramModal";
 import EditProgramModal from "@/components/ModalUI/EditProgramModal";
 import ViewProgramModal from "@/components/ModalUI/ViewProgramModal";
 import AdminWrapper from "@/components/AdminWrapper";
+import authMiddleware from "@/utils/authRoute";
 
 const ProgramList = () => {
   const router = useRouter();
@@ -172,4 +173,4 @@ const ProgramList = () => {
   );
 };
 
-export default ProgramList;
+export default authMiddleware(ProgramList);

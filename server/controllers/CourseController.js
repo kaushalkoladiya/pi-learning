@@ -19,6 +19,7 @@ export const createCourse = async (req, res) => {
         const course = await Course.create(courseData);
         res.status(201).json(course);
     } catch (err) {
+        console.log(err);
         res.status(400).json({ error: err.message });
     }
 };

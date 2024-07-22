@@ -20,6 +20,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import CreateLessonModal from "@/components/ModalUI/CreateLessonModal";
 import CreateFileModal from "@/components/ModalUI/CreateFileModal";
 import AdminWrapper from "@/components/AdminWrapper";
+import authMiddleware from "@/utils/authRoute";
 
 const LessonsPage = () => {
   const router = useRouter();
@@ -288,4 +289,4 @@ const LessonsPage = () => {
   );
 };
 
-export default LessonsPage;
+export default authMiddleware(LessonsPage);

@@ -9,6 +9,7 @@ import CreateCourseModal from "@/components/ModalUI/CreateCourseModal";
 import EditCourseModal from "@/components/ModalUI/EditCourseModal";
 import ViewCourseModal from "@/components/ModalUI/ViewCourseModal";
 import AdminWrapper from "@/components/AdminWrapper";
+import authMiddleware from "@/utils/authRoute";
 
 const CourseList = () => {
   const router = useRouter();
@@ -158,4 +159,4 @@ const CourseList = () => {
   );
 };
 
-export default CourseList;
+export default authMiddleware(CourseList);

@@ -10,6 +10,7 @@ import ActionWrapper from "@/components/ActionWrapper";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import AdminWrapper from "@/components/AdminWrapper";
+import authMiddleware from "@/utils/authRoute";
 
 const Instructor = () => {
   const router = useRouter();
@@ -205,4 +206,4 @@ const Instructor = () => {
   );
 };
 
-export default Instructor;
+export default authMiddleware(Instructor);

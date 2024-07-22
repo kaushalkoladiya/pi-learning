@@ -21,6 +21,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import CreateAssignmentModal from "@/components/ModalUI/CreateAssignmentModal";
 import EditAssignmentModal from "@/components/ModalUI/EditAssignmentModal";
 import AdminWrapper from "@/components/AdminWrapper";
+import authMiddleware from "@/utils/authRoute";
 
 const AssignmentsPage = () => {
   const router = useRouter();
@@ -216,4 +217,4 @@ const AssignmentsPage = () => {
   );
 };
 
-export default AssignmentsPage;
+export default authMiddleware(AssignmentsPage);
