@@ -21,8 +21,8 @@ import PropTypes from "prop-types";
 
 const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
   const [form, setForm] = useState({
+    courseId: "",
     lessonId: "",
-    assignmentId: "",
     assignmentName: "",
     filePic: null,
     filePicName: "",
@@ -30,10 +30,11 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
     dueDate: "",
   });
 
+  const [courses, setCourses] = useState([]);
   const [lessons, setLessons] = useState([]);
   const [errors, setErrors] = useState({
+    courseId: "",
     lessonId: "",
-    assignmentId: "",
     assignmentName: "",
     assignmentUrl: "",
     dueDate: "",
@@ -43,12 +44,22 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   useEffect(() => {
-    fetchLessons();
+    fetchCourses();
   }, []);
 
-  const fetchLessons = async () => {
+  const fetchCourses = async () => {
     try {
-      const response = await fetch(`${SERVER_URL}/api/lessons`);
+      const response = await fetch(`${SERVER_URL}/api/courses`);
+      const data = await response.json();
+      setCourses(data);
+    } catch (error) {
+      console.error("Error fetching courses:", error);
+    }
+  };
+
+  const fetchLessons = async (courseId) => {
+    try {
+      const response = await fetch(`${SERVER_URL}/api/lessons/course/${courseId}`);
       const data = await response.json();
       setLessons(data);
     } catch (error) {
@@ -62,6 +73,17 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
       ...form,
       [name]: value,
     });
+
+    if (name === "courseId") {
+      const selectedCourse = courses.find(course => course.course_id === value);
+      setForm({
+        ...form,
+        courseId: value,
+        courseName: selectedCourse ? selectedCourse.course_title : "",
+        lessonId: "",
+      });
+      fetchLessons(value);
+    }
   };
 
   const handleFileChange = (e) => {
@@ -82,7 +104,7 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
           "Content-Type": "multipart/form-data",
         },
       });
-      const fileURL = 'https://pilearningcapstone.blob.core.windows.net/pi-learning/' + response.data[0].blobName;;
+      const fileURL = 'https://pilearningcapstone.blob.core.windows.net/pi-learning/' + response.data[0].blobName;
       setForm((prevForm) => ({
         ...prevForm,
         assignmentUrl: fileURL,
@@ -115,18 +137,18 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            assignment_id: form.assignmentId,
-            assignment_name: form.assignmentName,
-            assignment_url: form.assignmentUrl,
-            due_date: form.dueDate,
-            lesson_id: form.lessonId,
-          }),
+          assignment_name: form.assignmentName,
+          assignment_url: form.assignmentUrl,
+          due_date: form.dueDate,
+          lesson_id: form.lessonId,
+          course_id: form.courseId,
+        }),
       });
 
       const data = await response.json();
       if (!response.ok) {
         if (data.error) {
-          setErrors((prevErrors) => ({ ...prevErrors, assignmentId: data.error }));
+          setErrors((prevErrors) => ({ ...prevErrors, common: data.error }));
         }
       } else {
         handleClose();
@@ -161,6 +183,27 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
         <form onSubmit={handleSubmit}>
           {errors.common && <Alert severity="error">{errors.common}</Alert>}
           <FormControl fullWidth sx={{ mb: 2 }}>
+            <InputLabel id="course-label">Course</InputLabel>
+            <Select
+              labelId="course-label"
+              id="courseId"
+              name="courseId"
+              value={form.courseId}
+              onChange={handleChange}
+              label="Course"
+              error={!!errors.courseId}
+            >
+              {courses.map((course) => (
+                <MenuItem key={course.course_id} value={course.course_id}>
+                  {course.course_title}
+                </MenuItem>
+              ))}
+            </Select>
+            {errors.courseId && (
+              <Alert severity="error">{errors.courseId}</Alert>
+            )}
+          </FormControl>
+          <FormControl fullWidth sx={{ mb: 2 }}>
             <InputLabel id="lesson-label">Lesson</InputLabel>
             <Select
               labelId="lesson-label"
@@ -171,26 +214,22 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
               label="Lesson"
               error={!!errors.lessonId}
             >
-              {lessons.map((lesson) => (
-                <MenuItem key={lesson.lesson_id} value={lesson.lesson_id}>
-                  {lesson.lesson_name}
+              {lessons.length > 0 ? (
+                lessons.map((lesson) => (
+                  <MenuItem key={lesson.lesson_id} value={lesson.lesson_id}>
+                    {lesson.lesson_name}
+                  </MenuItem>
+                ))
+              ) : (
+                <MenuItem value="">
+                  Selected course has no lessons
                 </MenuItem>
-              ))}
+              )}
             </Select>
             {errors.lessonId && (
               <Alert severity="error">{errors.lessonId}</Alert>
             )}
           </FormControl>
-          <TextField
-            fullWidth
-            label="Assignment ID"
-            name="assignmentId"
-            value={form.assignmentId}
-            onChange={handleChange}
-            error={!!errors.assignmentId}
-            helperText={errors.assignmentId}
-            sx={{ mb: 2 }}
-          />
           <TextField
             fullWidth
             label="Assignment Name"

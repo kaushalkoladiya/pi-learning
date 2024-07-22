@@ -8,10 +8,6 @@ import {
   Alert,
   IconButton,
   Snackbar,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
 } from "@mui/material";
 import { PhotoCamera } from "@mui/icons-material";
 import styled from "@emotion/styled";
@@ -44,14 +40,14 @@ const EditAssignmentModal = ({
 
   useEffect(() => {
     if (assignment?.lesson_id) {
-        fetchLessonName(assignment.lesson_id);
-      }
+      fetchLessonName(assignment.lesson_id);
+    }
     setForm({
       lessonName: assignment.lessonName || "",
       assignmentId: assignment.assignment_id || "",
       assignmentName: assignment.assignment_name || "",
-      assignmentUrl: assignment.assignmentUrl || "",
-      dueDate: assignment.dueDate || "",
+      assignmentUrl: assignment.assignment_url || "",
+      dueDate: assignment.due_date || "",
     });
   }, [assignment]);
 
@@ -94,7 +90,7 @@ const EditAssignmentModal = ({
           "Content-Type": "multipart/form-data",
         },
       });
-      const fileURL = 'https://pilearningcapstone.blob.core.windows.net/pi-learning/' + response.data[0].blobName;;
+      const fileURL = 'https://pilearningcapstone.blob.core.windows.net/pi-learning/' + response.data[0].blobName;
       setForm((prevForm) => ({
         ...prevForm,
         assignmentUrl: fileURL,
@@ -122,7 +118,7 @@ const EditAssignmentModal = ({
 
     try {
       const response = await fetch(
-        `${SERVER_URL}/api/assignments/${assignment.assignmentId}`,
+        `${SERVER_URL}/api/assignments/${form.assignmentId}`,
         {
           method: "PUT",
           headers: {
@@ -133,7 +129,7 @@ const EditAssignmentModal = ({
             assignment_name: form.assignmentName,
             assignment_url: form.assignmentUrl,
             due_date: form.dueDate,
-            lesson_id: form.lessonId,
+            lesson_id: assignment.lesson_id, // assuming lesson_id is static and coming from the assignment prop
           }),
         }
       );

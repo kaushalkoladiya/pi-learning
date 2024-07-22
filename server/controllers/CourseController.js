@@ -1,9 +1,11 @@
 import Course from '../models/CourseModel.js'; 
+import User from '../models/userModel.js';
+import Lesson from '../models/LessonModel.js';
+import Assignment from '../models/AssignmentModel.js';
 
 // CREATE a new course
 export const createCourse = async (req, res) => {
     const courseData = {
-        course_id: req.body.course_id,
         course_title: req.body.course_title,
         short_description: req.body.short_description,
         long_description: req.body.long_description,
@@ -13,11 +15,6 @@ export const createCourse = async (req, res) => {
     };
 
     try {
-        const existingCourse = await Course.findOne({ where: { course_id: courseData.course_id } });
-        if (existingCourse) {
-            return res.status(400).json({ error: 'Course ID must be unique' });
-        }
-
         const course = await Course.create(courseData);
         res.status(201).json(course);
     } catch (err) {
@@ -56,11 +53,28 @@ export const getCourseByProgramCode = async (req, res) => {
     }
 };
 
+// READ a single course by ID with basic details
+export const getCourseDetailsById = async (req, res) => {
+    try {
+        const course = await Course.findOne({
+            where: { course_id: req.params.id },
+        });
+
+        if (!course) {
+            return res.status(404).send({ error: 'Course not found' });
+        }
+
+        return res.send(course);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+};
+
 // READ a single course by ID
 export const getCourseById = async (req, res) => {
     try {
         const course = await Course.findOne({
-            where: { id: req.params.id },
+            where: {course_id: req.params.id },
             include: [{
                 model: User,
                 as: 'Instructor',
@@ -70,7 +84,6 @@ export const getCourseById = async (req, res) => {
         if (!course) {
             return res.status(404).send({ error: 'Course not found' });
         }
-
         const assignments = await Assignment.findAll({
             where: {
                 course_id: course.get('id')
