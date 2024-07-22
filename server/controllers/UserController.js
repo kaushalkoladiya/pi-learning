@@ -1,17 +1,122 @@
 import bcrypt from "bcrypt";
 import User from "../models/userModel.js";
 import UserAddress from "../models/UserAddressModel.js";
+import Joi from "joi";
+import Country from "../models/CountryModel.js";
+import Department from "../models/DepartmentModel.js";
+import Province from "../models/ProvinceModel.js";
 
 const checkEmpty = (value) => {
   return value === undefined || value === null || value === "";
 };
 
-const getProfile = async (req, res) => {
+const profileSchema = Joi.object({
+  first_name: Joi.string().max(50).required(),
+  last_name: Joi.string().max(50).required(),
+  date_of_birth: Joi.date().required(),
+  gender: Joi.string().valid('male', 'female', 'other').required(),
+  phone_number: Joi.string().max(12).allow(null, ''),
+  home_country: Joi.string().max(3).required(),
+  department_code: Joi.string().max(3).required(),
+  address: Joi.string().max(255).required(),
+  city: Joi.string().max(100).required(),
+  province_code: Joi.string().max(3).required(),
+  zip_code: Joi.string().max(10).required(),
+  biography: Joi.string().allow(null, ''),
+  profile_pic: Joi.string().uri().allow(null, ''),
+});
+
+export const getProfile = async (req, res) => {
   try {
-    const user = await User.findByPk(req.user.id);
+    const user = await User.findByPk(req.user.id, {
+      attributes: { exclude: ["password"] },
+      include: [{ model: UserAddress }],
+    });
     res.json(user);
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+};
+
+export const updateProfile = async (req, res) => {
+  try {
+    const { error } = profileSchema.validate(req.body);
+  if (error) {
+    console.log(error.details);
+    return res.status(400).json({ error: error.details[0].message });
+  }
+
+    const user = await User.findByPk(req.user.id);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const {
+      first_name,
+      last_name,
+      date_of_birth,
+      phone_number,
+      home_country,
+      department_code,
+      address,
+      city,
+      province_code,
+      zip_code,
+      biography,
+      profile_pic,
+    } = req.body;
+
+    const updateData = {};
+
+    if (!checkEmpty(first_name)) {
+      updateData.first_name = first_name;
+    }
+    if (!checkEmpty(last_name)) {
+      updateData.last_name = last_name;
+    }
+    if (!checkEmpty(date_of_birth)) {
+      updateData.date_of_birth = date_of_birth;
+    }
+    if (!checkEmpty(phone_number)) {
+      updateData.phone_number = phone_number;
+    }
+    if (!checkEmpty(department_code)) {
+      updateData.department_code = department_code;
+    }
+    if (!checkEmpty(home_country)) {
+      updateData.home_country = home_country;
+    }
+    if (!checkEmpty(biography)) {
+      updateData.biography = biography;
+    }
+    if (!checkEmpty(profile_pic)) {
+      updateData.profile_pic = profile_pic;
+    }
+
+    await user.update(updateData);
+
+    // Handle UserAddress update
+    const addressData = {
+      address: address,
+      city: city,
+      province_code: province_code,
+      zip_code: zip_code,
+    };
+
+    const userAddress = await UserAddress.findOne({
+      where: { user_id: user.id },
+    });
+
+    if (userAddress) {
+      await userAddress.update(addressData);
+    } else {
+      addressData.user_id = user.id;
+      await UserAddress.create(addressData);
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -198,4 +303,29 @@ export const deleteInstructor = async (req, res) => {
   }
 };
 
-export { getProfile };
+export const getCountries = async (req, res) => {
+  try {
+    const countries = await Country.findAll();
+    res.json(countries);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const getDepartments = async (req, res) => {
+  try {
+    const departments = await Department.findAll();
+    res.json(departments);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const getProvinces = async (req, res) => {
+  try {
+    const provinces = await Province.findAll();
+    res.json(provinces);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

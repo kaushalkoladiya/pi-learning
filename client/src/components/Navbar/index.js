@@ -117,6 +117,11 @@ const ADMIN_ROUTES = [
     path: "/admin/program",
   },
   {
+    text: 'Programs',
+    icon: <SchoolSharp/>,
+    path: '/admin/program',
+  },
+  {
     text: "Course",
     icon: <SubjectIcon />,
     path: "/admin/course",

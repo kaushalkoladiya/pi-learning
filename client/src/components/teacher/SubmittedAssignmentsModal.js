@@ -1,4 +1,3 @@
-// components/teacher/SubmittedAssignmentsModal.js
 import React, { useState, useEffect } from 'react';
 import {
   Dialog,
@@ -58,6 +57,7 @@ const SubmittedAssignmentsModal = ({ open, onClose, assignmentId }) => {
   const handleCloseGradingModal = () => {
     setOpenGradingModal(false);
     setSelectedSubmission(null);
+    fetchSubmissions();
   };
 
   // Group submissions by student

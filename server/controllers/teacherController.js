@@ -4,6 +4,7 @@ import Assignment from '../models/AssignmentModel.js';
 import Lesson from '../models/LessonModel.js';
 import Course from '../models/CourseModel.js';
 import AssignmentSubmission from '../models/AssignmentSubmissionModel.js';
+import LessonFile from '../models/LessonFileModel.js';
 
 export const getCoursesByInstructor = async (req, res) => {
   try {
@@ -49,6 +50,8 @@ export const getLessonsByCourse = async (req, res) => {
   try {
     const lessons = await Lesson.findAll({
       where: { course_id: courseId },
+      include: [{ model: LessonFile }],
+      order: [['created_at', 'ASC']],
     });
     res.status(200).json(lessons);
   } catch (error) {

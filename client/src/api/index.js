@@ -97,3 +97,34 @@ export const submitAssignment = async (id, payload) => {
     }
   );
 };
+
+export const getProfile = async () => {
+  return await axiosInstance.get(
+    `/api/profile`
+  );
+};
+
+export const updateProfile = async (profile) => {
+  return await axiosInstance.put(
+    `/api/profile`,
+    profile
+  );
+};
+
+export const getCountries = async () => {
+  return await axiosInstance.get(
+    `/api/countries`
+  );
+};
+
+export const getDepartments = async () => {
+  return await axiosInstance.get(
+    `/api/departments`
+  );
+};
+
+export const getProvinces = async () => {
+  return await axiosInstance.get(
+    `/api/provinces`
+  );
+};
