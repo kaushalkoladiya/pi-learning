@@ -20,6 +20,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import CreateAssignmentModal from "@/components/ModalUI/CreateAssignmentModal";
 import EditAssignmentModal from "@/components/ModalUI/EditAssignmentModal";
+import AdminWrapper from "@/components/AdminWrapper";
+import authMiddleware from "@/utils/authRoute";
 
 const AssignmentsPage = () => {
   const router = useRouter();
@@ -101,116 +103,118 @@ const AssignmentsPage = () => {
   };
 
   return (
-    <Box sx={{ bgcolor: "#f5f5f5", minHeight: "100vh", py: 4 }}>
-      <Box sx={{ maxWidth: "1200px", mx: "auto", p: 3 }}>
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          mb={3}
-        >
-          <Typography variant="h4">Assignments Management</Typography>
-          <Button
-            size="medium"
-            variant="contained"
-            color="primary"
-            onClick={handleCreateModalOpen}
+    <AdminWrapper>
+      <Box sx={{ bgcolor: "#f5f5f5", minHeight: "100vh", py: 4 }}>
+        <Box sx={{ maxWidth: "1200px", mx: "auto", p: 3 }}>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            mb={3}
           >
-            Create New Assignment
-          </Button>
-        </Box>
+            <Typography variant="h4">Assignments Management</Typography>
+            <Button
+              size="medium"
+              variant="contained"
+              color="primary"
+              onClick={handleCreateModalOpen}
+            >
+              Create New Assignment
+            </Button>
+          </Box>
 
-        {error && (
-          <Alert severity="error" onClose={() => setError("")}>
-            {error}
-          </Alert>
-        )}
+          {error && (
+            <Alert severity="error" onClose={() => setError("")}>
+              {error}
+            </Alert>
+          )}
 
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>ID</TableCell>
-              <TableCell>Assignment File</TableCell>
-              <TableCell>Lesson Name</TableCell>
-              <TableCell>Due Date</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {assignments.length > 0 ? (
-              assignments.map((assignment) => (
-                <TableRow key={assignment.assignment_id}>
-                  <TableCell>{assignment.assignment_id}</TableCell>
-                  <TableCell>
-                    <Typography
-                      component="a"
-                      href={assignment.assignment_url}
-                      target="_blank"
-                      style={{ textDecoration: "underline" , color: "#1769aa" }}
-                    >
-                      {assignment.assignment_name}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>{assignment.lesson_name}</TableCell>
-                  <TableCell>
-                    {new Date(assignment.due_date).toLocaleString()}
-                  </TableCell>
-                  <TableCell>
-                    <ActionWrapper>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        sx={{
-                          width: "80px",
-                          marginRight: "8px",
-                          marginBottom: "8px",
-                        }}
-                        onClick={() => handleEditModalOpen(assignment)}
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>ID</TableCell>
+                <TableCell>Assignment File</TableCell>
+                <TableCell>Lesson Name</TableCell>
+                <TableCell>Due Date</TableCell>
+                <TableCell>Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {assignments.length > 0 ? (
+                assignments.map((assignment) => (
+                  <TableRow key={assignment.assignment_id}>
+                    <TableCell>{assignment.assignment_id}</TableCell>
+                    <TableCell>
+                      <Typography
+                        component="a"
+                        href={assignment.assignment_url}
+                        target="_blank"
+                        style={{ textDecoration: "underline", color: "#1769aa" }}
                       >
-                        Edit
-                      </Button>
-                    </ActionWrapper>
-                    <ActionWrapper>
-                      <Button
-                        variant="contained"
-                        color="error"
-                        sx={{ width: "80px", marginRight: "8px" }}
-                        onClick={() => handleDelete(assignment.assignment_id)}
-                      >
-                        Delete
-                      </Button>
-                    </ActionWrapper>
+                        {assignment.assignment_name}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>{assignment.lesson_name}</TableCell>
+                    <TableCell>
+                      {new Date(assignment.due_date).toLocaleString()}
+                    </TableCell>
+                    <TableCell>
+                      <ActionWrapper>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          sx={{
+                            width: "80px",
+                            marginRight: "8px",
+                            marginBottom: "8px",
+                          }}
+                          onClick={() => handleEditModalOpen(assignment)}
+                        >
+                          Edit
+                        </Button>
+                      </ActionWrapper>
+                      <ActionWrapper>
+                        <Button
+                          variant="contained"
+                          color="error"
+                          sx={{ width: "80px", marginRight: "8px" }}
+                          onClick={() => handleDelete(assignment.assignment_id)}
+                        >
+                          Delete
+                        </Button>
+                      </ActionWrapper>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={5} align="center">
+                    No assignments available
                   </TableCell>
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={5} align="center">
-                  No assignments available
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              )}
+            </TableBody>
+          </Table>
 
-        {createModalOpen && (
-          <CreateAssignmentModal
-            open={createModalOpen}
-            handleClose={handleCreateModalClose}
-            refreshAssignments={fetchAssignments}
-          />
-        )}
-        {editModalOpen && (
-          <EditAssignmentModal
-            open={editModalOpen}
-            handleClose={handleEditModalClose}
-            assignment={selectedAssignment}
-            refreshAssignments={fetchAssignments}
-          />
-        )}
+          {createModalOpen && (
+            <CreateAssignmentModal
+              open={createModalOpen}
+              handleClose={handleCreateModalClose}
+              refreshAssignments={fetchAssignments}
+            />
+          )}
+          {editModalOpen && (
+            <EditAssignmentModal
+              open={editModalOpen}
+              handleClose={handleEditModalClose}
+              assignment={selectedAssignment}
+              refreshAssignments={fetchAssignments}
+            />
+          )}
+        </Box>
       </Box>
-    </Box>
+    </AdminWrapper>
   );
 };
 
-export default AssignmentsPage;
+export default authMiddleware(AssignmentsPage);

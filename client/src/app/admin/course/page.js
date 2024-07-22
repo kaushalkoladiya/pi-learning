@@ -8,6 +8,8 @@ import CardItem from "@/components/CardUI";
 import CreateCourseModal from "@/components/ModalUI/CreateCourseModal";
 import EditCourseModal from "@/components/ModalUI/EditCourseModal";
 import ViewCourseModal from "@/components/ModalUI/ViewCourseModal";
+import AdminWrapper from "@/components/AdminWrapper";
+import authMiddleware from "@/utils/authRoute";
 
 const CourseList = () => {
   const router = useRouter();
@@ -35,7 +37,7 @@ const CourseList = () => {
   };
 
 
-  const handleEdit = async(course) => {
+  const handleEdit = async (course) => {
     setSelectedCourse(course);
     setEditModalOpen(true);
   };
@@ -81,78 +83,80 @@ const CourseList = () => {
   };
 
   return (
-    <Box sx={{ bgcolor: "#f5f5f5", minHeight: "100vh", py: 4 }}>
-      <Box sx={{ maxWidth: "1200px", mx: "auto", p: 3 }}>
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          mb={3}
-        >
-          <Typography variant="h5" component="h1" sx={{ fontWeight: "bold" }}>
-            Courses Management
-          </Typography>
-          <Button
-            size="medium"
-            variant="contained"
-            color="primary"
-            onClick={handleCreateModalOpen}
+    <AdminWrapper>
+      <Box sx={{ bgcolor: "#f5f5f5", minHeight: "100vh", py: 4 }}>
+        <Box sx={{ maxWidth: "1200px", mx: "auto", p: 3 }}>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            mb={3}
           >
-            Create New Course
-          </Button>
-        </Box>
-
-        {error && (
-          <Alert severity="error" onClose={() => setError("")}>
-            {error}
-          </Alert>
-        )}
-
-        <Grid container spacing={2}>
-          {Array.isArray(courses) && courses.length > 0 ? (
-            courses.map((course) => (
-              <Grid item xs={12} sm={6} md={4} key={course?.course_id}>
-                <CardItem
-                  imageUrl={course?.profile_pic || "/default-course.png"}
-                  title={course?.course_title}
-                  subtitle={null}
-                  description={course?.short_description}
-                  onView={() => handleView(course)}
-                  onEdit={() => handleEdit(course)}
-                  onDelete={() => handleDelete(course?.course_id)}
-                />
-              </Grid>
-            ))
-          ) : (
-            <Typography variant="h6" align="center" style={{ width: "100%" }}>
-              No courses available
+            <Typography variant="h5" component="h1" sx={{ fontWeight: "bold" }}>
+              Courses Management
             </Typography>
+            <Button
+              size="medium"
+              variant="contained"
+              color="primary"
+              onClick={handleCreateModalOpen}
+            >
+              Create New Course
+            </Button>
+          </Box>
+
+          {error && (
+            <Alert severity="error" onClose={() => setError("")}>
+              {error}
+            </Alert>
           )}
-          <CreateCourseModal
-            open={createModalOpen}
-            handleClose={handleCreateModalClose}
-            refreshCourses={fetchCourses}
-          />
-          {selectedCourse && (
-          <>
-            <EditCourseModal
-              open={editModalOpen}
-              handleClose={handleEditModalClose}
-              courseData={selectedCourse}
+
+          <Grid container spacing={2}>
+            {Array.isArray(courses) && courses.length > 0 ? (
+              courses.map((course) => (
+                <Grid item xs={12} sm={6} md={4} key={course?.course_id}>
+                  <CardItem
+                    imageUrl={course?.profile_pic || "/default-course.png"}
+                    title={course?.course_title}
+                    subtitle={null}
+                    description={course?.short_description}
+                    onView={() => handleView(course)}
+                    onEdit={() => handleEdit(course)}
+                    onDelete={() => handleDelete(course?.course_id)}
+                  />
+                </Grid>
+              ))
+            ) : (
+              <Typography variant="h6" align="center" style={{ width: "100%" }}>
+                No courses available
+              </Typography>
+            )}
+            <CreateCourseModal
+              open={createModalOpen}
+              handleClose={handleCreateModalClose}
               refreshCourses={fetchCourses}
             />
-            <ViewCourseModal
-              open={viewModalOpen}
-              handleClose={handleViewModalClose}
-              courseData={selectedCourse}
-            />
+            {selectedCourse && (
+              <>
+                <EditCourseModal
+                  open={editModalOpen}
+                  handleClose={handleEditModalClose}
+                  courseData={selectedCourse}
+                  refreshCourses={fetchCourses}
+                />
+                <ViewCourseModal
+                  open={viewModalOpen}
+                  handleClose={handleViewModalClose}
+                  courseData={selectedCourse}
+                />
 
-          </>
-        )}
-        </Grid>
+              </>
+            )}
+          </Grid>
+        </Box>
       </Box>
-    </Box>
+    </AdminWrapper>
   );
 };
 
-export default CourseList;
+export default authMiddleware(CourseList);

@@ -14,6 +14,7 @@ export const createProgram = async (req, res) => {
     });
     res.status(201).json(newProgram);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: error.message });
   }
 };

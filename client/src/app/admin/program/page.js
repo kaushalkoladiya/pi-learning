@@ -8,6 +8,8 @@ import CardItem from "@/components/CardUI";
 import CreateProgramModal from "@/components/ModalUI/CreateProgramModal";
 import EditProgramModal from "@/components/ModalUI/EditProgramModal";
 import ViewProgramModal from "@/components/ModalUI/ViewProgramModal";
+import AdminWrapper from "@/components/AdminWrapper";
+import authMiddleware from "@/utils/authRoute";
 
 const ProgramList = () => {
   const router = useRouter();
@@ -67,7 +69,7 @@ const ProgramList = () => {
     }
   };
 
-  const handleView = async(program) => {
+  const handleView = async (program) => {
     setSelectedProgram(program);
     const departmentData = await fetchDepartmentData(program.department_code);
     setDepartmentData(departmentData);
@@ -94,79 +96,81 @@ const ProgramList = () => {
   };
 
   return (
-    <Box sx={{ bgcolor: "#f5f5f5", minHeight: "100vh", py: 4 }}>
-      <Box sx={{ maxWidth: "1200px", mx: "auto", p: 3 }}>
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          mb={3}
-        >
-          <Typography variant="h5" component="h1" sx={{ fontWeight: "bold" }}>
-            Programs Management
-          </Typography>
-          <Button
-            size="medium"
-            variant="contained"
-            color="primary"
-            onClick={handleCreateModalOpen}
+    <AdminWrapper>
+      <Box sx={{ bgcolor: "#f5f5f5", minHeight: "100vh", py: 4 }}>
+        <Box sx={{ maxWidth: "1200px", mx: "auto", p: 3 }}>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            mb={3}
           >
-            Create New Program
-          </Button>
-        </Box>
-
-        {error && (
-          <Alert severity="error" onClose={() => setError("")}>
-            {error}
-          </Alert>
-        )}
-
-        <Grid container spacing={2}>
-          {Array.isArray(programs) && programs.length > 0 ? (
-            programs.map((program) => (
-              <Grid item xs={12} sm={6} md={4} key={program?.program_id}>
-                <CardItem
-                  imageUrl={program?.profile_pic || "/default-program.png"}
-                  title={program?.program_title}
-                  subtitle={`$${program?.price}`}
-                  description={program?.short_description}
-                  onView={() => handleView(program)}
-                  onEdit={() => handleEdit(program)}
-                  onDelete={() => handleDelete(program?.program_id)}
-                />
-              </Grid>
-            ))
-          ) : (
-            <Typography variant="h6" align="center" style={{ width: "100%" }}>
-              No programs available
+            <Typography variant="h5" component="h1" sx={{ fontWeight: "bold" }}>
+              Programs Management
             </Typography>
-          )}
-        </Grid>
+            <Button
+              size="medium"
+              variant="contained"
+              color="primary"
+              onClick={handleCreateModalOpen}
+            >
+              Create New Program
+            </Button>
+          </Box>
 
-        <CreateProgramModal
-          open={createModalOpen}
-          handleClose={handleCreateModalClose}
-          refreshPrograms={fetchPrograms}
-        />
-        {selectedProgram && (
-          <>
-            <EditProgramModal
-              open={editModalOpen}
-              handleClose={handleEditModalClose}
-              programData={selectedProgram}
-              refreshPrograms={fetchPrograms}
-            />
-            <ViewProgramModal
-              open={viewModalOpen}
-              handleClose={handleViewModalClose}
-              programData={selectedProgram}
-              departmentData={departmentData}
-            />
-          </>
-        )}
+          {error && (
+            <Alert severity="error" onClose={() => setError("")}>
+              {error}
+            </Alert>
+          )}
+
+          <Grid container spacing={2}>
+            {Array.isArray(programs) && programs.length > 0 ? (
+              programs.map((program) => (
+                <Grid item xs={12} sm={6} md={4} key={program?.program_id}>
+                  <CardItem
+                    imageUrl={program?.profile_pic || "/default-program.png"}
+                    title={program?.program_title}
+                    subtitle={`$${program?.price}`}
+                    description={program?.short_description}
+                    onView={() => handleView(program)}
+                    onEdit={() => handleEdit(program)}
+                    onDelete={() => handleDelete(program?.program_id)}
+                  />
+                </Grid>
+              ))
+            ) : (
+              <Typography variant="h6" align="center" style={{ width: "100%" }}>
+                No programs available
+              </Typography>
+            )}
+          </Grid>
+
+          <CreateProgramModal
+            open={createModalOpen}
+            handleClose={handleCreateModalClose}
+            refreshPrograms={fetchPrograms}
+          />
+          {selectedProgram && (
+            <>
+              <EditProgramModal
+                open={editModalOpen}
+                handleClose={handleEditModalClose}
+                programData={selectedProgram}
+                refreshPrograms={fetchPrograms}
+              />
+              <ViewProgramModal
+                open={viewModalOpen}
+                handleClose={handleViewModalClose}
+                programData={selectedProgram}
+                departmentData={departmentData}
+              />
+            </>
+          )}
+        </Box>
       </Box>
-    </Box>
+    </AdminWrapper>
   );
 };
 
-export default ProgramList;
+export default authMiddleware(ProgramList);

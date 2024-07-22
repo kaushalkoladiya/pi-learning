@@ -1,7 +1,8 @@
-import Course from '../models/CourseModel.js'; 
-import User from '../models/userModel.js';
-import Lesson from '../models/LessonModel.js';
 import Assignment from '../models/AssignmentModel.js';
+import Course from '../models/CourseModel.js'; 
+import Enrollment from '../models/EnrollmentModel.js';
+import Lesson from '../models/LessonModel.js';
+import User from '../models/userModel.js';
 
 // CREATE a new course
 export const createCourse = async (req, res) => {
@@ -18,6 +19,7 @@ export const createCourse = async (req, res) => {
         const course = await Course.create(courseData);
         res.status(201).json(course);
     } catch (err) {
+        console.log(err);
         res.status(400).json({ error: err.message });
     }
 };

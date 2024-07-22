@@ -1,32 +1,27 @@
 "use client";
 
-import React from "react";
-import { styled, useTheme } from "@mui/material/styles";
-import MuiDrawer from "@mui/material/Drawer";
-import MuiAppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import List from "@mui/material/List";
-import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
-import MenuBookIcon from "@mui/icons-material/MenuBook";
-import AssignmentIcon from "@mui/icons-material/Assignment";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import { useRouter } from "next/navigation";
+import React from 'react'
+import { styled } from '@mui/material/styles';
+import MuiDrawer from '@mui/material/Drawer';
+import MuiAppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import List from '@mui/material/List';
+import Typography from '@mui/material/Typography';
+import Divider from '@mui/material/Divider';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import { useRouter } from 'next/navigation';
 
-import Person4Icon from "@mui/icons-material/Person4";
-import SubjectIcon from "@mui/icons-material/Subject";
-import { Box, Button, CssBaseline } from "@mui/material";
-import useAuth from "@/hooks/useAuth";
-import { USER_ROLES } from "@/constants/roles";
-import { APP_NAME } from "@/constants";
-import { SchoolSharp } from "@mui/icons-material";
+import Person4Icon from '@mui/icons-material/Person4';
+import SubjectIcon from '@mui/icons-material/Subject';
+import { Box, Button } from '@mui/material';
+import useAuth from '@/hooks/useAuth';
+import { APP_NAME } from '@/constants';
+import { SchoolSharp } from '@mui/icons-material';
 
 const drawerWidth = 240;
 
@@ -117,11 +112,6 @@ const ADMIN_ROUTES = [
     path: "/admin/program",
   },
   {
-    text: 'Programs',
-    icon: <SchoolSharp/>,
-    path: '/admin/program',
-  },
-  {
     text: "Course",
     icon: <SubjectIcon />,
     path: "/admin/course",
@@ -138,19 +128,9 @@ const ADMIN_ROUTES = [
   },
 ];
 
-const Navbar = () => {
+const AdminNavbar = () => {
   const { isUserAdmin, logout } = useAuth();
   const router = useRouter();
-  const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
-
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
 
   const handleRoute = (path) => {
     router.push(path);
@@ -167,31 +147,19 @@ const Navbar = () => {
 
   return (
     <>
-      <CssBaseline />
-      <AppBar position="fixed" open={open}>
+      <AppBar position="fixed">
         <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={{
-              marginRight: 5,
-              ...(open && { display: "none" }),
-            }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            {APP_NAME}
-          </Typography>
-          <Button
-            color="inherit"
-            onClick={handleLogout}
-            sx={{ marginLeft: "auto" }}
-          >
-            Logout
-          </Button>
+          <Box display="flex" alignItems="center" justifyContent="space-between" sx={{ width: '100%' }}>
+            <Typography variant="h6" noWrap>
+              {APP_NAME}
+            </Typography>
+            <Box display="flex" alignItems="center">
+              <Button color="inherit" onClick={() => handleRoute('/profile')}>
+                Profile
+              </Button>
+              <Button color="inherit" onClick={logout}>Logout</Button>
+            </Box>
+          </Box>
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
@@ -201,13 +169,6 @@ const Navbar = () => {
               {APP_NAME}
             </Typography>
           </Box>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === "rtl" ? (
-              <ChevronRightIcon />
-            ) : (
-              <ChevronLeftIcon />
-            )}
-          </IconButton>
         </DrawerHeader>
         <Divider />
         <List>
@@ -247,6 +208,4 @@ const Navbar = () => {
   );
 };
 
-Navbar.propTypes = {};
-
-export default Navbar;
+export default AdminNavbar;

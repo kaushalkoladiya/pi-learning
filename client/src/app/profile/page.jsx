@@ -6,6 +6,7 @@ import swal from 'sweetalert';
 import { getCountries, getDepartments, getProfile, getProvinces, updateProfile, uploadFile } from '@/api';
 import { AZURE_BASE_URL } from '@/constants';
 import ProfileBanner from '@/components/profile/ProfileBanner';
+import authMiddleware from '@/utils/authRoute';
 
 const ProfileEdit = () => {
   const [profile, setProfile] = useState({
@@ -333,4 +334,4 @@ const ProfileEdit = () => {
   );
 };
 
-export default ProfileEdit;
+export default authMiddleware(ProfileEdit);

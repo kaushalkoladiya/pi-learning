@@ -2,6 +2,7 @@
 import React from 'react';
 import { Box, Typography, Toolbar } from '@mui/material';
 import useAuth from '@/hooks/useAuth';
+import authMiddleware from '@/utils/authRoute';
 
 const AdminDashboard = () => {
 
@@ -16,17 +17,18 @@ const AdminDashboard = () => {
   }
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <Toolbar />
-        <Typography variant="h4">Admin Dashboard</Typography>
-        <Typography>Welcome, Admin!</Typography>
+    <AdminWrapper>
+      <Box sx={{ display: 'flex' }}>
+        <Box>
+          <Typography variant="h4">Admin Dashboard</Typography>
+          <Typography>Welcome, Admin!</Typography>
+        </Box>
       </Box>
-    </Box>
+    </AdminWrapper>
   );
 };
 
-export default AdminDashboard;
+export default authMiddleware(AdminDashboard);
 
 
 
