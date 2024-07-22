@@ -7,6 +7,7 @@ import cors from 'cors';
 import sequelize from './database.js';
 import associateModels from './models/config/associateModels.js';
 
+
 import authRoutes from './routers/authRoutes.js';
 import userRouter from './routers/userRouter.js';
 import uploadRouter from './routers/uploadRouter.js';
@@ -21,6 +22,7 @@ import lessonRouter from './routers/lessonRouter.js';
 import assignmentRouter from './routers/assignmentRouter.js';
 import studentRouter from './routers/studentRouter.js';
 import tokenRoute from './routers/tokenRoute.js';
+import instructorRouter from './routers/instructorRouter.js';
 
 import Country from './models/CountryModel.js';
 import Province from './models/ProvinceModel.js';
@@ -37,8 +39,8 @@ import Enrollment from './models/EnrollmentModel.js';
 import Grade from './models/GradeModel.js';
 import Certificate from './models/CertificateModel.js';
 import IssuedCertificate from './models/IssueCertificateModel.js';
+
 import generateSecretKey from './utils/jwtsecretkey.js';
-import instructorRouter from './routers/instructorRouter.js';
 
 // Setup __dirname equivalent for ES Modules
 const __filename = fileURLToPath(import.meta.url);

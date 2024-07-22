@@ -35,7 +35,7 @@ Assignment.init({
     onDelete: 'CASCADE',
   },
   course_id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING(8),
     allowNull: false,
     references: {
       model: Course,

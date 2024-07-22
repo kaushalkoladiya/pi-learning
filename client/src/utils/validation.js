@@ -26,33 +26,46 @@ export const validateAssigmentFileName = (assignmentName) => assignmentFileRegex
 export const validateField = (fieldName, value) => {
   switch (fieldName) {
     case "firstName":
+    case "firstName":
       if (!value) {
         return "First name is required";
+        return "First name is required";
       } else if (!validateName(value)) {
+        return "First name contains only letters";
         return "First name contains only letters";
       }
       break;
     case "lastName":
+    case "lastName":
       if (!value) {
         return "Last name is required";
+        return "Last name is required";
       } else if (!validateName(value)) {
+        return "Last name contains only letters";
         return "Last name contains only letters";
       }
       break;
     case "gender":
+    case "gender":
       if (!value) {
+        return "Gender is required";
         return "Gender is required";
       }
       break;
     case "email":
+    case "email":
       if (!value) {
         return "Email is required";
+        return "Email is required";
       } else if (!validateEmail(value)) {
+        return "Fill correct email format (something@gmail.com)";
         return "Fill correct email format (something@gmail.com)";
       }
       break;
     case "password":
+    case "password":
       if (!value) {
+        return "Password is required";
         return "Password is required";
       } else if (!validatePassword(value)) {
         return "Password must be at least 8 characters long, and include uppercase, lowercase, number, and special character";
@@ -194,11 +207,14 @@ export const validateField = (fieldName, value) => {
       }
       break;
       case "dueDate":
+      case "dueDate":
       if (!value) {
+        return "Due Date is required";
         return "Due Date is required";
       }
       break;
     default:
+      return "";
       return "";
   }
 };
