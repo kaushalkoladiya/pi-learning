@@ -1,4 +1,7 @@
 import Course from '../models/CourseModel.js'; 
+import Enrollment from '../models/EnrollmentModel.js';
+import Lesson from '../models/LessonModel.js';
+import User from '../models/userModel.js';
 
 // CREATE a new course
 export const createCourse = async (req, res) => {

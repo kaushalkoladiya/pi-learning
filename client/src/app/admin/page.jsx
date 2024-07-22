@@ -1,6 +1,5 @@
 "use client";
 import React from 'react';
-import Navbar from '@/components/Navbar';
 import { Box, Typography, Toolbar } from '@mui/material';
 import useAuth from '@/hooks/useAuth';
 
@@ -16,14 +15,14 @@ const AdminDashboard = () => {
   }
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      { /*<Navbar /> */}
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <Toolbar />
-        <Typography variant="h4">Admin Dashboard</Typography>
-        <Typography>Welcome, Admin!</Typography>
+    <AdminWrapper>
+      <Box sx={{ display: 'flex' }}>
+        <Box>
+          <Typography variant="h4">Admin Dashboard</Typography>
+          <Typography>Welcome, Admin!</Typography>
+        </Box>
       </Box>
-    </Box>
+    </AdminWrapper>
   );
 };
 

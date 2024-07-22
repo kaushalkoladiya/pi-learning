@@ -1,19 +1,15 @@
 'use client';
 
 import React from 'react'
-import { styled, useTheme } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import MenuBookIcon from '@mui/icons-material/MenuBook'; 
-import AssignmentIcon from '@mui/icons-material/Assignment'; 
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
+import AssignmentIcon from '@mui/icons-material/Assignment';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -22,9 +18,8 @@ import { useRouter } from 'next/navigation';
 
 import Person4Icon from '@mui/icons-material/Person4';
 import SubjectIcon from '@mui/icons-material/Subject';
-import { Box, CssBaseline } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import useAuth from '@/hooks/useAuth';
-import { USER_ROLES } from '@/constants/roles';
 import { APP_NAME } from '@/constants';
 import { SchoolSharp } from '@mui/icons-material';
 
@@ -115,7 +110,7 @@ const ADMIN_ROUTES = [
   },
   {
     text: 'Programs',
-    icon: <SchoolSharp/>,
+    icon: <SchoolSharp />,
     path: '/admin/program',
   },
   {
@@ -135,19 +130,9 @@ const ADMIN_ROUTES = [
   }
 ];
 
-const Navbar = () => {
-  const { isUserAdmin } = useAuth();
+const AdminNavbar = () => {
+  const { isUserAdmin, logout } = useAuth();
   const router = useRouter();
-  const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
-
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
 
   const handleRoute = (path) => {
     router.push(path);
@@ -159,24 +144,19 @@ const Navbar = () => {
 
   return (
     <>
-      <CssBaseline />
-      <AppBar position="fixed" open={open}>
+      <AppBar position="fixed">
         <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={{
-              marginRight: 5,
-              ...(open && { display: 'none' }),
-            }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            {APP_NAME}
-          </Typography>
+          <Box display="flex" alignItems="center" justifyContent="space-between" sx={{ width: '100%' }}>
+            <Typography variant="h6" noWrap>
+              {APP_NAME}
+            </Typography>
+            <Box display="flex" alignItems="center">
+              <Button color="inherit" onClick={() => handleRoute('/profile')}>
+                Profile
+              </Button>
+              <Button color="inherit" onClick={logout}>Logout</Button>
+            </Box>
+          </Box>
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
@@ -186,9 +166,6 @@ const Navbar = () => {
               {APP_NAME}
             </Typography>
           </Box>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-          </IconButton>
         </DrawerHeader>
         <Divider />
         <List>
@@ -222,6 +199,4 @@ const Navbar = () => {
   )
 }
 
-Navbar.propTypes = {};
-
-export default Navbar;
+export default AdminNavbar;
