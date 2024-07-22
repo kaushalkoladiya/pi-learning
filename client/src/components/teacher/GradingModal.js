@@ -80,6 +80,20 @@ const GradingModal = ({ open, onClose, submission, assignment }) => {
           onChange={(e) => setFeedback(e.target.value)}
           margin="normal"
         />
+
+        <Box mb={2}>
+          <Typography variant="body2" color="textSecondary">
+            Previous Grade: {submission.grade !== null ? submission.grade : 'Not graded yet'}
+          </Typography>
+          <Typography variant="body2" color="textSecondary">
+            Previous feedback: {submission.feedback !== null ? submission.feedback : 'Not feedback yet'}
+          </Typography>
+        </Box>
+        <Box>
+          <Typography variant="body2" color="textSecondary">
+            Note: The student will be able to view the grade and feedback after submission.
+          </Typography>
+        </Box>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} color="primary">
