@@ -58,6 +58,7 @@ const SubmittedAssignmentsModal = ({ open, onClose, assignmentId }) => {
   const handleCloseGradingModal = () => {
     setOpenGradingModal(false);
     setSelectedSubmission(null);
+    fetchSubmissions();
   };
 
   // Group submissions by student
