@@ -146,13 +146,6 @@ export const validateField = (fieldName, value) => {
         return "Instructor ID is required";
       }
       break;
-    case "lessonId":
-      if (!value) {
-        return "Lesson ID is required";
-      } else if (!validateProgramId(value)) {
-        return "Lesson ID must contain 4 letters first and 4 digits last (e.g., LESS1234)";
-      }
-      break;
     case "lessonName":
       if (!value) {
         return "Lesson name is required";
@@ -165,25 +158,11 @@ export const validateField = (fieldName, value) => {
         return "Lesson description is required";
       }
       break;
-      case "fileId":
-      if (!value) {
-        return "File ID is required";
-      } else if (!validateProgramId(value)) {
-        return "File ID must contain 4 letters first and 4 digits last (e.g., FILE1234)";
-      }
-      break;
       case "fileName":
       if (!value) {
         return "File name is required";
       } else if (!validateFileName(value)) {
         return "File name invalid Format (Use FileName.jpeg or File_Name.docx)";
-      }
-      break;
-      case "assignmentId":
-      if (!value) {
-        return "Assignment ID is required";
-      } else if (!validateProgramId(value)) {
-        return "Assignment ID must contain 4 letters first and 4 digits last (e.g., ASST1234)";
       }
       break;
       case "assignmentName":

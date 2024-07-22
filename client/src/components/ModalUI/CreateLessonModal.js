@@ -23,7 +23,6 @@ import axios from "axios";
 
 const CreateLessonModal = ({ open, handleClose, refreshLessons }) => {
   const [form, setForm] = useState({
-    lessonId: "",
     lessonName: "",
     lessonDescription: "",
     programId: "",
@@ -31,7 +30,6 @@ const CreateLessonModal = ({ open, handleClose, refreshLessons }) => {
   });
 
   const [errors, setErrors] = useState({
-    lessonId: "",
     lessonName: "",
     lessonDescription: "",
     programId: "",
@@ -111,7 +109,6 @@ const CreateLessonModal = ({ open, handleClose, refreshLessons }) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          lesson_id: form.lessonId,
           lesson_name: form.lessonName,
           lesson_description: form.lessonDescription,
           program_id: form.programId,
@@ -122,7 +119,7 @@ const CreateLessonModal = ({ open, handleClose, refreshLessons }) => {
       const data = await response.json();
       if (!response.ok) {
         if (data.error) {
-          setErrors((prevErrors) => ({ ...prevErrors, lessonId: data.error }));
+          setErrors((prevErrors) => ({ ...prevErrors, common: data.error }));
         } else {
           setErrors((prevErrors) => ({ ...prevErrors, common: data.message }));
         }
@@ -137,7 +134,6 @@ const CreateLessonModal = ({ open, handleClose, refreshLessons }) => {
 
   const handleClear = () => {
     setForm({
-      lessonId: "",
       lessonName: "",
       lessonDescription: "",
       programId: "",
@@ -167,15 +163,6 @@ const CreateLessonModal = ({ open, handleClose, refreshLessons }) => {
                 <Typography variant="h6" mb={2}>
                   Lesson Information
                 </Typography>
-                <TextField
-                  fullWidth
-                  label="Lesson ID"
-                  name="lessonId"
-                  value={form.lessonId}
-                  onChange={handleChange}
-                  error={!!errors.lessonId}
-                  helperText={errors.lessonId}
-                />
                 <TextField
                   fullWidth
                   label="Lesson Name"

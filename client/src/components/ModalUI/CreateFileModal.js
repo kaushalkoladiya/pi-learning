@@ -13,13 +13,12 @@ import { PhotoCamera } from "@mui/icons-material";
 import styled from "@emotion/styled";
 import PropTypes from "prop-types";
 import { SERVER_URL } from "@/constants/routes";
-import { validateField} from "@/utils/validation";
+import { validateField } from "@/utils/validation";
 import axios from "axios";
 
 const LessonFilesModal = ({ open, handleClose, lessonId, refreshFiles }) => {
   const [form, setForm] = useState({
     lessonId: lessonId || "",
-    fileId: "",
     fileName: "",
     filePic: null,
     filePicName: "",
@@ -27,7 +26,6 @@ const LessonFilesModal = ({ open, handleClose, lessonId, refreshFiles }) => {
 
   const [errors, setErrors] = useState({
     lessonId: "",
-    fileId: "",
     fileName: "",
     common: "",
   });
@@ -60,7 +58,7 @@ const LessonFilesModal = ({ open, handleClose, lessonId, refreshFiles }) => {
           "Content-Type": "multipart/form-data",
         },
       });
-      const fileURL = 'https://pilearningcapstone.blob.core.windows.net/pi-learning/' + response.data[0].blobName;;
+      const fileURL = 'https://pilearningcapstone.blob.core.windows.net/pi-learning/' + response.data[0].blobName;
       setForm((prevForm) => ({
         ...prevForm,
         fileUrl: fileURL,
@@ -94,7 +92,6 @@ const LessonFilesModal = ({ open, handleClose, lessonId, refreshFiles }) => {
         },
         body: JSON.stringify({
           lesson_id: form.lessonId,
-          file_id: form.fileId,
           file_name: form.fileName,
           file_url: form.fileUrl,
         }),
@@ -103,7 +100,7 @@ const LessonFilesModal = ({ open, handleClose, lessonId, refreshFiles }) => {
       const data = await response.json();
       if (!response.ok) {
         if (data.error) {
-          setErrors((prevErrors) => ({ ...prevErrors, fileId: data.error }));
+          setErrors((prevErrors) => ({ ...prevErrors, common: data.error }));
         } else {
           setErrors((prevErrors) => ({ ...prevErrors, common: data.message }));
         }
@@ -118,8 +115,7 @@ const LessonFilesModal = ({ open, handleClose, lessonId, refreshFiles }) => {
 
   const handleClear = () => {
     setForm({
-      lessonId: lessonId  || "",
-      fileId: "",
+      lessonId: lessonId || "",
       fileName: "",
       filePic: null,
       filePicName: "",
@@ -154,16 +150,6 @@ const LessonFilesModal = ({ open, handleClose, lessonId, refreshFiles }) => {
               readOnly: true,
             }}
             sx={{ backgroundColor: "#f0f0f0", mb: 2 }}
-          />
-          <TextField
-            fullWidth
-            label="File ID"
-            name="fileId"
-            value={form.fileId}
-            onChange={handleChange}
-            error={!!errors.fileId}
-            helperText={errors.fileId}
-            sx={{ mb: 2 }}
           />
           <TextField
             fullWidth

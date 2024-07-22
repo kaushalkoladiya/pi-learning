@@ -50,7 +50,6 @@ const LessonsPage = () => {
           };
         })
       );
-      console.log(lessonsWithDetails);
       setLessons(lessonsWithDetails);
     } catch (err) {
       setError("Failed to fetch lessons");
@@ -59,7 +58,7 @@ const LessonsPage = () => {
   console.log(lessons);
   const fetchCourseDetails = async (courseId) => {
     try {
-      const response = await fetch(`${SERVER_URL}/api/courses/${courseId}`);
+      const response = await fetch(`${SERVER_URL}/api/courses/details/${courseId}`);
       const data = await response.json();
       return data;
     } catch (err) {

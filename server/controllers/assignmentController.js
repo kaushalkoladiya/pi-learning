@@ -3,52 +3,32 @@ import Assignment from "../models/AssignmentModel.js";
 // CREATE a new assignment
 export const createAssignment = async (req, res) => {
   const {
-    assignment_id,
     assignment_name,
     assignment_url,
     due_date,
     lesson_id,
+    course_id,
   } = req.body;
+
+  console.log(req.body);
   try {
-    const existingAssignment = await Assignment.findOne({
-      where: { assignment_id: req.body.assignment_id },
-    });
-    if (existingAssignment) {
-      return res.status(400).send({ error: "Assignment ID must be unique" });
-    }
-    if (assignment_url === "" && due_date === "") {
-      const assignment = await Assignment.create({
-        assignment_id: assignment_id,
-        assignment_name: assignment_name,
-        lesson_id: lesson_id,
-      });
-      res.status(201).json(assignment);
-    } else if (assignment_url === "") {
+   if (assignment_url === "") {
       // Create the assignment
       const assignment = await Assignment.create({
-        assignment_id: assignment_id,
         assignment_name: assignment_name,
         due_date: due_date,
         lesson_id: lesson_id,
-      });
-      res.status(201).json(assignment);
-    } else if (due_date === "") {
-      // Create the assignment
-      const assignment = await Assignment.create({
-        assignment_id: assignment_id,
-        assignment_name: assignment_name,
-        assignment_url: assignment_url,
-        lesson_id: lesson_id,
+        course_id: course_id,
       });
       res.status(201).json(assignment);
     } else {
       // Create the assignment
       const assignment = await Assignment.create({
-        assignment_id: assignment_id,
         assignment_name: assignment_name,
         assignment_url: assignment_url,
         due_date: due_date,
         lesson_id: lesson_id,
+        course_id: course_id,
       });
       res.status(201).json(assignment);
     }
