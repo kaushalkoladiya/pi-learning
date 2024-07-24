@@ -1,11 +1,11 @@
-import { Box, Container, CssBaseline } from '@mui/material'
+import { Box, CssBaseline } from '@mui/material'
 import React from 'react'
-import AdminNavbar from '../Navbar/AdminNavbar'
+import Navbar from '../Navbar'
 
 const AdminWrapper = ({ children }) => {
   return (
     <Box>
-      <AdminNavbar />
+      <Navbar />
       <CssBaseline />
       <Box
         marginTop="64px"
