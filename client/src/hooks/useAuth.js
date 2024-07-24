@@ -24,6 +24,10 @@ const useAuth = () => {
   const isUserAdmin = () => {
     return authSlice.role === USER_ROLES.ADMIN;
   };
+  
+  const isUserStudent = () => {
+    return authSlice.role === USER_ROLES.STUDENT;
+  };
 
   const logout = () => {
     localStorage.removeItem('token');
@@ -36,6 +40,7 @@ const useAuth = () => {
     ...authSlice,
     isUserAdmin,
     logout,
+    isUserStudent,
     isAuth: !!authSlice.token,
   };
 }

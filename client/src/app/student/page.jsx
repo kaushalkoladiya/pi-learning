@@ -12,11 +12,11 @@ import {
   Avatar
 } from '@mui/material';
 import styles from './StudentDashboard.module.css';
-import StudentNavbar from '@/components/Navbar/StudentNavbar';
 import { getStudentDashboard } from '@/api';
 import authMiddleware from '@/utils/authRoute';
 import { useRouter } from 'next/navigation';
 import StudentAssignmentSection from '@/components/StudentAssignmentSection';
+import Navbar from '@/components/Navbar';
 
 const StudentDashboard = () => {
   const router = useRouter();
@@ -40,7 +40,7 @@ const StudentDashboard = () => {
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      <StudentNavbar />
+      <Navbar />
       <Box mt={10} className={styles.hero}>
         <Box className={styles.heroText}>
           <Typography variant="h4">{(useDetails?.first_name || '' + " " + useDetails?.last_name || '').trim() || 'Unknown'}</Typography>
