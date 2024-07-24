@@ -124,7 +124,14 @@ const CourseList = () => {
               courses.map((course) => (
                 <Grid item xs={12} sm={6} md={4} key={course?.course_id}>
                   <CardItem
-                    imageUrl={course?.profile_pic || "/default-course.png"}
+                    imageUrl={course?.profile_pic || ""}
+                    avatar={
+                      !course?.profile_pic && (
+                        <Avatar>
+                          {getInitialsFromTitle(course?.course_title)}
+                        </Avatar>
+                      )
+                    }
                     title={course?.course_title}
                     subtitle={null}
                     description={course?.short_description}

@@ -139,7 +139,14 @@ const ProgramList = () => {
               programs.map((program) => (
                 <Grid item xs={12} sm={6} md={4} key={program?.program_id}>
                   <CardItem
-                    imageUrl={program?.profile_pic || "/default-program.png"}
+                    imageUrl={program?.profile_pic || ""}
+                    avatar={
+                      !program?.profile_pic && (
+                        <Avatar>
+                          {getInitialsFromTitle(program?.program_title)}
+                        </Avatar>
+                      )
+                    }
                     title={program?.program_title}
                     subtitle={`$${program?.price}`}
                     description={program?.short_description}
