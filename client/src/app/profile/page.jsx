@@ -34,11 +34,12 @@ const ProfileEdit = () => {
     const fetchProfile = async () => {
       try {
         const { data } = await getProfile();
+        console.log('Profile data:', data);
 
         setProfile({
           first_name: data.first_name,
           last_name: data.last_name,
-          date_of_birth: data.date_of_birth.split('T')[0],
+          date_of_birth: data?.date_of_birth?.split('T')[0],
           gender: data.gender,
           phone_number: data.phone_number,
           home_country: data.home_country,
@@ -46,10 +47,10 @@ const ProfileEdit = () => {
           biography: data.biography,
           profile_pic: data.profile_pic,
 
-          address: data.user_address.address,
-          city: data.user_address.city,
-          province_code: data.user_address.province_code,
-          zip_code: data.user_address.zip_code,
+          address: data?.user_address?.address,
+          city: data?.user_address?.city,
+          province_code: data?.user_address?.province_code,
+          zip_code: data?.user_address?.zip_code,
         });
       } catch (error) {
         console.error('Error fetching profile:', error);

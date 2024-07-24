@@ -3,6 +3,7 @@ import React from 'react';
 import { Box, Typography, Toolbar } from '@mui/material';
 import useAuth from '@/hooks/useAuth';
 import authMiddleware from '@/utils/authRoute';
+import AdminWrapper from '@/components/AdminWrapper';
 
 const AdminDashboard = () => {
 
