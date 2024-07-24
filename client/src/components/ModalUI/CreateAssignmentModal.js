@@ -10,7 +10,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  IconButton,
+  FormHelperText,
   Snackbar,
 } from "@mui/material";
 import { PhotoCamera } from "@mui/icons-material";
@@ -24,8 +24,8 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
     courseId: "",
     lessonId: "",
     assignmentName: "",
-    filePic: null,
-    filePicName: "",
+    fileUrl: null,
+    fileUrlName: "",
     assignmentUrl: "",
     dueDate: "",
   });
@@ -89,14 +89,14 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
   const handleFileChange = (e) => {
     setForm({
       ...form,
-      filePic: e.target.files[0],
-      filePicName: e.target.files[0].name,
+      fileUrl: e.target.files[0],
+      fileUrlName: e.target.files[0].name,
     });
   };
 
   const handleUpload = async () => {
     const formData = new FormData();
-    formData.append("file", form.filePic);
+    formData.append("file", form.fileUrl);
 
     try {
       const response = await axios.post(`${SERVER_URL}/api/uploads`, formData, {
@@ -108,6 +108,10 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
       setForm((prevForm) => ({
         ...prevForm,
         assignmentUrl: fileURL,
+      }));
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        assignmentUrl: "", 
       }));
       setSnackbarOpen(true);
     } catch (error) {
@@ -125,6 +129,11 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
       if (error) {
         newErrors[fieldName] = error;
       }
+    }
+
+    // Check if the file is uploaded
+    if (!form.assignmentUrl) {
+      newErrors.assignmentUrl = "File must be uploaded before submitting.";
     }
 
     setErrors(newErrors);
@@ -181,8 +190,7 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
           Create New Assignment
         </Typography>
         <form onSubmit={handleSubmit}>
-          {errors.common && <Alert severity="error">{errors.common}</Alert>}
-          <FormControl fullWidth sx={{ mb: 2 }}>
+          <FormControl fullWidth sx={{ mb: 2 }} error={!!errors.courseId}>
             <InputLabel id="course-label">Course</InputLabel>
             <Select
               labelId="course-label"
@@ -191,7 +199,6 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
               value={form.courseId}
               onChange={handleChange}
               label="Course"
-              error={!!errors.courseId}
             >
               {courses.map((course) => (
                 <MenuItem key={course.course_id} value={course.course_id}>
@@ -200,10 +207,10 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
               ))}
             </Select>
             {errors.courseId && (
-              <Alert severity="error">{errors.courseId}</Alert>
+              <FormHelperText>{errors.courseId}</FormHelperText>
             )}
           </FormControl>
-          <FormControl fullWidth sx={{ mb: 2 }}>
+          <FormControl fullWidth sx={{ mb: 2 }} error={!!errors.lessonId}>
             <InputLabel id="lesson-label">Lesson</InputLabel>
             <Select
               labelId="lesson-label"
@@ -212,7 +219,6 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
               value={form.lessonId}
               onChange={handleChange}
               label="Lesson"
-              error={!!errors.lessonId}
             >
               {lessons.length > 0 ? (
                 lessons.map((lesson) => (
@@ -227,7 +233,7 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
               )}
             </Select>
             {errors.lessonId && (
-              <Alert severity="error">{errors.lessonId}</Alert>
+              <FormHelperText>{errors.lessonId}</FormHelperText>
             )}
           </FormControl>
           <TextField
@@ -240,7 +246,7 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
             helperText={errors.assignmentName}
             sx={{ mb: 2 }}
           />
-          <Box mt={2} mb={2}>
+          <Box mt={2} mb={2} display="flex" justifyContent="space-between" alignItems="center" error={!!errors.assignmentUrl}>
             <input
               accept="*/*"
               style={{ display: "none" }}
@@ -249,31 +255,34 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
               onChange={handleFileChange}
             />
             <label htmlFor="assignment-file">
-              <IconButton
+              <Button
+                variant="outlined"
                 color="primary"
-                aria-label="upload file"
                 component="span"
+                startIcon={<PhotoCamera />}
               >
-                <PhotoCamera />
-              </IconButton>
+                Choose File
+              </Button>
             </label>
-            {form.filePicName && (
-              <Typography
-                variant="body1"
-                style={{ display: "inline", marginLeft: 10 }}
-              >
-                {form.filePicName}
-              </Typography>
-            )}
             <Button
               variant="contained"
               color="primary"
               onClick={handleUpload}
-              sx={{ ml: "72%" }}
             >
               Upload
             </Button>
           </Box>
+          {form.fileUrlName && (
+            <Typography
+              variant="body1"
+              sx={{ mt: 1, mb: 2 }}
+            >
+              {form.fileUrlName}
+            </Typography>
+          )}
+          {errors.assignmentUrl && (
+            <Alert severity="error" sx={{ mt: 2, mb: 2 }}>{errors.assignmentUrl}</Alert>
+          )}
           <TextField
             fullWidth
             label="Due Date"

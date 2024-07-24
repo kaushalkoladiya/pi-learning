@@ -28,14 +28,14 @@ const EditProgramModal = ({
   refreshPrograms,
 }) => {
   const [form, setForm] = useState({
-    program_id: programData.program_id || "",
-    program_title: programData.program_title || "",
-    short_description: programData.short_description || "",
-    long_description: programData.long_description || "",
+    programId: programData.program_id || "",
+    programTitle: programData.program_title || "",
+    shortDescription: programData.short_description || "",
+    longDescription: programData.long_description || "",
     price: programData.price || "",
-    department_code: programData.department_code || "",
-    duration_in_months: programData.duration_in_months || "",
-    profile_pic: null,
+    departmentCode: programData.department_code || "",
+    durationInMonths: programData.duration_in_months || "",
+    profilePic: null,
     profilePicName: "",
   });
 
@@ -67,14 +67,14 @@ const EditProgramModal = ({
   const handleFileChange = (e) => {
     setForm({
       ...form,
-      profile_pic: e.target.files[0],
+      profilePic: e.target.files[0],
       profilePicName: e.target.files[0].name,
     });
   };
 
   const handleUpload = async () => {
     const formData = new FormData();
-    formData.append("file", form.profile_pic);
+    formData.append("file", form.profilePic);
 
     try {
       const response = await axios.post(`${SERVER_URL}/api/uploads`, formData, {
@@ -104,10 +104,10 @@ const EditProgramModal = ({
     }
     try {
       await axios.put(`${SERVER_URL}/api/programs/${programData.program_id}`, {
-        short_description: form.short_description,
-        long_description: form.long_description,
+        short_description: form.shortDescription,
+        long_description: form.longDescription,
         price: form.price,
-        duration_in_months: form.duration_in_months,
+        duration_in_months: form.durationInMonths,
         profile_pic: form.profilePicUrl || programData.profile_pic,
       });
       handleClose();
@@ -153,8 +153,8 @@ const EditProgramModal = ({
                     <TextField
                       fullWidth
                       label="Program ID"
-                      name="program_id"
-                      value={form.program_id}
+                      name="programId"
+                      value={form.programId}
                       InputProps={{
                         readOnly: true,
                       }}
@@ -166,7 +166,7 @@ const EditProgramModal = ({
                     <TextField
                       fullWidth
                       label="Program Title"
-                      name="program_title"
+                      name="programTitle"
                       value={form.program_title}
                       InputProps={{
                         readOnly: true,
@@ -191,26 +191,26 @@ const EditProgramModal = ({
                     <TextField
                       fullWidth
                       label="Duration in Months"
-                      name="duration_in_months"
-                      value={form.duration_in_months}
+                      name="durationInMonths"
+                      value={form.durationInMonths}
                       onChange={handleChange}
                       margin="normal"
-                      error={!!errors.duration_in_months}
-                      helperText={errors.duration_in_months}
+                      error={!!errors.durationInMonths}
+                      helperText={errors.durationInMonths}
                     />
                   </Grid>
                   <Grid item xs={12}>
                     <FormControl
                       fullWidth
                       margin="normal"
-                      error={!!errors.department_code}
+                      error={!!errors.departmentCode}
                     >
                       <InputLabel id="department-label">Department</InputLabel>
                       <Select
                         labelId="department-label"
-                        id="department_code"
-                        name="department_code"
-                        value={form.department_code}
+                        id="departmentCode"
+                        name="departmentCode"
+                        value={form.departmentCode}
                         label="Department"
                         InputProps={{
                           readOnly: true,
@@ -226,9 +226,9 @@ const EditProgramModal = ({
                           </MenuItem>
                         ))}
                       </Select>
-                      {errors.department_code && (
+                      {errors.departmentCode && (
                         <FormHelperText>
-                          {errors.department_code}
+                          {errors.departmentCode}
                         </FormHelperText>
                       )}
                     </FormControl>
@@ -256,28 +256,28 @@ const EditProgramModal = ({
                     <TextField
                       fullWidth
                       label="Short Description"
-                      name="short_description"
-                      value={form.short_description}
+                      name="shortDescription"
+                      value={form.shortDescription}
                       onChange={handleChange}
                       margin="normal"
                       multiline
                       rows={2}
-                      error={!!errors.short_description}
-                      helperText={errors.short_description}
+                      error={!!errors.shortDescription}
+                      helperText={errors.shortDescription}
                     />
                   </Grid>
                   <Grid item xs={12}>
                     <TextField
                       fullWidth
                       label="Long Description"
-                      name="long_description"
-                      value={form.long_description}
+                      name="longDescription"
+                      value={form.longDescription}
                       onChange={handleChange}
                       margin="normal"
                       multiline
                       rows={4}
-                      error={!!errors.long_description}
-                      helperText={errors.long_description}
+                      error={!!errors.longDescription}
+                      helperText={errors.longDescription}
                     />
                   </Grid>
                   <Grid item xs={12}>

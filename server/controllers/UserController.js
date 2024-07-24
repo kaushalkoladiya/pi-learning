@@ -17,7 +17,7 @@ const profileSchema = Joi.object({
   gender: Joi.string().valid('male', 'female', 'other').required(),
   phone_number: Joi.string().max(12).allow(null, ''),
   home_country: Joi.string().max(3).required(),
-  department_code: Joi.string().max(3).required(),
+  department_code: Joi.string().max(3).allow(null, ''),
   address: Joi.string().max(255).required(),
   city: Joi.string().max(100).required(),
   province_code: Joi.string().max(3).required(),

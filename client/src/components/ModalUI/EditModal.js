@@ -23,7 +23,7 @@ import { validateField } from "@/utils/validation";
 
 const EditModal = ({ open, handleClose, userData, addressData, refreshInstructors }) => {
   const [form, setForm] = useState({
-    dateOfBirth: userData.date_of_birth || "",
+    dateOfBirth: userData.date_of_birth.split('T')[0] || "",
     phoneNumber: userData.phone_number || "",
     homeCountry: userData.home_country || "",
     departmentCode: userData.department_code || "",

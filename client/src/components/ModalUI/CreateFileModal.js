@@ -6,7 +6,6 @@ import {
   TextField,
   Typography,
   Alert,
-  IconButton,
   Snackbar,
 } from "@mui/material";
 import { PhotoCamera } from "@mui/icons-material";
@@ -20,13 +19,15 @@ const LessonFilesModal = ({ open, handleClose, lessonId, refreshFiles }) => {
   const [form, setForm] = useState({
     lessonId: lessonId || "",
     fileName: "",
-    filePic: null,
-    filePicName: "",
+    fileUrl: null,
+    fileUrlName: "",
+    fileUrl: "",
   });
 
   const [errors, setErrors] = useState({
     lessonId: "",
     fileName: "",
+    fileUrl: "",
     common: "",
   });
 
@@ -43,8 +44,8 @@ const LessonFilesModal = ({ open, handleClose, lessonId, refreshFiles }) => {
   const handleFileChange = (e) => {
     setForm({
       ...form,
-      filePic: e.target.files[0],
-      filePicName: e.target.files[0].name,
+      fileUrl: e.target.files[0],
+      fileUrlName: e.target.files[0].name,
     });
   };
 
@@ -62,6 +63,10 @@ const LessonFilesModal = ({ open, handleClose, lessonId, refreshFiles }) => {
       setForm((prevForm) => ({
         ...prevForm,
         fileUrl: fileURL,
+      }));
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        fileUrl: "", 
       }));
       setSnackbarOpen(true);
     } catch (error) {
@@ -117,8 +122,9 @@ const LessonFilesModal = ({ open, handleClose, lessonId, refreshFiles }) => {
     setForm({
       lessonId: lessonId || "",
       fileName: "",
-      filePic: null,
-      filePicName: "",
+      fileUrl: null,
+      fileUrlName: "",
+      fileUrl: "",
     });
     setErrors({});
   };
@@ -161,40 +167,41 @@ const LessonFilesModal = ({ open, handleClose, lessonId, refreshFiles }) => {
             helperText={errors.fileName}
             sx={{ mb: 2 }}
           />
-          <Box mt={2}>
+          <Box mt={2} display="flex" alignItems="center" justifyContent="space-between">
             <input
               accept="*/*"
               style={{ display: "none" }}
-              id="profile-pic"
+              id="file-upload"
               type="file"
               onChange={handleFileChange}
             />
-            <label htmlFor="profile-pic">
-              <IconButton
+            <label htmlFor="file-upload">
+              <Button
+                variant="outlined"
                 color="primary"
-                aria-label="upload picture"
                 component="span"
+                startIcon={<PhotoCamera />}
               >
-                <PhotoCamera />
-              </IconButton>
+                Choose File
+              </Button>
             </label>
-            {form.filePicName && (
+            {form.fileUrlName && (
               <Typography
                 variant="body1"
-                style={{ display: "inline", marginLeft: 10 }}
+                style={{ marginLeft: 10, flexGrow: 1 }}
               >
-                {form.filePicName}
+                {form.fileUrlName}
               </Typography>
             )}
             <Button
               variant="contained"
               color="primary"
               onClick={handleUpload}
-              sx={{ ml: "74%" }}
             >
               Upload
             </Button>
           </Box>
+          {errors.fileUrl && <Alert severity="error" sx={{ mt: 2 }}>{errors.fileUrl}</Alert>}
           <Box display="flex" justifyContent="space-between" mt={4}>
             <Button onClick={handleClear} variant="outlined" color="secondary">
               Clear
