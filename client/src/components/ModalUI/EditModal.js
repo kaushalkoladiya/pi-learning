@@ -21,8 +21,7 @@ import axios from "axios";
 import { SERVER_URL } from "@/constants/routes";
 import { validateField } from "@/utils/validation";
 
-const EditModal = ({ open, handleClose, userData, addressData, refreshUsers }) => {
-  console.log(addressData);
+const EditModal = ({ open, handleClose, userData, addressData, refreshInstructors }) => {
   const [form, setForm] = useState({
     dateOfBirth: userData.date_of_birth || "",
     phoneNumber: userData.phone_number || "",
@@ -71,37 +70,9 @@ const EditModal = ({ open, handleClose, userData, addressData, refreshUsers }) =
       }
     };
 
-   /* const fetchUserData = async () => {
-      try {
-        const addressResponse = await axios.get(
-          `${SERVER_URL}/api/user_address/${userData.id}`
-        );
-        const addressData = addressResponse.data;
-
-        setForm((prevForm) => ({
-          ...prevForm,
-          dateOfBirth: userData.date_of_birth || "",
-          phoneNumber: userData.phone_number || "",
-          homeCountry: userData.home_country || "",
-          departmentCode: userData.department_code || "",
-          introduction: userData.biography || "",
-          address: addressData.address || "",
-          city: addressData.city || "",
-          provinceCode: addressData.province_code || "",
-          zipCode: addressData.zip_code || "",
-        }));
-        console.log("Updated form state with address data:", addressData);
-      } catch (error) {
-        console.error("Error fetching updated user data:", error);
-      }
-    };*/
-
     fetchDepartments();
     fetchCountries();
     fetchProvinces();
-    /*if (userData && userData.id) {
-      fetchUserData();
-    }*/
   }, []);
 
   const handleChange = (e) => {
@@ -293,8 +264,12 @@ const EditModal = ({ open, handleClose, userData, addressData, refreshUsers }) =
                       value={form.dateOfBirth}
                       onChange={handleChange}
                       margin="normal"
+                      sx={{ backgroundColor: "#f0f0f0" }}
                       InputLabelProps={{
                         shrink: true,
+                      }}
+                      InputProps={{
+                        readOnly: true,
                       }}
                       error={!!errors.dateOfBirth}
                       helperText={errors.dateOfBirth}
@@ -308,6 +283,10 @@ const EditModal = ({ open, handleClose, userData, addressData, refreshUsers }) =
                       value={form.phoneNumber}
                       onChange={handleChange}
                       margin="normal"
+                      sx={{ backgroundColor: "#f0f0f0" }}
+                      InputProps={{
+                        readOnly: true,
+                      }}
                       error={!!errors.phoneNumber}
                       helperText={errors.phoneNumber}
                     />

@@ -24,7 +24,7 @@ import { validateField } from "@/utils/validation";
 import axios from "axios";
 
 const CreateProgramModal = ({ open, handleClose, refreshPrograms }) => {
-  const [form, setForm] = useState({
+  const initialFormState = {
     programTitle: "",
     price: "",
     durationInMonths: "",
@@ -33,9 +33,9 @@ const CreateProgramModal = ({ open, handleClose, refreshPrograms }) => {
     longDescription: "",
     profilePic: null,
     profilePicName: "",
-  });
+  };
 
-  const [errors, setErrors] = useState({
+  const initialErrorState = {
     programTitle: "",
     price: "",
     durationInMonths: "",
@@ -43,8 +43,10 @@ const CreateProgramModal = ({ open, handleClose, refreshPrograms }) => {
     shortDescription: "",
     longDescription: "",
     common: "",
-  });
+  };
 
+  const [form, setForm] = useState(initialFormState);
+  const [errors, setErrors] = useState(initialErrorState);
   const [departments, setDepartments] = useState([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
@@ -139,7 +141,7 @@ const CreateProgramModal = ({ open, handleClose, refreshPrograms }) => {
           setErrors((prevErrors) => ({ ...prevErrors, common: data.message }));
         }
       } else {
-        handleClose();
+        handleModalClose();
         refreshPrograms();
       }
     } catch (error) {
@@ -161,16 +163,22 @@ const CreateProgramModal = ({ open, handleClose, refreshPrograms }) => {
     setErrors({});
   };
 
+  const handleModalClose = () => {
+    handleClose();
+    setForm(initialFormState);
+    setErrors(initialErrorState);
+  };
+
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
 
   return (
-    <Modal open={open} onClose={handleClose}>
+    <Modal open={open} onClose={handleModalClose}>
       <ModalBox>
         <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
           <Typography variant="h5">Create New Program</Typography>
-          <Button variant="outlined" onClick={handleClose}>
+          <Button variant="outlined" onClick={handleModalClose}>
             Back to Program Page
           </Button>
         </Box>

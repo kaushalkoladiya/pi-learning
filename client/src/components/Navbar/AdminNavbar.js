@@ -141,6 +141,10 @@ const AdminNavbar = () => {
     router.push("/auth/login/");
   };
 
+  const changeRoute = (path) => {
+    router.push(path);
+  };
+
   if (!isUserAdmin()) {
     return null;
   }
@@ -149,16 +153,26 @@ const AdminNavbar = () => {
     <>
       <AppBar position="fixed">
         <Toolbar>
-          <Box display="flex" alignItems="center" justifyContent="space-between" sx={{ width: '100%' }}>
-            <Typography variant="h6" noWrap>
-              {APP_NAME}
-            </Typography>
-            <Box display="flex" alignItems="center">
-              <Button color="inherit" onClick={() => handleRoute('/profile')}>
-                Profile
-              </Button>
-              <Button color="inherit" onClick={logout}>Logout</Button>
-            </Box>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleDrawerOpen}
+            edge="start"
+            sx={{
+              marginRight: 5,
+              ...(open && { display: "none" }),
+            }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" noWrap component="div">
+            {APP_NAME}
+          </Typography>
+          <Box display="flex" alignItems="center" sx={{ marginLeft: "auto" }}>
+            <Button color="inherit" onClick={() => changeRoute('/profile')}>
+              Profile
+            </Button>
+            <Button color="inherit" onClick={handleLogout}>Logout</Button>
           </Box>
         </Toolbar>
       </AppBar>

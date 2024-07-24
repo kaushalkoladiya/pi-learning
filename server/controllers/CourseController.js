@@ -137,7 +137,7 @@ export const updateCourse = async (req, res) => {
 export const deleteCourse = async (req, res) => {
     try {
         const deleted = await Course.destroy({
-            where: { id: req.params.id }
+            where: { course_id: req.params.id }
         });
         if (deleted === 0) {
             return res.status(404).send({ error: 'Course not found' });

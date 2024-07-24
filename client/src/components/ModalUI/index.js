@@ -21,7 +21,7 @@ import { validateField } from "@/utils/validation";
 import axios from "axios";
 
 const CreateInstructorModal = ({ open, handleClose, refreshInstructors }) => {
-  const [form, setForm] = useState({
+  const initialFormState = {
     firstName: "",
     lastName: "",
     email: "",
@@ -31,8 +31,9 @@ const CreateInstructorModal = ({ open, handleClose, refreshInstructors }) => {
     city: "",
     provinceCode: "",
     zipCode: "",
-  });
-  const [errors, setErrors] = useState({
+  };
+
+  const initialErrorState = {
     firstName: "",
     lastName: "",
     email: "",
@@ -43,8 +44,10 @@ const CreateInstructorModal = ({ open, handleClose, refreshInstructors }) => {
     provinceCode: "",
     zipCode: "",
     common: "",
-  });
+  };
 
+  const [form, setForm] = useState(initialFormState);
+  const [errors, setErrors] = useState(initialErrorState);
   const [provinces, setProvinces] = useState([]);
 
   useEffect(() => {
@@ -112,7 +115,7 @@ const CreateInstructorModal = ({ open, handleClose, refreshInstructors }) => {
           setErrors((prevErrors) => ({ ...prevErrors, common: data.message }));
         }
       } else {
-        handleClose();
+        handleModalClose();
         refreshInstructors();
       }
     } catch (error) {
@@ -135,8 +138,14 @@ const CreateInstructorModal = ({ open, handleClose, refreshInstructors }) => {
     setErrors({});
   };
 
+  const handleModalClose = () => {
+    handleClose();
+    setForm(initialFormState);
+    setErrors(initialErrorState);
+  };
+
   return (
-    <Modal open={open} onClose={handleClose}>
+    <Modal open={open} onClose={handleModalClose}>
       <ModalBox>
         <Box
           display="flex"
@@ -145,7 +154,7 @@ const CreateInstructorModal = ({ open, handleClose, refreshInstructors }) => {
           mb={2}
         >
           <Typography variant="h5">Create New Instructor</Typography>
-          <Button variant="outlined" onClick={handleClose}>
+          <Button variant="outlined" onClick={handleModalClose}>
             Back to Instructor Page
           </Button>
         </Box>

@@ -5,8 +5,7 @@ import EditModal from "@/components/ModalUI/EditModal";
 import ViewModal from "@/components/ModalUI/ViewModal";
 import CardItem from "@/components/CardUI";
 import { SERVER_URL } from "@/constants/routes";
-import { Alert, Box, Button, Grid, Typography } from "@mui/material";
-import ActionWrapper from "@/components/ActionWrapper";
+import { Alert, Box, Button, Grid, Typography, Avatar} from "@mui/material";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import AdminWrapper from "@/components/AdminWrapper";
@@ -154,16 +153,26 @@ const Instructor = () => {
             </Alert>
           )}
 
-          <Grid container spacing={2}>
-            {Array.isArray(instructors) && instructors.length > 0 ? (
-              instructors.map((instructor) => (
-                <Grid item xs={12} sm={6} md={4} key={instructor?.id}>
-                  <CardItem
-                    imageUrl={instructor?.profile_pic || "/default-profile.png"}
-                    title={`${instructor?.first_name} ${instructor?.last_name}`}
-                    subtitle={null} // No subtitle for instructor
-                    description={
-                      instructor?.biography || "No biography available"}
+        <Grid container spacing={2}>
+          {Array.isArray(instructors) && instructors.length > 0 ? (
+            instructors.map((instructor) => (
+              <Grid item xs={12} sm={6} md={4} key={instructor?.id}>
+                <CardItem
+                  imageUrl={
+                    instructor?.profile_pic || ""
+                  }
+                  avatar={
+                    !instructor?.profile_pic && (
+                      <Avatar>
+                        {instructor?.first_name?.[0] || ""}
+                        {instructor?.last_name?.[0] || ""}
+                      </Avatar>
+                    )
+                  }
+                  title={`${instructor?.first_name} ${instructor?.last_name}`}
+                  subtitle={null}
+                  description={
+                    instructor?.biography || "No biography available"}
                     onView={() => handleView(instructor)}
                     onEdit={() => handleEdit(instructor)}
                     onDelete={() => handleDelete(instructor?.id)}
@@ -177,29 +186,29 @@ const Instructor = () => {
             )}
           </Grid>
 
-          <CreateInstructorModal
-            open={modalOpen}
-            handleClose={handleModalClose}
-            refreshInstructors={fetchInstructors}
-          />
-          {selectedInstructor && (
-            <>
-              <EditModal
-                open={editModalOpen}
-                handleClose={handleEditModalClose}
-                userData={selectedInstructor}
-                addressData={selectedInstructorAddress}
-                refreshUsers={fetchInstructors}
-              />
-              <ViewModal
-                open={viewModalOpen}
-                handleClose={handleViewModalClose}
-                userData={selectedInstructor}
-                addressData={selectedInstructorAddress}
-                departmentData={selectedInstructorDepartment}
-              />
-            </>
-          )}
+        <CreateInstructorModal
+          open={modalOpen}
+          handleClose={handleModalClose}
+          refreshInstructors={fetchInstructors}
+        />
+        {selectedInstructor && (
+          <>
+            <EditModal
+              open={editModalOpen}
+              handleClose={handleEditModalClose}
+              userData={selectedInstructor}
+              addressData={selectedInstructorAddress}
+              refreshInstructors={fetchInstructors}
+            />
+            <ViewModal
+              open={viewModalOpen}
+              handleClose={handleViewModalClose}
+              userData={selectedInstructor}
+              addressData={selectedInstructorAddress}
+              departmentData={selectedInstructorDepartment}
+            />
+          </>
+        )}
         </Box>
       </Box>
     </AdminWrapper>

@@ -24,7 +24,7 @@ import { validateField } from "@/utils/validation";
 import axios from "axios";
 
 const CreateCourseModal = ({ open, handleClose, refreshCourses }) => {
-  const [form, setForm] = useState({
+  const initialFormState = {
     courseTitle: "",
     programId: "",
     instructorId: "",
@@ -32,17 +32,19 @@ const CreateCourseModal = ({ open, handleClose, refreshCourses }) => {
     longDescription: "",
     profilePic: null,
     profilePicName: "",
-  });
+  };
 
-  const [errors, setErrors] = useState({
+  const initialErrorState = {
     courseTitle: "",
     programId: "",
     instructorId: "",
     shortDescription: "",
     longDescription: "",
     common: "",
-  });
+  };
 
+  const [form, setForm] = useState(initialFormState);
+  const [errors, setErrors] = useState(initialErrorState);
   const [programs, setPrograms] = useState([]);
   const [instructors, setInstructors] = useState([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -148,7 +150,7 @@ const CreateCourseModal = ({ open, handleClose, refreshCourses }) => {
           setErrors((prevErrors) => ({ ...prevErrors, common: data.message }));
         }
       } else {
-        handleClose();
+        handleModalClose();
         refreshCourses();
       }
     } catch (error) {
@@ -169,16 +171,22 @@ const CreateCourseModal = ({ open, handleClose, refreshCourses }) => {
     setErrors({});
   };
 
+  const handleModalClose = () => {
+    handleClose();
+    setForm(initialFormState);
+    setErrors(initialErrorState);
+  };
+
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
 
   return (
-    <Modal open={open} onClose={handleClose}>
+    <Modal open={open} onClose={handleModalClose}>
       <ModalBox>
         <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
           <Typography variant="h5">Create New Course</Typography>
-          <Button variant="outlined" onClick={handleClose}>
+          <Button variant="outlined" onClick={handleModalClose}>
             Back to Course Page
           </Button>
         </Box>

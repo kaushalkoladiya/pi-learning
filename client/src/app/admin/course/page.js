@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Alert, Box, Button, Grid, Typography } from "@mui/material";
+import { Alert, Box, Button, Grid, Typography, Avatar } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { SERVER_URL } from "@/constants/routes";
 import CardItem from "@/components/CardUI";
@@ -80,6 +80,14 @@ const CourseList = () => {
   const handleViewModalClose = () => {
     setViewModalOpen(false);
     setSelectedCourse(null);
+  };
+
+  const getInitialsFromTitle = (title) => {
+    if (!title) return "";
+    const words = title.split(" ");
+    return words.length > 1
+      ? `${words[0][0]}${words[words.length - 1][0]}`
+      : words[0][0];
   };
 
   return (

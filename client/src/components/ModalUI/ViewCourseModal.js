@@ -12,6 +12,8 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Avatar,
+  Divider,
 } from "@mui/material";
 import { Close } from "@mui/icons-material";
 import PropTypes from "prop-types";
@@ -34,9 +36,10 @@ const ViewCourseModal = ({ open, handleClose, courseData }) => {
   const fetchLessons = async () => {
     try {
       const response = await axios.get(
-        `${SERVER_URL}/api/lessons/courseId/${courseData.course_id}`
+        `${SERVER_URL}/api/lessons/course/${courseData.course_id}`
       );
       setLessons(response.data);
+      console.log(response.data);
     } catch (error) {
       console.error("Error fetching lessons:", error);
     }
@@ -73,7 +76,10 @@ const ViewCourseModal = ({ open, handleClose, courseData }) => {
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: 800,
+          width: "80%",
+          maxWidth: 1200,
+          maxHeight: "90vh",
+          overflowY: "auto",
           backgroundColor: "white",
           boxShadow: 24,
           padding: 4,
@@ -81,83 +87,81 @@ const ViewCourseModal = ({ open, handleClose, courseData }) => {
         }}
       >
         <Grid container justifyContent="space-between" alignItems="center">
-          <Typography variant="h5">Course Details</Typography>
+          <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+            Course Details
+          </Typography>
           <IconButton onClick={handleClose}>
             <Close />
           </IconButton>
         </Grid>
-        <Box mt={2}>
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
-              <Box display="flex" flexDirection="column" alignItems="center">
-                <img
-                  src={courseData?.profile_pic || "/default-course.png"}
-                  alt="Course"
-                  style={{ width: "200px", height: "auto" }}
-                />
-              </Box>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1">
-                <strong>Course ID:</strong> {courseData?.course_id || "N/A"}
+        <Divider sx={{ my: 2 }} />
+        <Grid container spacing={4}>
+          <Grid item xs={12} md={6}>
+            <Box display="flex" justifyContent="center" alignItems="center" mb={2}>
+              <Avatar
+                src={courseData?.profile_pic}
+                alt={`Photo of ${courseData?.course_title || "N/A"}`}
+                sx={{ width: 150, height: 150, objectFit: "cover", borderRadius: 1 }}
+              />
+            </Box>
+            <Typography variant="body1" sx={{ mb: 1 }}>
+              <strong>Course ID:</strong> {courseData?.course_id || "N/A"}
+            </Typography>
+            <Typography variant="body1" sx={{ mb: 1 }}>
+              <strong>Title:</strong> {courseData?.course_title || "N/A"}
+            </Typography>
+            <Typography variant="body1" sx={{ mb: 1 }}>
+              <strong>Program Name:</strong> {programName || "N/A"}
+            </Typography>
+            <Typography variant="body1" sx={{ mb: 1 }}>
+              <strong>Instructor Name:</strong> {instructorName || "N/A"}
+            </Typography>
+            <Typography variant="body1" sx={{ mb: 1 }}>
+              <strong>Short Description:</strong> {courseData?.short_description || "N/A"}
+            </Typography>
+            <Box mt={4}>
+              <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                Long Description
               </Typography>
               <Typography variant="body1">
-                <strong>Title:</strong> {courseData?.course_title || "N/A"}
+                {courseData?.long_description || "No long description available"}
               </Typography>
-              <Typography variant="body1">
-                <strong>Program Name:</strong> {programName || "N/A"}
-              </Typography>
-              <Typography variant="body1">
-                <strong>Instructor Name:</strong> {instructorName || "N/A"}
-              </Typography>
-              <Typography variant="body1">
-                <strong>Short Description:</strong>{" "}
-                {courseData?.short_description || "N/A"}
-              </Typography>
-            </Grid>
+            </Box>
           </Grid>
-        </Box>
-        <Box mt={4}>
-          <Typography variant="h6">
-            <strong>Long Description</strong>
-          </Typography>
-          <Typography variant="body1">
-            {courseData?.long_description || "No long description available"}
-          </Typography>
-        </Box>
-        <Box mt={4}>
-          <Typography variant="h6">
-            <strong>Lessons Included</strong>
-          </Typography>
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Lesson ID</TableCell>
-                  <TableCell>Lesson Title</TableCell>
-                  <TableCell>Description</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {lessons.length > 0 ? (
-                  lessons.map((lesson) => (
-                    <TableRow key={lesson?.lesson_id}>
-                      <TableCell>{lesson?.lesson_id}</TableCell>
-                      <TableCell>{lesson?.lesson_title}</TableCell>
-                      <TableCell>{lesson?.short_description}</TableCell>
-                    </TableRow>
-                  ))
-                ) : (
+          <Grid item xs={12} md={6}>
+            <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+              Lessons Included
+            </Typography>
+            <TableContainer component={Paper}>
+              <Table stickyHeader>
+                <TableHead>
                   <TableRow>
-                    <TableCell colSpan={3} align="center">
-                      No lessons available
-                    </TableCell>
+                    <TableCell><strong>Lesson ID</strong></TableCell>
+                    <TableCell><strong>Lesson Title</strong></TableCell>
+                    <TableCell><strong>Description</strong></TableCell>
                   </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Box>
+                </TableHead>
+                <TableBody>
+                  {lessons.length > 0 ? (
+                    lessons.map((lesson) => (
+                      <TableRow key={lesson?.lesson_id}>
+                        <TableCell>{lesson?.lesson_id}</TableCell>
+                        <TableCell>{lesson?.lesson_name}</TableCell>
+                        <TableCell>{lesson?.lesson_description}</TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={3} align="center">
+                        No lessons available
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Grid>
+        </Grid>
       </Box>
     </Modal>
   );

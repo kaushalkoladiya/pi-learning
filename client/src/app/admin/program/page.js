@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Alert, Box, Button, Grid, Typography } from "@mui/material";
+import { Alert, Box, Button, Grid, Typography, Avatar} from "@mui/material";
 import { useRouter } from "next/navigation";
 import { SERVER_URL } from "@/constants/routes";
 import CardItem from "@/components/CardUI";
@@ -38,7 +38,9 @@ const ProgramList = () => {
 
   const fetchDepartmentData = async (departmentCode) => {
     try {
-      const response = await fetch(`${SERVER_URL}/api/departments/${departmentCode}`);
+      const response = await fetch(
+        `${SERVER_URL}/api/departments/${departmentCode}`
+      );
       const data = await response.json();
       return data;
     } catch (err) {
@@ -93,6 +95,14 @@ const ProgramList = () => {
     setViewModalOpen(false);
     setSelectedProgram(null);
     setDepartmentData(null);
+  };
+
+  const getInitialsFromTitle = (title) => {
+    if (!title) return "";
+    const words = title.split(" ");
+    return words.length > 1
+      ? `${words[0][0]}${words[words.length - 1][0]}`
+      : words[0][0];
   };
 
   return (

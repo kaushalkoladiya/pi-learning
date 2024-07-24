@@ -8,7 +8,7 @@ const zipCodeRegex = /^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$/;
 const priceRegex = /^\d+(\.\d{1,2})?$/;
 const titleRegex = /^[a-zA-Z\s]+$/;
 const fileNameRegex = /^[a-zA-Z0-9_]+(\.[a-zA-Z]{2,4})$/;
-const assignmentFileRegex = /^[a-zA-Z0-9]+_Assignment+(\.[a-zA-Z]{2,4})$/
+const assignmentFileRegex = /^[a-zA-Z0-9]+_Assignment+(\.[a-zA-Z]{2,4})$/;
 
 export const validateEmail = (email) => emailRegex.test(email);
 export const validateName = (name) => nameRegex.test(name);
@@ -21,7 +21,8 @@ export const validatePrice = (price) =>
   priceRegex.test(price) && parseFloat(price) > 0;
 export const validateTitle = (title) => titleRegex.test(title);
 export const validateFileName = (fileName) => fileNameRegex.test(fileName);
-export const validateAssigmentFileName = (assignmentName) => assignmentFileRegex.test(assignmentName);
+export const validateAssigmentFileName = (assignmentName) =>
+  assignmentFileRegex.test(assignmentName);
 
 export const validateField = (fieldName, value) => {
   switch (fieldName) {
@@ -113,6 +114,16 @@ export const validateField = (fieldName, value) => {
         return "Long description is required";
       }
       break;
+    case "programId":
+      if (!value) {
+        return "Program ID is required";
+      }
+      break;
+    case "courseId":
+      if (!value) {
+        return "Course ID is required";
+      }
+      break;
     case "programTitle":
       if (!value) {
         return "Program title is required";
@@ -158,21 +169,21 @@ export const validateField = (fieldName, value) => {
         return "Lesson description is required";
       }
       break;
-      case "fileName":
+    case "fileName":
       if (!value) {
         return "File name is required";
       } else if (!validateFileName(value)) {
         return "File name invalid Format (Use FileName.jpeg or File_Name.docx)";
       }
       break;
-      case "assignmentName":
+    case "assignmentName":
       if (!value) {
         return "Assignment name is required";
       } else if (!validateAssigmentFileName(value)) {
         return "File name invalid Format (Use FileName_Assignment.docx)";
       }
       break;
-      case "dueDate":
+    case "dueDate":
       if (!value) {
         return "Due Date is required";
       }

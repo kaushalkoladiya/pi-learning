@@ -60,7 +60,9 @@ const LessonsPage = () => {
   console.log(lessons);
   const fetchCourseDetails = async (courseId) => {
     try {
-      const response = await fetch(`${SERVER_URL}/api/courses/details/${courseId}`);
+      const response = await fetch(
+        `${SERVER_URL}/api/courses/details/${courseId}`
+      );
       const data = await response.json();
       return data;
     } catch (err) {
@@ -181,10 +183,10 @@ const LessonsPage = () => {
               <TableRow>
                 <TableCell>ID</TableCell>
                 <TableCell>Name</TableCell>
-                <TableCell>Description</TableCell>
+                <TableCell sx={{ width: "30%" }}>Description</TableCell>
                 <TableCell>Program Name</TableCell>
                 <TableCell>Course Name</TableCell>
-                <TableCell sx={{ width: "30%" }}>Files</TableCell>
+                <TableCell>Files</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
@@ -198,7 +200,7 @@ const LessonsPage = () => {
                     <TableCell>{lesson.program_name}</TableCell>
                     <TableCell>{lesson.course_name}</TableCell>
                     <TableCell>
-                      {console.log('Files:', lesson.files)}
+                      {console.log("Files:", lesson.files)}
                       {lesson.files && lesson.files.length > 0 ? (
                         lesson.files.map((file) => (
                           <Box
@@ -210,7 +212,10 @@ const LessonsPage = () => {
                               component="a"
                               href={file.file_url}
                               target="_blank"
-                              style={{ textDecoration: "none" }}
+                              style={{
+                                textDecoration: "underline",
+                                color: "#1769aa",
+                              }}
                             >
                               {file.file_name}
                             </Typography>
