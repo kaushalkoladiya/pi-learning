@@ -10,6 +10,7 @@ const BackButton = () => {
       position: 'absolute',
       top: '0.5rem',
       left: '0.5rem',
+      zIndex: 1000,
     }} onClick={() => router.back()}><ArrowBackIcon htmlColor='#fff' /></IconButton>
   )
 }
