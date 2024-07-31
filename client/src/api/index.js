@@ -132,3 +132,7 @@ export const checkEnrollment = async (courseId) => {
 export const enrollInCourse = async (courseId) => {
   return await axiosInstance.post(`/api/student/courses/${courseId}/enroll`);
 };
+
+export const fetchStudentDashboardData = async () => {
+  return await axiosInstance.get('/api/student/dashboard');
+};

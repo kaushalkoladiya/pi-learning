@@ -28,7 +28,7 @@ const Navbar = () => {
   const router = useRouter();
   const { logout, isUserStudent, isUserAdmin } = useAuth();
 
-  const handleRoute = (path) => {
+  const handleNavigation = (path) => {
     router.push(path);
   };
 
@@ -42,9 +42,14 @@ const Navbar = () => {
             </Typography>
             <Box display="flex" alignItems="center">
               {isUserStudent() && (
-                <Button color="inherit" onClick={() => handleRoute('/courses')}>Courses</Button>
+                <>
+                  <Button color="inherit" onClick={() => handleNavigation('/courses')}>Courses</Button>
+                  <Button color="inherit" onClick={() => handleNavigation('/student/assignments')}>Assignments</Button>
+                  <Button color="inherit" onClick={() => handleNavigation('/grades')}>Grades</Button>
+                  <Button color="inherit" onClick={() => handleNavigation('/certificates')}>Certificates</Button>
+                </>
               )}
-              <Button color="inherit" onClick={() => handleRoute('/profile')}>
+              <Button color="inherit" onClick={() => handleNavigation('/profile')}>
                 Profile
               </Button>
               <Button color="inherit" onClick={logout}>Logout</Button>

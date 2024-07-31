@@ -1,6 +1,9 @@
 import Assignment from "../models/AssignmentModel.js";
+import AssignmentSubmission from "../models/AssignmentSubmissionModel.js";
+import Certificate from "../models/CertificateModel.js";
 import Course from "../models/CourseModel.js";
 import Enrollment from "../models/EnrollmentModel.js";
+import IssuedCertificate from "../models/IssueCertificateModel.js";
 import Lesson from "../models/LessonModel.js";
 import User from "../models/userModel.js";
 
@@ -22,7 +25,7 @@ export const getStudentDashboard = async (req, res, next) => {
       include: [{
         model: Course,
         as: 'Course',
-        attributes: ['course_name', 'course_code', 'course_description'],
+        attributes: ['course_title', 'short_description', 'long_description'],
       }],
     });
 
@@ -33,8 +36,8 @@ export const getStudentDashboard = async (req, res, next) => {
       include: [
         {
           model: Course,
-          as: 'Course',
-          attributes: ['course_name', 'course_code'],
+          as: 'course',
+          attributes: ['course_title', 'short_description'],
         }
       ],
     });
@@ -46,7 +49,8 @@ export const getStudentDashboard = async (req, res, next) => {
       assignments,
     });
   } catch (error) {
-
+    console.log(error);
+    return res.status(500).json({ error: error.message });
   }
 }
 
