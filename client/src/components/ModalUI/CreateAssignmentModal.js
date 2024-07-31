@@ -11,13 +11,13 @@ import {
   Select,
   MenuItem,
   FormHelperText,
-  Snackbar,
 } from "@mui/material";
 import { PhotoCamera } from "@mui/icons-material";
 import { SERVER_URL } from "@/constants/routes";
 import { validateField } from "@/utils/validation";
 import axios from "axios";
 import PropTypes from "prop-types";
+import swal from "sweetalert";
 
 const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
   const [form, setForm] = useState({
@@ -40,8 +40,6 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
     dueDate: "",
     common: "",
   });
-
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   useEffect(() => {
     fetchCourses();
@@ -113,9 +111,10 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
         ...prevErrors,
         assignmentUrl: "", 
       }));
-      setSnackbarOpen(true);
+      swal("Success", "File uploaded successfully!", "success");
     } catch (error) {
       console.error("Error uploading file:", error);
+      swal("Error", "Failed to upload file. Please try again.", "error");
     }
   };
 
@@ -158,18 +157,17 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
       if (!response.ok) {
         if (data.error) {
           setErrors((prevErrors) => ({ ...prevErrors, common: data.error }));
+          swal("Error", data.error, "error");
         }
       } else {
         handleClose();
         refreshAssignments();
+        swal("Success", "Assignment created successfully!", "success");
       }
     } catch (error) {
       setErrors({ common: "Failed to create assignment. Please try again." });
+      swal("Error", "Failed to create assignment. Please try again.", "error");
     }
-  };
-
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
   };
 
   return (
@@ -180,15 +178,19 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: 500,
+          width: "60%",
           bgcolor: "background.paper",
           boxShadow: 24,
           p: 4,
+          borderRadius: '8px',
         }}
       >
-        <Typography variant="h5" mb={2}>
-          Create New Assignment
-        </Typography>
+        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+          <Typography variant="h5">Create New Lesson</Typography>
+          <Button variant="outlined" onClick={handleClose}>
+            Back to Assignment Page
+          </Button>
+        </Box>
         <form onSubmit={handleSubmit}>
           <FormControl fullWidth sx={{ mb: 2 }} error={!!errors.courseId}>
             <InputLabel id="course-label">Course</InputLabel>
@@ -306,19 +308,6 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
             </Button>
           </Box>
         </form>
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={3000}
-          onClose={handleSnackbarClose}
-        >
-          <Alert
-            onClose={handleSnackbarClose}
-            severity="success"
-            sx={{ width: "100%" }}
-          >
-            Upload Successfully
-          </Alert>
-        </Snackbar>
       </Box>
     </Modal>
   );

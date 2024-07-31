@@ -13,13 +13,13 @@ import {
   FormHelperText,
   Grid,
   Divider,
-  Snackbar,
 } from "@mui/material";
 import styled from "@emotion/styled";
 import PropTypes from "prop-types";
 import { SERVER_URL } from "@/constants/routes";
 import { validateField } from "@/utils/validation";
 import axios from "axios";
+import swal from "sweetalert";
 
 const CreateLessonModal = ({ open, handleClose, refreshLessons }) => {
   const [form, setForm] = useState({
@@ -39,7 +39,6 @@ const CreateLessonModal = ({ open, handleClose, refreshLessons }) => {
 
   const [programs, setPrograms] = useState([]);
   const [courses, setCourses] = useState([]);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   useEffect(() => {
     const fetchPrograms = async () => {
@@ -120,15 +119,19 @@ const CreateLessonModal = ({ open, handleClose, refreshLessons }) => {
       if (!response.ok) {
         if (data.error) {
           setErrors((prevErrors) => ({ ...prevErrors, common: data.error }));
+          swal("Error", data.error, "error");
         } else {
           setErrors((prevErrors) => ({ ...prevErrors, common: data.message }));
+          swal("Error", data.message, "error");
         }
       } else {
         handleClose();
         refreshLessons();
+        swal("Success", "Lesson created successfully!", "success");
       }
     } catch (error) {
       setErrors({ common: "Registration failed. Please try again." });
+      swal("Error", "Registration failed. Please try again.", "error");
     }
   };
 
@@ -140,10 +143,6 @@ const CreateLessonModal = ({ open, handleClose, refreshLessons }) => {
       courseId: "",
     });
     setErrors({});
-  };
-
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
   };
 
   return (
@@ -251,15 +250,6 @@ const CreateLessonModal = ({ open, handleClose, refreshLessons }) => {
             </Button>
           </Box>
         </Form>
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={3000}
-          onClose={handleSnackbarClose}
-        >
-          <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: "100%" }}>
-            Upload Successfully
-          </Alert>
-        </Snackbar>
       </ModalBox>
     </Modal>
   );
@@ -278,7 +268,7 @@ const ModalBox = styled(Box)`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 800px;
+  width: 60%;
   background-color: white;
   box-shadow: 24;
   padding: 16px;

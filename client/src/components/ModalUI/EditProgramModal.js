@@ -11,8 +11,6 @@ import {
   MenuItem,
   Grid,
   IconButton,
-  Snackbar,
-  Alert,
   FormHelperText,
 } from "@mui/material";
 import { PhotoCamera } from "@mui/icons-material";
@@ -20,6 +18,7 @@ import PropTypes from "prop-types";
 import axios from "axios";
 import { SERVER_URL } from "@/constants/routes";
 import { validateForm } from "@/utils/validation";
+import swal from "sweetalert";
 
 const EditProgramModal = ({
   open,
@@ -41,7 +40,6 @@ const EditProgramModal = ({
 
   const [errors, setErrors] = useState({});
   const [departments, setDepartments] = useState([]);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   useEffect(() => {
     const fetchDepartments = async () => {
@@ -88,9 +86,10 @@ const EditProgramModal = ({
         profilePicName: "",
         profilePicUrl: imageURL,
       }));
-      setSnackbarOpen(true);
+      swal("Success", "Upload Successfully", "success");
     } catch (error) {
       console.error("Error uploading image:", error);
+      swal("Error", "Error uploading image", "error");
     }
   };
 
@@ -112,17 +111,11 @@ const EditProgramModal = ({
       });
       handleClose();
       refreshPrograms();
+      swal("Success", "Program updated successfully", "success");
     } catch (error) {
       console.error("Error updating program:", error);
+      swal("Error", "Error updating program. Please try again.", "error");
     }
-  };
-
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
-    setForm((prevForm) => ({
-      ...prevForm,
-      profilePicName: "",
-    }));
   };
 
   return (
@@ -133,7 +126,7 @@ const EditProgramModal = ({
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: 800,
+          width: '60%',
           backgroundColor: "white",
           boxShadow: 24,
           padding: 4,
@@ -167,7 +160,7 @@ const EditProgramModal = ({
                       fullWidth
                       label="Program Title"
                       name="programTitle"
-                      value={form.program_title}
+                      value={form.programTitle}
                       InputProps={{
                         readOnly: true,
                       }}
@@ -313,7 +306,7 @@ const EditProgramModal = ({
                           variant="contained"
                           color="primary"
                           onClick={handleUpload}
-                          style={{ marginLeft: "41%" }}
+                          style={{ marginLeft: "59%" }}
                         >
                           Upload
                         </Button>
@@ -333,19 +326,6 @@ const EditProgramModal = ({
             </Button>
           </Box>
         </form>
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={3000}
-          onClose={handleSnackbarClose}
-        >
-          <Alert
-            onClose={handleSnackbarClose}
-            severity="success"
-            sx={{ width: "100%" }}
-          >
-            Upload Successfully
-          </Alert>
-        </Snackbar>
       </Box>
     </Modal>
   );

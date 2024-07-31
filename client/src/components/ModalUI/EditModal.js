@@ -11,8 +11,6 @@ import {
   MenuItem,
   Grid,
   IconButton,
-  Snackbar,
-  Alert,
   FormHelperText,
 } from "@mui/material";
 import { PhotoCamera } from "@mui/icons-material";
@@ -20,6 +18,7 @@ import PropTypes from "prop-types";
 import axios from "axios";
 import { SERVER_URL } from "@/constants/routes";
 import { validateField } from "@/utils/validation";
+import swal from "sweetalert";
 
 const EditModal = ({ open, handleClose, userData, addressData, refreshInstructors }) => {
   const [form, setForm] = useState({
@@ -40,7 +39,6 @@ const EditModal = ({ open, handleClose, userData, addressData, refreshInstructor
   const [departments, setDepartments] = useState([]);
   const [countries, setCountries] = useState([]);
   const [provinces, setProvinces] = useState([]);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   useEffect(() => {
     const fetchDepartments = async () => {
@@ -108,9 +106,10 @@ const EditModal = ({ open, handleClose, userData, addressData, refreshInstructor
         profilePicName: "",
         profilePicUrl: imageURL,
       }));
-      setSnackbarOpen(true);
+      swal("Success", "Upload Successfully", "success");
     } catch (error) {
       console.error("Error uploading image:", error);
+      swal("Error", "Error uploading image", "error");
     }
   };
 
@@ -154,24 +153,20 @@ const EditModal = ({ open, handleClose, userData, addressData, refreshInstructor
       if (!response.ok) {
         if (data.error) {
           setErrors((prevErrors) => ({ ...prevErrors, phoneNumber: data.error }));
+          swal("Error", data.error, "error");
         } else {
           setErrors((prevErrors) => ({ ...prevErrors, common: data.message }));
+          swal("Error", data.message, "error");
         }
       } else {
         handleClose();
         refreshInstructors();
+        swal("Success", "Instructor updated successfully", "success");
       }
     } catch (error) {
       console.error("Error updating user:", error);
+      swal("Error", "Error updating user", "error");
     }
-  };
-
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
-    setForm((prevForm) => ({
-      ...prevForm,
-      profilePicName: "",
-    }));
   };
 
   return (
@@ -490,7 +485,7 @@ const EditModal = ({ open, handleClose, userData, addressData, refreshInstructor
                           variant="contained"
                           color="primary"
                           onClick={handleUpload}
-                          style={{ marginLeft: "41%" }}
+                          style={{ marginLeft: "69%" }}
                         >
                           Upload
                         </Button>
@@ -510,19 +505,6 @@ const EditModal = ({ open, handleClose, userData, addressData, refreshInstructor
             </Button>
           </Box>
         </form>
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={3000}
-          onClose={handleSnackbarClose}
-        >
-          <Alert
-            onClose={handleSnackbarClose}
-            severity="success"
-            sx={{ width: "100%" }}
-          >
-            Upload Successfully
-          </Alert>
-        </Snackbar>
       </Box>
     </Modal>
   );

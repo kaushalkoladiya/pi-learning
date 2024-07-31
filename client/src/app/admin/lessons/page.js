@@ -21,6 +21,7 @@ import CreateLessonModal from "@/components/ModalUI/CreateLessonModal";
 import CreateFileModal from "@/components/ModalUI/CreateFileModal";
 import AdminWrapper from "@/components/AdminWrapper";
 import authMiddleware from "@/utils/authRoute";
+import swal from "sweetalert";
 
 const LessonsPage = () => {
   const router = useRouter();
@@ -113,7 +114,14 @@ const LessonsPage = () => {
   };
 
   const handleDelete = async (id) => {
-    const confirmed = confirm("Are you sure you want to delete this lesson?");
+    const confirmed = await swal({
+      title: "Are you sure?",
+      text: "Do you really want to delete this lesson?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    });
+
     if (confirmed) {
       try {
         const response = await fetch(`${SERVER_URL}/api/lessons/${id}`, {
@@ -121,17 +129,27 @@ const LessonsPage = () => {
         });
         if (response.ok) {
           await fetchLessons();
+          swal("Deleted!", "The lesson has been deleted.", "success");
         } else {
           console.error("Failed to delete lesson");
+          swal("Error", "Failed to delete the lesson. Please try again.", "error");
         }
       } catch (error) {
         console.error("Error deleting lesson:", error);
+        swal("Error", "An error occurred while deleting the lesson. Please try again.", "error");
       }
     }
   };
 
   const handleDeletefile = async (lessonId, fileId) => {
-    const confirmed = confirm("Are you sure you want to delete this file?");
+    const confirmed = await swal({
+      title: "Are you sure?",
+      text: "Do you really want to delete this file?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    });
+
     if (confirmed) {
       try {
         const response = await fetch(
@@ -142,14 +160,17 @@ const LessonsPage = () => {
         );
         if (response.ok) {
           await fetchLessons();
+          swal("Deleted!", "The file has been deleted.", "success");
         } else {
           console.error("Failed to delete file");
+          swal("Error", "Failed to delete the file. Please try again.", "error");
         }
       } catch (error) {
         console.error("Error deleting file:", error);
+        swal("Error", "An error occurred while deleting the file. Please try again.", "error");
       }
     }
-  };
+  };;
 
   return (
     <AdminWrapper>
@@ -171,13 +192,6 @@ const LessonsPage = () => {
               Create New Lesson
             </Button>
           </Box>
-
-          {error && (
-            <Alert severity="error" onClose={() => setError("")}>
-              {error}
-            </Alert>
-          )}
-
           <Table>
             <TableHead>
               <TableRow>

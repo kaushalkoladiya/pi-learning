@@ -10,6 +10,7 @@ import EditCourseModal from "@/components/ModalUI/EditCourseModal";
 import ViewCourseModal from "@/components/ModalUI/ViewCourseModal";
 import AdminWrapper from "@/components/AdminWrapper";
 import authMiddleware from "@/utils/authRoute";
+import swal from "sweetalert";
 
 const CourseList = () => {
   const router = useRouter();
@@ -19,7 +20,6 @@ const CourseList = () => {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
-  const [programData, setProgramData] = useState([]);
 
   useEffect(() => {
     fetchCourses();
@@ -43,19 +43,32 @@ const CourseList = () => {
   };
 
   const handleDelete = async (id) => {
-    try {
-      const response = await fetch(`${SERVER_URL}/api/courses/${id}`, {
-        method: "DELETE",
-      });
+    const confirmation = await swal({
+      title: "Are you sure?",
+      text: "Do you really want to delete this course?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    });
 
-      if (!response.ok) {
-        const data = await response.json();
-        setError(data.error || "Failed to delete course");
-      } else {
-        setCourses(courses.filter((course) => course.course_id !== id));
+    if (confirmation) {
+      try {
+        const response = await fetch(`${SERVER_URL}/api/courses/${id}`, {
+          method: "DELETE",
+        });
+
+        if (!response.ok) {
+          const data = await response.json();
+          setError(data.error || "Failed to delete course");
+          swal("Error", data.error || "Failed to delete course", "error");
+        } else {
+          setCourses(courses.filter((course) => course.course_id !== id));
+          swal("Deleted!", "The course has been deleted.", "success");
+        }
+      } catch (err) {
+        setError("Failed to delete course");
+        swal("Error", "Failed to delete course. Please try again.", "error");
       }
-    } catch (err) {
-      setError("Failed to delete course");
     }
   };
 
@@ -112,12 +125,6 @@ const CourseList = () => {
               Create New Course
             </Button>
           </Box>
-
-          {error && (
-            <Alert severity="error" onClose={() => setError("")}>
-              {error}
-            </Alert>
-          )}
 
           <Grid container spacing={2}>
             {Array.isArray(courses) && courses.length > 0 ? (

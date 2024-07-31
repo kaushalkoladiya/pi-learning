@@ -11,8 +11,6 @@ import {
   MenuItem,
   Grid,
   IconButton,
-  Snackbar,
-  Alert,
   FormHelperText,
 } from "@mui/material";
 import { PhotoCamera } from "@mui/icons-material";
@@ -20,6 +18,7 @@ import PropTypes from "prop-types";
 import axios from "axios";
 import { SERVER_URL } from "@/constants/routes";
 import { validateForm } from "@/utils/validation";
+import swal from "sweetalert";
 
 const EditCourseModal = ({ open, handleClose, courseData, refreshCourses }) => {
   const [form, setForm] = useState({
@@ -36,7 +35,6 @@ const EditCourseModal = ({ open, handleClose, courseData, refreshCourses }) => {
   const [errors, setErrors] = useState({});
   const [instructors, setInstructors] = useState([]);
   const [programs, setPrograms] = useState([]);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   useEffect(() => {
     const fetchInstructors = async () => {
@@ -93,9 +91,10 @@ const EditCourseModal = ({ open, handleClose, courseData, refreshCourses }) => {
         profilePicName: "",
         profilePicUrl: imageURL,
       }));
-      setSnackbarOpen(true);
+      swal("Success", "Image uploaded successfully!", "success");
     } catch (error) {
       console.error("Error uploading image:", error);
+      swal("Error", "Error uploading image. Please try again.", "error");
     }
   };
 
@@ -116,17 +115,11 @@ const EditCourseModal = ({ open, handleClose, courseData, refreshCourses }) => {
       });
       handleClose();
       refreshCourses();
+      swal("Success", "Course updated successfully!", "success");
     } catch (error) {
       console.error("Error updating course:", error);
+      swal("Error", "Error updating course. Please try again.", "error");
     }
-  };
-
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
-    setForm((prevForm) => ({
-      ...prevForm,
-      profilePicName: "",
-    }));
   };
 
   return (
@@ -137,7 +130,7 @@ const EditCourseModal = ({ open, handleClose, courseData, refreshCourses }) => {
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: 1000,
+          width: '60%',
           backgroundColor: "white",
           boxShadow: 24,
           padding: 4,
@@ -340,19 +333,6 @@ const EditCourseModal = ({ open, handleClose, courseData, refreshCourses }) => {
             </Button>
           </Box>
         </form>
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={3000}
-          onClose={handleSnackbarClose}
-        >
-          <Alert
-            onClose={handleSnackbarClose}
-            severity="success"
-            sx={{ width: "100%" }}
-          >
-            Upload Successfully
-          </Alert>
-        </Snackbar>
       </Box>
     </Modal>
   );

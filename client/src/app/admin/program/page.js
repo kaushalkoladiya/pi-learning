@@ -10,6 +10,7 @@ import EditProgramModal from "@/components/ModalUI/EditProgramModal";
 import ViewProgramModal from "@/components/ModalUI/ViewProgramModal";
 import AdminWrapper from "@/components/AdminWrapper";
 import authMiddleware from "@/utils/authRoute";
+import swal from "sweetalert";
 
 const ProgramList = () => {
   const router = useRouter();
@@ -55,19 +56,32 @@ const ProgramList = () => {
   };
 
   const handleDelete = async (id) => {
-    try {
-      const response = await fetch(`${SERVER_URL}/api/programs/${id}`, {
-        method: "DELETE",
-      });
+    const confirmation = await swal({
+      title: "Are you sure?",
+      text: "Do you really want to delete this program?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    });
 
-      if (!response.ok) {
-        const data = await response.json();
-        setError(data.error || "Failed to delete program");
-      } else {
-        setPrograms(programs.filter((program) => program.program_id !== id));
+    if (confirmation) {
+      try {
+        const response = await fetch(`${SERVER_URL}/api/programs/${id}`, {
+          method: "DELETE",
+        });
+
+        if (!response.ok) {
+          const data = await response.json();
+          setError(data.error || "Failed to delete program");
+          swal("Error", data.error || "Failed to delete program", "error");
+        } else {
+          setPrograms(programs.filter((program) => program.program_id !== id));
+          swal("Deleted!", "The program has been deleted.", "success");
+        }
+      } catch (err) {
+        setError("Failed to delete program");
+        swal("Error", "Failed to delete program. Please try again.", "error");
       }
-    } catch (err) {
-      setError("Failed to delete program");
     }
   };
 
@@ -127,12 +141,6 @@ const ProgramList = () => {
               Create New Program
             </Button>
           </Box>
-
-          {error && (
-            <Alert severity="error" onClose={() => setError("")}>
-              {error}
-            </Alert>
-          )}
 
           <Grid container spacing={2}>
             {Array.isArray(programs) && programs.length > 0 ? (

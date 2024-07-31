@@ -10,18 +10,16 @@ import {
   TableHead,
   TableRow,
   Typography,
-  IconButton,
   Alert,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { SERVER_URL } from "@/constants/routes";
 import ActionWrapper from "@/components/ActionWrapper";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 import CreateAssignmentModal from "@/components/ModalUI/CreateAssignmentModal";
 import EditAssignmentModal from "@/components/ModalUI/EditAssignmentModal";
 import AdminWrapper from "@/components/AdminWrapper";
 import authMiddleware from "@/utils/authRoute";
+import swal from "sweetalert";
 
 const AssignmentsPage = () => {
   const router = useRouter();
@@ -83,9 +81,14 @@ const AssignmentsPage = () => {
   };
 
   const handleDelete = async (id) => {
-    const confirmed = confirm(
-      "Are you sure you want to delete this assignment?"
-    );
+    const confirmed = await swal({
+      title: "Are you sure?",
+      text: "Do you really want to delete this assignment?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    });
+
     if (confirmed) {
       try {
         const response = await fetch(`${SERVER_URL}/api/assignments/${id}`, {
@@ -93,11 +96,14 @@ const AssignmentsPage = () => {
         });
         if (response.ok) {
           await fetchAssignments();
+          swal("Success", "Assignment deleted successfully!", "success");
         } else {
           console.error("Failed to delete assignment");
+          swal("Error", "Failed to delete assignment. Please try again.", "error");
         }
       } catch (error) {
         console.error("Error deleting assignment:", error);
+        swal("Error", "An error occurred while deleting the assignment. Please try again.", "error");
       }
     }
   };
@@ -122,13 +128,6 @@ const AssignmentsPage = () => {
               Create New Assignment
             </Button>
           </Box>
-
-          {error && (
-            <Alert severity="error" onClose={() => setError("")}>
-              {error}
-            </Alert>
-          )}
-
           <Table>
             <TableHead>
               <TableRow>

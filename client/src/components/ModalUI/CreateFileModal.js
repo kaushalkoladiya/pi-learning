@@ -6,7 +6,6 @@ import {
   TextField,
   Typography,
   Alert,
-  Snackbar,
 } from "@mui/material";
 import { PhotoCamera } from "@mui/icons-material";
 import styled from "@emotion/styled";
@@ -14,6 +13,7 @@ import PropTypes from "prop-types";
 import { SERVER_URL } from "@/constants/routes";
 import { validateField } from "@/utils/validation";
 import axios from "axios";
+import swal from "sweetalert";
 
 const LessonFilesModal = ({ open, handleClose, lessonId, refreshFiles }) => {
   const [form, setForm] = useState({
@@ -30,8 +30,6 @@ const LessonFilesModal = ({ open, handleClose, lessonId, refreshFiles }) => {
     fileUrl: "",
     common: "",
   });
-
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -68,9 +66,10 @@ const LessonFilesModal = ({ open, handleClose, lessonId, refreshFiles }) => {
         ...prevErrors,
         fileUrl: "", 
       }));
-      setSnackbarOpen(true);
+      swal("Success", "File uploaded successfully!", "success");
     } catch (error) {
       console.error("Error uploading image:", error);
+      swal("Error", "Failed to upload file. Please try again.", "error");
     }
   };
 
@@ -106,15 +105,19 @@ const LessonFilesModal = ({ open, handleClose, lessonId, refreshFiles }) => {
       if (!response.ok) {
         if (data.error) {
           setErrors((prevErrors) => ({ ...prevErrors, common: data.error }));
+          swal("Error", data.error, "error");
         } else {
           setErrors((prevErrors) => ({ ...prevErrors, common: data.message }));
+          swal("Error", data.message, "error");
         }
       } else {
         handleClose();
         refreshFiles();
+        swal("Success", "File added to lesson successfully!", "success");
       }
     } catch (error) {
       setErrors({ common: "Failed to upload the file. Please try again." });
+      swal("Error", "Failed to upload the file. Please try again.", "error");
     }
   };
 
@@ -127,10 +130,6 @@ const LessonFilesModal = ({ open, handleClose, lessonId, refreshFiles }) => {
       fileUrl: "",
     });
     setErrors({});
-  };
-
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
   };
 
   return (
@@ -211,15 +210,6 @@ const LessonFilesModal = ({ open, handleClose, lessonId, refreshFiles }) => {
             </Button>
           </Box>
         </Form>
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={3000}
-          onClose={handleSnackbarClose}
-        >
-          <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: "100%" }}>
-            Upload Successfully
-          </Alert>
-        </Snackbar>
       </ModalBox>
     </Modal>
   );
@@ -239,7 +229,7 @@ const ModalBox = styled(Box)`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 500px; /* Adjusted width */
+  width: 60%;
   background-color: white;
   box-shadow: 24;
   padding: 16px;
