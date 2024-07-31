@@ -60,7 +60,7 @@ const ViewProgramModal = ({
           left: "50%",
           transform: "translate(-50%, -50%)",
           width: "80%",
-          maxWidth: 1200,
+          //maxWidth: 1200,
           maxHeight: "90vh",
           overflowY: "auto",
           backgroundColor: "white",

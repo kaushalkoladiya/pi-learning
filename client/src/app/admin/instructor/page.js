@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import AdminWrapper from "@/components/AdminWrapper";
 import authMiddleware from "@/utils/authRoute";
+import swal from 'sweetalert';
 
 const Instructor = () => {
   const router = useRouter();
@@ -72,21 +73,34 @@ const Instructor = () => {
   };
 
   const handleDelete = async (id) => {
-    try {
-      const response = await fetch(`${SERVER_URL}/api/instructors/${id}`, {
-        method: "DELETE",
-      });
+    const confirmation = await swal({
+      title: "Are you sure?",
+      text: "Do you really want to delete this instructor?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    });
 
-      if (!response.ok) {
-        const data = await response.json();
-        setError(data.error || "Failed to delete instructor");
-      } else {
-        setInstructors(
-          instructors.filter((instructor) => instructor.id !== id)
-        );
+    if (confirmation) {
+      try {
+        const response = await fetch(`${SERVER_URL}/api/instructors/${id}`, {
+          method: "DELETE",
+        });
+
+        if (!response.ok) {
+          const data = await response.json();
+          setError(data.error || "Failed to delete instructor");
+          swal("Error", data.error , "error");
+        } else {
+          setInstructors(
+            instructors.filter((instructor) => instructor.id !== id)
+          );
+          swal("Deleted!", "The instructor has been deleted.", "success");
+        }
+      } catch (err) {
+        setError("Failed to delete instructor");
+        swal("Error", "Failed to delete instructor. Please try again.", "error");
       }
-    } catch (err) {
-      setError("Failed to delete instructor");
     }
   };
 
@@ -146,12 +160,6 @@ const Instructor = () => {
               Create New Instructor
             </Button>
           </Box>
-
-          {error && (
-            <Alert severity="error" onClose={() => setError("")}>
-              {error}
-            </Alert>
-          )}
 
         <Grid container spacing={2}>
           {Array.isArray(instructors) && instructors.length > 0 ? (

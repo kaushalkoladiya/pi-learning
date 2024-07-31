@@ -1,27 +1,86 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { Box, TextField, Button, Typography, Paper, Grid } from '@mui/material';
-import { useRouter } from 'next/navigation';
-import '../signup/styles.css';
-import axios from 'axios';
-import { validateEmail } from '@/utils/validation';
-import CryptoJS from 'crypto-js';
-import { useDispatch } from 'react-redux';
-import { setUser } from '@/redux/userSlice';
-import { USER_ROLES } from '@/constants/roles';
-import { ROUTES } from '@/constants/routes';
-import { fetchSecretKey, loginUser } from '@/api';
+import React, { useState, useEffect } from "react";
+import {
+  Box,
+  TextField,
+  Button,
+  Typography,
+  Paper,
+  Grid,
+  IconButton,
+  InputAdornment,
+  Link,
+} from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useRouter } from "next/navigation";
+import "../signup/styles.css";
+import { validateEmail } from "@/utils/validation";
+import CryptoJS from "crypto-js";
+import { useDispatch } from "react-redux";
+import { setUser } from "@/redux/userSlice";
+import { USER_ROLES } from "@/constants/roles";
+import { ROUTES } from "@/constants/routes";
+import { fetchSecretKey, loginUser } from "@/api";
+import { styled } from "@mui/system";
+
+const BackgroundContainer = styled("div")({
+  position: "relative",
+  backgroundImage: "url(/images/learning-background.png)",
+  backgroundSize: "contain",
+  backgroundPosition: "center",
+  height: "100vh",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  "&::before": {
+    content: '""',
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    zIndex: 1,
+  },
+});
+
+const TransparentPaper = styled(Paper)(({ theme }) => ({
+  zIndex: 2,
+  backgroundColor: "rgba(240, 248, 255, 0.8)",
+  padding: "30px",
+  borderRadius: "15px",
+  boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
+  backdropFilter: "blur(10px)",
+}));
+
+const LoginBox = styled(Box)({
+  width: "100%",
+  maxWidth: "400px",
+  zIndex: 1,
+});
+
+const StyledLink = styled(Link)({
+  textDecoration: "underline",
+  color: "#1976d2",
+  "&:hover": {
+    textDecoration: "none",
+    backgroundColor: "#1976d2",
+    color: "white",
+    borderRadius: "4px",
+    padding: "8px 8px",
+  },
+});
 
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState({});
-  const [secretKey, setSecretKey] = useState('');
-
+  const [secretKey, setSecretKey] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -37,12 +96,12 @@ const Login = () => {
     e.preventDefault();
     const errors = {};
     if (!email) {
-      errors.email = 'Email is required';
+      errors.email = "Email is required";
     } else if (!validateEmail(email)) {
-      errors.email = 'Invalid email format';
+      errors.email = "Invalid email format";
     }
     if (!password) {
-      errors.password = 'Password is required';
+      errors.password = "Password is required";
     }
 
     if (Object.keys(errors).length > 0) {
@@ -60,8 +119,8 @@ const Login = () => {
       const { token, user } = response.data;
       const user_type = user.user_type;
       // Save token and user type in local storage
-      localStorage.setItem('token', token);
-      localStorage.setItem('role', user_type);
+      localStorage.setItem("token", token);
+      localStorage.setItem("role", user_type);
 
       // Dispatch user info to Redux store
       dispatch(setUser({ token, user_type }));
@@ -74,33 +133,42 @@ const Login = () => {
       } else if (user_type === USER_ROLES.STUDENT) {
         navigate.push(ROUTES.STUDENT);
       }
-
     } catch (error) {
-      console.error('Invalid credentials');
-      setError('Invalid credentials. Please try again.');
+      console.error("Invalid credentials");
+      setError("Invalid credentials. Please try again.");
     }
   };
 
   return (
-    <div className="auth-container-wrapper">
-      <div className="snow"></div>
-      <Box className="auth-container">
-        <Box className="auth-image">
-          <img src="/images/pi.jpg" alt="Description of image" className="auth-image-content" />
-        </Box>
-        <Box className="auth-form-container" component={Paper} elevation={6} sx={{ width: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '30px' }}>
-          <Box component="form" onSubmit={handleLogin} sx={{ width: '100%' }}>
-            <Typography variant="h5" component="h1" gutterBottom align="center" sx={{ mb: 2 }}>
-              Sign In
+    <BackgroundContainer>
+      <TransparentPaper elevation={6}>
+        <LoginBox>
+          <img
+            src="/images/pi-learning-logo.png"
+            alt="PI Learning Logo"
+            style={{
+              height: "150px",
+              display: "block",
+              margin: "0 auto 0px auto",
+            }}
+          />
+          <Typography
+            variant="h5"
+            component="h1"
+            gutterBottom
+            align="center"
+            sx={{ mb: 2 }}
+          >
+            Welcome Back
+          </Typography>
+          {error && (
+            <Typography color="error" align="center">
+              {error}
             </Typography>
-            {error && (
-              <Typography color="error" align="center">
-                {error}
-              </Typography>
-            )}
+          )}
+          <Box component="form" onSubmit={handleLogin} sx={{ width: "100%" }}>
             <TextField
               margin="normal"
-              required
               fullWidth
               id="email"
               label="Email Address"
@@ -114,38 +182,59 @@ const Login = () => {
             />
             <TextField
               margin="normal"
-              required
               fullWidth
               name="password"
               label="Password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               id="password"
               autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               error={!!fieldErrors.password}
               helperText={fieldErrors.password}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={() => setShowPassword(!showPassword)}
+                      onMouseDown={(e) => e.preventDefault()}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
             <Button
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 2, mb: 1 }}
+              sx={{ mt: 2, mb: 2 }}
             >
-              Sign In
+              LOGIN
             </Button>
-            <Grid container justifyContent="center" className="links">
+            <Grid container justifyContent="space-between">
               <Grid item>
-                <Button variant="text" size="small">Forgot password?</Button>
+                <StyledLink href="#" underline="hover">
+                  Forgot password?
+                </StyledLink>
               </Grid>
               <Grid item>
-                <Button variant="text" size="small" onClick={() => navigate.push('/auth/signup')}>{"Don't have an account? Sign Up"}</Button>
+                <StyledLink
+                  href="#"
+                  underline="hover"
+                  onClick={() => navigate.push("/auth/signup")}
+                >
+                  {"Don't have an account? Sign Up"}
+                </StyledLink>
               </Grid>
             </Grid>
           </Box>
-        </Box>
-      </Box>
-    </div>
+        </LoginBox>
+      </TransparentPaper>
+    </BackgroundContainer>
   );
 };
 

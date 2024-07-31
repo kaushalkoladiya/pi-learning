@@ -73,7 +73,7 @@ const ViewModal = ({
               </Typography>
               <Typography variant="body1">
                 <strong>Date of Birth:</strong>{" "}
-                {userData?.date_of_birth || "N/A"}
+                {userData?.date_of_birth?.split('T')[0] || "N/A"}
               </Typography>
               <Typography variant="body1">
                 <strong>Address:</strong>{" "}
