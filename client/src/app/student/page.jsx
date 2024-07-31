@@ -4,8 +4,9 @@ import React, { useEffect, useState } from 'react';
 import { Box, Grid, Card, CardContent, Typography, CircularProgress, Button, Container } from '@mui/material';
 import { fetchStudentDashboardData } from '@/api';
 import { useRouter } from 'next/navigation';
-import AssignmentCard from '@/components/student/AssignmentCard';
 import CourseCard from '@/components/student/CourseCard';
+import StudentAssignmentSection from '@/components/student/StudentAssignmentSection';
+import Navbar from '@/components/Navbar';
 
 const StudentDashboard = () => {
   const [loading, setLoading] = useState(true);
@@ -45,61 +46,24 @@ const StudentDashboard = () => {
 
   return (
     <Container>
+      <Navbar />
+      <Box my={6} />
       <Box p={4}>
-        <Typography variant="h4" gutterBottom>Dashboard</Typography>
-        <Grid container spacing={4}>
-          <Grid item xs={12} sm={6} md={3}>
-            <Card elevation={3}>
-              <CardContent>
-                <Typography variant="h6">Courses</Typography>
-                <Button variant="contained" color="primary" fullWidth onClick={() => router.push('/courses')}>View Courses</Button>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <Card elevation={3}>
-              <CardContent>
-                <Typography variant="h6">Assignments</Typography>
-                <Button variant="contained" color="primary" fullWidth onClick={() => router.push('/student/assignments')}>View Assignments</Button>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <Card elevation={3}>
-              <CardContent>
-                <Typography variant="h6">Grades</Typography>
-                <Button variant="contained" color="primary" fullWidth onClick={() => router.push('/grades')}>View Grades</Button>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <Card elevation={3}>
-              <CardContent>
-                <Typography variant="h6">Certificates</Typography>
-                <Button variant="contained" color="primary" fullWidth onClick={() => router.push('/certificates')}>View Certificates</Button>
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
+        <Typography variant="h5" gutterBottom>
+          Welcome, {dashboardData.user.first_name} {dashboardData.user.last_name}
+        </Typography>
 
-        <Typography variant="h5" gutterBottom mt={4}>Overview</Typography>
+        <Typography variant="h6" gutterBottom mt={4}>Overview</Typography>
         <Grid container spacing={4}>
+        <Grid item xs={12}>
+            <StudentAssignmentSection assignments={dashboardData.assignments} />
+          </Grid>
           <Grid item xs={12} sm={6}>
             <Card elevation={3}>
               <CardContent>
                 <Typography variant="h6">Recent Courses</Typography>
                 {dashboardData.enrolledCourses.slice(0, 3).map(enrollment => (
                   <CourseCard key={enrollment.course_id} course={enrollment.Course} />
-                ))}
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <Card elevation={3}>
-              <CardContent>
-                <Typography variant="h6">Recent Assignments</Typography>
-                {dashboardData.assignments.slice(0, 3).map(assignment => (
-                  <AssignmentCard key={assignment.assignment_id} assignment={assignment} />
                 ))}
               </CardContent>
             </Card>

@@ -6,6 +6,7 @@ import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import BackButton from '@/components/BackButton';
 import useAuth from '@/hooks/useAuth';
+import Navbar from '@/components/Navbar';
 
 const CourseDetails = () => {
   const { isAuth } = useAuth();
@@ -83,57 +84,61 @@ const CourseDetails = () => {
   }
 
   return (
-    <Box p={6}>
-      <BackButton />
-      <Container>
-        <Paper elevation={3}>
-          <CardContent>
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={4}>
-                {course.profile_pic && (
-                  <Avatar 
-                    alt={`${course.course_title} profile`} 
-                    src={course.profile_pic} 
-                    variant="square" 
-                    sx={{ width: '100%', height: 'auto' }}
-                  />
-                )}
+    <div>
+      <Navbar />
+      <Box my={6}/>
+      <Box p={6}>
+        <BackButton />
+        <Container>
+          <Paper elevation={3}>
+            <CardContent>
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={4}>
+                  {course.profile_pic && (
+                    <Avatar
+                      alt={`${course.course_title} profile`}
+                      src={course.profile_pic}
+                      variant="square"
+                      sx={{ width: '100%', height: 'auto' }}
+                    />
+                  )}
+                </Grid>
+                <Grid item xs={12} md={8}>
+                  <Typography variant="h4" component="div" gutterBottom>
+                    {course.course_title}
+                  </Typography>
+                  <Typography variant="body1" color="text.primary" gutterBottom>
+                    {course.long_description}
+                  </Typography>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleEnroll}
+                    disabled={isEnrolled}
+                    sx={{ mt: 2 }}
+                  >
+                    {isEnrolled ? 'Enrolled' : 'Enroll in this course'}
+                  </Button>
+                </Grid>
               </Grid>
-              <Grid item xs={12} md={8}>
-                <Typography variant="h4" component="div" gutterBottom>
-                  {course.course_title}
-                </Typography>
-                <Typography variant="body1" color="text.primary" gutterBottom>
-                  {course.long_description}
-                </Typography>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleEnroll}
-                  disabled={isEnrolled}
-                  sx={{ mt: 2 }}
-                >
-                  {isEnrolled ? 'Enrolled' : 'Enroll in this course'}
-                </Button>
-              </Grid>
-            </Grid>
-            <Typography variant="h5" component="div" gutterBottom mt={3}>
-              Lessons
-            </Typography>
-            <List>
-              {lessons.map((lesson) => (
-                <ListItem key={lesson.lesson_id} divider>
-                  <ListItemText
-                    primary={lesson.lesson_name}
-                    secondary={lesson.lesson_description}
-                  />
-                </ListItem>
-              ))}
-            </List>
-          </CardContent>
-        </Paper>
-      </Container>
-    </Box>
+              <Typography variant="h5" component="div" gutterBottom mt={3}>
+                Lessons
+              </Typography>
+              <List>
+                {lessons.map((lesson) => (
+                  <ListItem key={lesson.lesson_id} divider>
+                    <ListItemText
+                      primary={lesson.lesson_name}
+                      secondary={lesson.lesson_description}
+                    />
+                  </ListItem>
+                ))}
+              </List>
+            </CardContent>
+          </Paper>
+        </Container>
+      </Box>
+    </div>
   );
 };
 

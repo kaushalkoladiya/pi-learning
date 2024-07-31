@@ -25,7 +25,7 @@ export const getStudentDashboard = async (req, res, next) => {
       include: [{
         model: Course,
         as: 'Course',
-        attributes: ['course_title', 'short_description', 'long_description'],
+        attributes: ['course_id', 'course_title', 'short_description', 'long_description'],
       }],
     });
 
@@ -38,6 +38,12 @@ export const getStudentDashboard = async (req, res, next) => {
           model: Course,
           as: 'course',
           attributes: ['course_title', 'short_description'],
+        },
+        {
+          model: AssignmentSubmission,
+          where: { student_id: req.user.id },
+          required: false,
+          attributes: ['id']
         }
       ],
     });

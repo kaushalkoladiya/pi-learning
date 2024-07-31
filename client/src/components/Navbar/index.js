@@ -26,7 +26,7 @@ const AppBar = styled(MuiAppBar, {
 
 const Navbar = () => {
   const router = useRouter();
-  const { logout, isUserStudent, isUserAdmin } = useAuth();
+  const { logout, isUserStudent, isUserAdmin, isUserInstructor } = useAuth();
 
   const handleNavigation = (path) => {
     router.push(path);
@@ -43,10 +43,13 @@ const Navbar = () => {
             <Box display="flex" alignItems="center">
               {isUserStudent() && (
                 <>
+                  <Button color="inherit" onClick={() => handleNavigation('/student')}>Home</Button>
                   <Button color="inherit" onClick={() => handleNavigation('/courses')}>Courses</Button>
-                  <Button color="inherit" onClick={() => handleNavigation('/student/assignments')}>Assignments</Button>
-                  <Button color="inherit" onClick={() => handleNavigation('/grades')}>Grades</Button>
-                  <Button color="inherit" onClick={() => handleNavigation('/certificates')}>Certificates</Button>
+                </>
+              )}
+              {isUserInstructor() && (
+                <>
+                  <Button color="inherit" onClick={() => handleNavigation('/instructor')}>Home</Button>
                 </>
               )}
               <Button color="inherit" onClick={() => handleNavigation('/profile')}>
