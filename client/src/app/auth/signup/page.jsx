@@ -358,7 +358,7 @@ const Signup = () => {
             <Grid container justifyContent="center">
               <Grid item>
                 <StyledLink href="#" underline="hover" onClick={() => router.push('/auth/login')}>
-                  {"Already have an account? LOGIN"}
+                  {"Already have an account? Login"}
                 </StyledLink>
               </Grid>
             </Grid>

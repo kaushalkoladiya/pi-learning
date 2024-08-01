@@ -20,14 +20,14 @@ const CardItem = ({
   onEdit,
   onDelete,
 }) => (
-  <Card sx={{ maxWidth: 345, m: 2, boxShadow: 4, borderRadius: 2 }}>
+  <Card sx={{ maxWidth: 345, m: 2, boxShadow: 4, borderRadius: 2, minHeight:400 }}>
     {imageUrl ? (
       <CardMedia
         component="img"
         height="180"
         image={imageUrl}
         alt={title}
-        sx={{ objectFit: "scale-down", borderRadius: "2px 2px 0 0", mt: 2 }}
+        sx={{ objectFit: "scale-down", borderRadius: "2px 2px 0 0"}}
       />
     ) : (
       <Box
@@ -71,6 +71,7 @@ const CardItem = ({
           display: "-webkit-box",
           WebkitLineClamp: 3,
           WebkitBoxOrient: "vertical",
+          minHeight: '60px',
         }}
       >
         {description}

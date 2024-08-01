@@ -121,7 +121,9 @@ const Login = () => {
       // Save token and user type in local storage
       localStorage.setItem("token", token);
       localStorage.setItem("role", user_type);
-
+      localStorage.setItem("firstName", user.first_name);
+      localStorage.setItem("lastName", user.last_name);
+      localStorage.setItem("profilePic", user.profile_pic);
       // Dispatch user info to Redux store
       dispatch(setUser({ token, user_type }));
 
