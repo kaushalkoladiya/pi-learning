@@ -10,7 +10,7 @@ import {
   TableHead,
   TableRow,
   Typography,
-  Alert,
+  TextField,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { SERVER_URL } from "@/constants/routes";
@@ -24,10 +24,12 @@ import swal from "sweetalert";
 const AssignmentsPage = () => {
   const router = useRouter();
   const [assignments, setAssignments] = useState([]);
+  const [filteredAssignments, setFilteredAssignments] = useState([]);
   const [error, setError] = useState("");
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedAssignment, setSelectedAssignment] = useState(null);
+  const [searchName, setSearchName] = useState("");
 
   useEffect(() => {
     fetchAssignments();
@@ -47,6 +49,7 @@ const AssignmentsPage = () => {
         })
       );
       setAssignments(assignmentsWithDetails);
+      setFilteredAssignments(assignmentsWithDetails);
     } catch (err) {
       setError("Failed to fetch assignments");
     }
@@ -108,6 +111,19 @@ const AssignmentsPage = () => {
     }
   };
 
+  const handleSearchChange = (e) => {
+    const { value } = e.target;
+    setSearchName(value);
+
+    const sanitizedSearchName = value.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+    const filtered = assignments.filter((assignment) => {
+      const assignmentName = assignment.assignment_name.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+      return assignmentName.includes(sanitizedSearchName);
+    });
+
+    setFilteredAssignments(filtered);
+  };
+
   return (
     <AdminWrapper>
       <Box sx={{ bgcolor: "#f5f5f5", minHeight: "100vh", py: 4 }}>
@@ -128,6 +144,18 @@ const AssignmentsPage = () => {
               Create New Assignment
             </Button>
           </Box>
+
+          <Box display="flex" mb={3} gap={2}>
+            <TextField
+              fullWidth
+              label="Search Assignment Name"
+              name="searchName"
+              value={searchName}
+              onChange={handleSearchChange}
+              margin="normal"
+            />
+          </Box>
+
           <Table>
             <TableHead>
               <TableRow>
@@ -139,8 +167,8 @@ const AssignmentsPage = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {assignments.length > 0 ? (
-                assignments.map((assignment) => (
+              {filteredAssignments.length > 0 ? (
+                filteredAssignments.map((assignment) => (
                   <TableRow key={assignment.assignment_id}>
                     <TableCell>{assignment.assignment_id}</TableCell>
                     <TableCell>

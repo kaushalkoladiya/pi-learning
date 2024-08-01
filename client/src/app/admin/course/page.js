@@ -1,7 +1,15 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Alert, Box, Button, Grid, Typography, Avatar } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  Grid,
+  Typography,
+  Avatar,
+  TextField,
+} from "@mui/material";
 import { useRouter } from "next/navigation";
 import { SERVER_URL } from "@/constants/routes";
 import CardItem from "@/components/CardUI";
@@ -15,11 +23,13 @@ import swal from "sweetalert";
 const CourseList = () => {
   const router = useRouter();
   const [courses, setCourses] = useState([]);
+  const [filteredCourses, setFilteredCourses] = useState([]);
   const [error, setError] = useState("");
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
+  const [searchTitle, setSearchTitle] = useState("");
 
   useEffect(() => {
     fetchCourses();
@@ -29,13 +39,12 @@ const CourseList = () => {
     try {
       const response = await fetch(`${SERVER_URL}/api/courses`);
       const data = await response.json();
-      console.log(data);
       setCourses(data);
+      setFilteredCourses(data);
     } catch (err) {
       setError("Failed to fetch courses");
     }
   };
-
 
   const handleEdit = async (course) => {
     setSelectedCourse(course);
@@ -103,6 +112,19 @@ const CourseList = () => {
       : words[0][0];
   };
 
+  const handleSearchChange = (e) => {
+    const { value } = e.target;
+    setSearchTitle(value);
+
+    const sanitizedSearchTitle = value.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+    const filtered = courses.filter((course) => {
+      const combinedTitle = course.course_title.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+      return combinedTitle.includes(sanitizedSearchTitle);
+    });
+
+    setFilteredCourses(filtered);
+  };
+
   return (
     <AdminWrapper>
       <Box sx={{ bgcolor: "#f5f5f5", minHeight: "100vh", py: 4 }}>
@@ -126,9 +148,20 @@ const CourseList = () => {
             </Button>
           </Box>
 
+          <Box display="flex" mb={3} gap={2}>
+            <TextField
+              fullWidth
+              label="Search Course Title"
+              name="searchTitle"
+              value={searchTitle}
+              onChange={handleSearchChange}
+              margin="normal"
+            />
+          </Box>
+
           <Grid container spacing={2}>
-            {Array.isArray(courses) && courses.length > 0 ? (
-              courses.map((course) => (
+            {Array.isArray(filteredCourses) && filteredCourses.length > 0 ? (
+              filteredCourses.map((course) => (
                 <Grid item xs={12} sm={6} md={4} key={course?.course_id}>
                   <CardItem
                     imageUrl={course?.profile_pic || ""}
@@ -153,28 +186,28 @@ const CourseList = () => {
                 No courses available
               </Typography>
             )}
-            <CreateCourseModal
-              open={createModalOpen}
-              handleClose={handleCreateModalClose}
-              refreshCourses={fetchCourses}
-            />
-            {selectedCourse && (
-              <>
-                <EditCourseModal
-                  open={editModalOpen}
-                  handleClose={handleEditModalClose}
-                  courseData={selectedCourse}
-                  refreshCourses={fetchCourses}
-                />
-                <ViewCourseModal
-                  open={viewModalOpen}
-                  handleClose={handleViewModalClose}
-                  courseData={selectedCourse}
-                />
-
-              </>
-            )}
           </Grid>
+
+          <CreateCourseModal
+            open={createModalOpen}
+            handleClose={handleCreateModalClose}
+            refreshCourses={fetchCourses}
+          />
+          {selectedCourse && (
+            <>
+              <EditCourseModal
+                open={editModalOpen}
+                handleClose={handleEditModalClose}
+                courseData={selectedCourse}
+                refreshCourses={fetchCourses}
+              />
+              <ViewCourseModal
+                open={viewModalOpen}
+                handleClose={handleViewModalClose}
+                courseData={selectedCourse}
+              />
+            </>
+          )}
         </Box>
       </Box>
     </AdminWrapper>

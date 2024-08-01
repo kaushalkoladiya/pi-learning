@@ -1,7 +1,19 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Alert, Box, Button, Grid, Typography, Avatar} from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  Grid,
+  Typography,
+  Avatar,
+  TextField,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+} from "@mui/material";
 import { useRouter } from "next/navigation";
 import { SERVER_URL } from "@/constants/routes";
 import CardItem from "@/components/CardUI";
@@ -15,12 +27,15 @@ import swal from "sweetalert";
 const ProgramList = () => {
   const router = useRouter();
   const [programs, setPrograms] = useState([]);
+  const [filteredPrograms, setFilteredPrograms] = useState([]);
   const [error, setError] = useState("");
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [selectedProgram, setSelectedProgram] = useState(null);
   const [departmentData, setDepartmentData] = useState([]);
+  const [searchTitle, setSearchTitle] = useState("");
+ 
 
   useEffect(() => {
     fetchPrograms();
@@ -30,8 +45,8 @@ const ProgramList = () => {
     try {
       const response = await fetch(`${SERVER_URL}/api/programs`);
       const data = await response.json();
-      console.log(data);
       setPrograms(data);
+      setFilteredPrograms(data); // Set filteredPrograms initially to all programs
     } catch (err) {
       setError("Failed to fetch programs");
     }
@@ -119,6 +134,19 @@ const ProgramList = () => {
       : words[0][0];
   };
 
+  const handleSearchChange = (e) => {
+    const { value } = e.target;
+    setSearchTitle(value);
+    const sanitizedSearchTitle = value.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+
+    const filtered = programs.filter((program) => {
+      const combinedTitle = program.program_title.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+      return combinedTitle.includes(sanitizedSearchTitle);
+    });
+
+    setFilteredPrograms(filtered);
+  };
+
   return (
     <AdminWrapper>
       <Box sx={{ bgcolor: "#f5f5f5", minHeight: "100vh", py: 4 }}>
@@ -142,9 +170,19 @@ const ProgramList = () => {
             </Button>
           </Box>
 
+          <Box display="flex" mb={1} gap={2}>
+            <TextField
+              fullWidth
+              label="Search Program Title"
+              name="searchTitle"
+              value={searchTitle}
+              onChange={handleSearchChange}
+              margin="normal"
+            />
+          </Box>
           <Grid container spacing={2}>
-            {Array.isArray(programs) && programs.length > 0 ? (
-              programs.map((program) => (
+            {Array.isArray(filteredPrograms) && filteredPrograms.length > 0 ? (
+              filteredPrograms.map((program) => (
                 <Grid item xs={12} sm={6} md={4} key={program?.program_id}>
                   <CardItem
                     imageUrl={program?.profile_pic || ""}
