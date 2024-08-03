@@ -54,7 +54,7 @@ const InstructorDashboard = () => {
         <Box my={2}>
           <CourseDetails course={courseDetails} />
           <Paper elevation={3} sx={{ mb: 2, padding: '16px' }}>
-            <StudentList courseId={selectedCourse} />
+            <StudentList courseId={selectedCourse} course={courseDetails} />
           </Paper>
           <Paper elevation={3} sx={{ mb: 2, padding: '16px' }}>
             <PublishedAssignments courseId={selectedCourse} />
