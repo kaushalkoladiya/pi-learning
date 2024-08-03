@@ -15,3 +15,7 @@ export const submitAssignment = async (assignmentId, data) => {
 export const fetchSubmissionsForAssignment = async (assignmentId) => {
   return await axiosInstance.get(`/api/assignments/submissions/${assignmentId}`);
 };
+
+export const fetchCertificates = async () => {
+  return await axiosInstance.get('/api/certificates');
+};

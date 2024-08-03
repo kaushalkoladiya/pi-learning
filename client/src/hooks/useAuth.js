@@ -37,7 +37,7 @@ const useAuth = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
 
-    router.replace(ROUTES.HOME)
+    window.location.href = ROUTES.HOME
   };
 
   return {

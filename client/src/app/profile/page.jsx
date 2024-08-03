@@ -5,7 +5,6 @@ import { Container, TextField, Button, Typography, Box, MenuItem, Select, InputL
 import swal from 'sweetalert';
 import { getCountries, getDepartments, getProfile, getProvinces, updateProfile, uploadFile } from '@/api';
 import { AZURE_BASE_URL } from '@/constants';
-import ProfileBanner from '@/components/profile/ProfileBanner';
 import authMiddleware from '@/utils/authRoute';
 import Navbar from '@/components/Navbar';
 
@@ -16,7 +15,7 @@ const ProfileEdit = () => {
     date_of_birth: '',
     gender: '',
     phone_number: '',
-    home_country: '',
+    // home_country: '',
     department_code: '',
     address: '',
     city: '',
@@ -43,7 +42,7 @@ const ProfileEdit = () => {
           date_of_birth: data?.date_of_birth?.split('T')[0],
           gender: data.gender,
           phone_number: data.phone_number,
-          home_country: data.home_country,
+          // home_country: data.home_country,
           department_code: data.department_code,
           biography: data.biography,
           profile_pic: data.profile_pic,
@@ -103,7 +102,7 @@ const ProfileEdit = () => {
         date_of_birth: profile.date_of_birth,
         gender: profile.gender,
         phone_number: profile.phone_number,
-        home_country: profile.home_country,
+        // home_country: profile.home_country,
         department_code: profile.department_code,
         address: profile.address,
         city: profile.city,
@@ -130,8 +129,6 @@ const ProfileEdit = () => {
 
     }
   };
-
-  console.log('Profile:', profile);
 
   return (
     <Container>
@@ -221,7 +218,7 @@ const ProfileEdit = () => {
               error={!!errors.phone_number}
               helperText={errors.phone_number}
             />
-            <FormControl fullWidth margin="normal" required error={!!errors.home_country}>
+            {/* <FormControl fullWidth margin="normal" required error={!!errors.home_country}>
               <InputLabel>Home Country</InputLabel>
               <Select
                 name="home_country"
@@ -239,7 +236,7 @@ const ProfileEdit = () => {
                   {errors.home_country}
                 </Typography>
               )}
-            </FormControl>
+            </FormControl> */}
             <FormControl fullWidth margin="normal" required error={!!errors.department_code}>
               <InputLabel>Department</InputLabel>
               <Select

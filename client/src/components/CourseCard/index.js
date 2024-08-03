@@ -48,8 +48,6 @@ export default function CourseCard({ course, isHero }) {
     try {
       const data = await enrollInCourse(course.course_id);
 
-      console.log(data);
-
       if (data.status === 201) {
         swal({
           title: 'Success',
@@ -73,9 +71,14 @@ export default function CourseCard({ course, isHero }) {
     }
   };
 
+  const handleCourseClick = () => {
+    router.push(`/courses/${course.course_id}`);
+  };
+
   return isHero ? (
     <HeroCard>
       <CardMedia
+        onClick={handleCourseClick}
         component="img"
         image={course?.profile_pic || "https://placehold.co/600x400"}
         alt={course?.course_title}
@@ -106,6 +109,7 @@ export default function CourseCard({ course, isHero }) {
     <RegularCard>
       <CardActionArea>
         <CardMedia
+          onClick={handleCourseClick}
           component="img"
           image={course?.profile_pic || "https://placehold.co/600x400"}
           alt={course?.course_title}
