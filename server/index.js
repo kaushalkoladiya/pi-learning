@@ -41,6 +41,7 @@ import Certificate from './models/CertificateModel.js';
 import IssuedCertificate from './models/IssueCertificateModel.js';
 
 import generateSecretKey from './utils/jwtsecretkey.js';
+import certificateRouter from './routers/certificateRouter.js';
 
 // Setup __dirname equivalent for ES Modules
 const __filename = fileURLToPath(import.meta.url);
@@ -77,6 +78,7 @@ app.use('/api/lessonFiles', lessonFileRouter)
 app.use('/api/assignments', assignmentRouter);
 app.use('/api/student', studentRouter);
 app.use('/api/instructor', instructorRouter);
+app.use('/api/certificates', certificateRouter);
 
 // Global error handler
 app.use((err, req, res, next) => {
