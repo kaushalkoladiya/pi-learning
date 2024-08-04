@@ -16,5 +16,5 @@ export const SERVER_URL = 'http://localhost:8000';
 
 export const STUDENT_ROUTES = {
   DASHBOARD: '/student',
-  PROFILE: '/student/profile',
+  PROFILE: '/profile',
 };

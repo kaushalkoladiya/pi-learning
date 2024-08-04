@@ -1,7 +1,27 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Typography, Card, CardContent } from '@mui/material';
+import { fetchCertificates } from '@/api/student';
+import DownloadCertificate from '../Certificate/DownloadCertificate';
 
-const CourseCompletionCertificates = ({ certificates = [] }) => {
+const CourseCompletionCertificates = ({ user: student }) => {
+  const [certificates, setCertificates] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const certificatesData = await fetchCertificates();
+        setCertificates(certificatesData.data);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <Card elevation={3}>
       <CardContent>
@@ -19,13 +39,19 @@ const CourseCompletionCertificates = ({ certificates = [] }) => {
             <TableBody>
               {certificates.map((certificate) => (
                 <TableRow key={certificate.id}>
-                  <TableCell>{certificate.name}</TableCell>
-                  <TableCell>{certificate.course_name}</TableCell>
-                  <TableCell>{new Date(certificate.issue_date).toLocaleDateString()}</TableCell>
+                  <TableCell>{certificate.Certificate.name}</TableCell>
+                  <TableCell>{certificate.Certificate.course.course_title}</TableCell>
+                  <TableCell>{new Date(certificate.issueDate).toLocaleDateString()}</TableCell>
                   <TableCell>
-                    <Button variant="contained" color="primary" href={certificate.url} target="_blank">
-                      Download
-                    </Button>
+                    <DownloadCertificate
+                      studentName={`${student.first_name} ${student.last_name}`}
+                      courseName={certificate.Certificate.course.course_title}
+                      issueDate={new Date(certificate.issueDate).toLocaleDateString()}
+                      instructor={
+                        certificate.Certificate.course.Instructor.first_name + " " + certificate.Certificate.course.Instructor.last_name
+                        || 'Pi Instructor'
+                      }
+                    />
                   </TableCell>
                 </TableRow>
               ))}

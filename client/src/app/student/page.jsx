@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import CourseCard from '@/components/student/CourseCard';
 import StudentAssignmentSection from '@/components/student/StudentAssignmentSection';
 import Navbar from '@/components/Navbar';
+import CourseCompletionCertificates from '@/components/student/CourseCompletionCertificates';
 
 const StudentDashboard = () => {
   const [loading, setLoading] = useState(true);
@@ -58,7 +59,7 @@ const StudentDashboard = () => {
         <Grid item xs={12}>
             <StudentAssignmentSection assignments={dashboardData.assignments} />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} >
             <Card elevation={3}>
               <CardContent>
                 <Typography variant="h6">Recent Courses</Typography>
@@ -67,6 +68,9 @@ const StudentDashboard = () => {
                 ))}
               </CardContent>
             </Card>
+          </Grid>
+          <Grid item xs={12} >
+              <CourseCompletionCertificates user={dashboardData.user} />
           </Grid>
         </Grid>
       </Box>
