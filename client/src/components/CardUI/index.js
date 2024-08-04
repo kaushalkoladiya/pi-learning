@@ -6,11 +6,13 @@ import {
   CardContent,
   CardMedia,
   Typography,
+  Avatar,
 } from "@mui/material";
 import PropTypes from "prop-types";
 
 const CardItem = ({
   imageUrl,
+  avatar,
   title,
   subtitle,
   description,
@@ -18,14 +20,36 @@ const CardItem = ({
   onEdit,
   onDelete,
 }) => (
-  <Card sx={{ maxWidth: 345, m: 2, boxShadow: 4, borderRadius: 2 }}>
-    <CardMedia
-      component="img"
-      height="180"
-      image={imageUrl || "/default-image.png"}
-      alt={title}
-      sx={{ objectFit: "scale-down", borderRadius: "2px 2px 0 0" }}
-    />
+  <Card sx={{ maxWidth: 345, m: 2, boxShadow: 4, borderRadius: 2, minHeight:400 }}>
+    {imageUrl ? (
+      <CardMedia
+        component="img"
+        height="180"
+        image={imageUrl}
+        alt={title}
+        sx={{ objectFit: "scale-down", borderRadius: "2px 2px 0 0"}}
+      />
+    ) : (
+      <Box
+        sx={{
+          height: 180,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: '#f0f0f0',
+          borderRadius: "2px 2px 0 0",
+        }}
+      >
+        <Avatar sx={{
+            width: '100%',
+            height: '100%',
+            borderRadius: 0,
+            fontSize: '6rem',
+          }}>
+          {avatar}
+        </Avatar>
+      </Box>
+    )}
     <CardContent>
       <Box display="flex" justifyContent="space-between">
         <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
@@ -45,8 +69,9 @@ const CardItem = ({
           overflow: "hidden",
           textOverflow: "ellipsis",
           display: "-webkit-box",
-          WebkitLineClamp: 5,
+          WebkitLineClamp: 3,
           WebkitBoxOrient: "vertical",
+          minHeight: '60px',
         }}
       >
         {description}

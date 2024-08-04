@@ -10,26 +10,26 @@ import {
   TableHead,
   TableRow,
   Typography,
-  IconButton,
-  Alert,
+  TextField,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { SERVER_URL } from "@/constants/routes";
 import ActionWrapper from "@/components/ActionWrapper";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 import CreateAssignmentModal from "@/components/ModalUI/CreateAssignmentModal";
 import EditAssignmentModal from "@/components/ModalUI/EditAssignmentModal";
 import AdminWrapper from "@/components/AdminWrapper";
 import authMiddleware from "@/utils/authRoute";
+import swal from "sweetalert";
 
 const AssignmentsPage = () => {
   const router = useRouter();
   const [assignments, setAssignments] = useState([]);
+  const [filteredAssignments, setFilteredAssignments] = useState([]);
   const [error, setError] = useState("");
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedAssignment, setSelectedAssignment] = useState(null);
+  const [searchName, setSearchName] = useState("");
 
   useEffect(() => {
     fetchAssignments();
@@ -49,6 +49,7 @@ const AssignmentsPage = () => {
         })
       );
       setAssignments(assignmentsWithDetails);
+      setFilteredAssignments(assignmentsWithDetails);
     } catch (err) {
       setError("Failed to fetch assignments");
     }
@@ -83,9 +84,14 @@ const AssignmentsPage = () => {
   };
 
   const handleDelete = async (id) => {
-    const confirmed = confirm(
-      "Are you sure you want to delete this assignment?"
-    );
+    const confirmed = await swal({
+      title: "Are you sure?",
+      text: "Do you really want to delete this assignment?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    });
+
     if (confirmed) {
       try {
         const response = await fetch(`${SERVER_URL}/api/assignments/${id}`, {
@@ -93,13 +99,29 @@ const AssignmentsPage = () => {
         });
         if (response.ok) {
           await fetchAssignments();
+          swal("Success", "Assignment deleted successfully!", "success");
         } else {
           console.error("Failed to delete assignment");
+          swal("Error", "Failed to delete assignment. Please try again.", "error");
         }
       } catch (error) {
         console.error("Error deleting assignment:", error);
+        swal("Error", "An error occurred while deleting the assignment. Please try again.", "error");
       }
     }
+  };
+
+  const handleSearchChange = (e) => {
+    const { value } = e.target;
+    setSearchName(value);
+
+    const sanitizedSearchName = value.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+    const filtered = assignments.filter((assignment) => {
+      const assignmentName = assignment.assignment_name.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+      return assignmentName.includes(sanitizedSearchName);
+    });
+
+    setFilteredAssignments(filtered);
   };
 
   return (
@@ -123,11 +145,16 @@ const AssignmentsPage = () => {
             </Button>
           </Box>
 
-          {error && (
-            <Alert severity="error" onClose={() => setError("")}>
-              {error}
-            </Alert>
-          )}
+          <Box display="flex" mb={3} gap={2}>
+            <TextField
+              fullWidth
+              label="Search Assignment Name"
+              name="searchName"
+              value={searchName}
+              onChange={handleSearchChange}
+              margin="normal"
+            />
+          </Box>
 
           <Table>
             <TableHead>
@@ -140,8 +167,8 @@ const AssignmentsPage = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {assignments.length > 0 ? (
-                assignments.map((assignment) => (
+              {filteredAssignments.length > 0 ? (
+                filteredAssignments.map((assignment) => (
                   <TableRow key={assignment.assignment_id}>
                     <TableCell>{assignment.assignment_id}</TableCell>
                     <TableCell>

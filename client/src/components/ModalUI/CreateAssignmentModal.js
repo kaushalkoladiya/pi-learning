@@ -10,22 +10,22 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  IconButton,
-  Snackbar,
+  FormHelperText,
 } from "@mui/material";
 import { PhotoCamera } from "@mui/icons-material";
 import { SERVER_URL } from "@/constants/routes";
 import { validateField } from "@/utils/validation";
 import axios from "axios";
 import PropTypes from "prop-types";
+import swal from "sweetalert";
 
 const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
   const [form, setForm] = useState({
     courseId: "",
     lessonId: "",
     assignmentName: "",
-    filePic: null,
-    filePicName: "",
+    fileUrl: null,
+    fileUrlName: "",
     assignmentUrl: "",
     dueDate: "",
   });
@@ -40,8 +40,6 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
     dueDate: "",
     common: "",
   });
-
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   useEffect(() => {
     fetchCourses();
@@ -89,14 +87,14 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
   const handleFileChange = (e) => {
     setForm({
       ...form,
-      filePic: e.target.files[0],
-      filePicName: e.target.files[0].name,
+      fileUrl: e.target.files[0],
+      fileUrlName: e.target.files[0].name,
     });
   };
 
   const handleUpload = async () => {
     const formData = new FormData();
-    formData.append("file", form.filePic);
+    formData.append("file", form.fileUrl);
 
     try {
       const response = await axios.post(`${SERVER_URL}/api/uploads`, formData, {
@@ -109,9 +107,14 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
         ...prevForm,
         assignmentUrl: fileURL,
       }));
-      setSnackbarOpen(true);
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        assignmentUrl: "", 
+      }));
+      swal("Success", "File uploaded successfully!", "success");
     } catch (error) {
       console.error("Error uploading file:", error);
+      swal("Error", "Failed to upload file. Please try again.", "error");
     }
   };
 
@@ -125,6 +128,11 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
       if (error) {
         newErrors[fieldName] = error;
       }
+    }
+
+    // Check if the file is uploaded
+    if (!form.assignmentUrl) {
+      newErrors.assignmentUrl = "File must be uploaded before submitting.";
     }
 
     setErrors(newErrors);
@@ -149,18 +157,17 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
       if (!response.ok) {
         if (data.error) {
           setErrors((prevErrors) => ({ ...prevErrors, common: data.error }));
+          swal("Error", data.error, "error");
         }
       } else {
         handleClose();
         refreshAssignments();
+        swal("Success", "Assignment created successfully!", "success");
       }
     } catch (error) {
       setErrors({ common: "Failed to create assignment. Please try again." });
+      swal("Error", "Failed to create assignment. Please try again.", "error");
     }
-  };
-
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
   };
 
   return (
@@ -171,18 +178,21 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: 500,
+          width: "60%",
           bgcolor: "background.paper",
           boxShadow: 24,
           p: 4,
+          borderRadius: '8px',
         }}
       >
-        <Typography variant="h5" mb={2}>
-          Create New Assignment
-        </Typography>
+        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+          <Typography variant="h5">Create New Lesson</Typography>
+          <Button variant="outlined" onClick={handleClose}>
+            Back to Assignment Page
+          </Button>
+        </Box>
         <form onSubmit={handleSubmit}>
-          {errors.common && <Alert severity="error">{errors.common}</Alert>}
-          <FormControl fullWidth sx={{ mb: 2 }}>
+          <FormControl fullWidth sx={{ mb: 2 }} error={!!errors.courseId}>
             <InputLabel id="course-label">Course</InputLabel>
             <Select
               labelId="course-label"
@@ -191,7 +201,6 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
               value={form.courseId}
               onChange={handleChange}
               label="Course"
-              error={!!errors.courseId}
             >
               {courses.map((course) => (
                 <MenuItem key={course.course_id} value={course.course_id}>
@@ -200,10 +209,10 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
               ))}
             </Select>
             {errors.courseId && (
-              <Alert severity="error">{errors.courseId}</Alert>
+              <FormHelperText>{errors.courseId}</FormHelperText>
             )}
           </FormControl>
-          <FormControl fullWidth sx={{ mb: 2 }}>
+          <FormControl fullWidth sx={{ mb: 2 }} error={!!errors.lessonId}>
             <InputLabel id="lesson-label">Lesson</InputLabel>
             <Select
               labelId="lesson-label"
@@ -212,7 +221,6 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
               value={form.lessonId}
               onChange={handleChange}
               label="Lesson"
-              error={!!errors.lessonId}
             >
               {lessons.length > 0 ? (
                 lessons.map((lesson) => (
@@ -227,7 +235,7 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
               )}
             </Select>
             {errors.lessonId && (
-              <Alert severity="error">{errors.lessonId}</Alert>
+              <FormHelperText>{errors.lessonId}</FormHelperText>
             )}
           </FormControl>
           <TextField
@@ -240,7 +248,7 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
             helperText={errors.assignmentName}
             sx={{ mb: 2 }}
           />
-          <Box mt={2} mb={2}>
+          <Box mt={2} mb={2} display="flex" justifyContent="space-between" alignItems="center" error={!!errors.assignmentUrl}>
             <input
               accept="*/*"
               style={{ display: "none" }}
@@ -249,31 +257,34 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
               onChange={handleFileChange}
             />
             <label htmlFor="assignment-file">
-              <IconButton
+              <Button
+                variant="outlined"
                 color="primary"
-                aria-label="upload file"
                 component="span"
+                startIcon={<PhotoCamera />}
               >
-                <PhotoCamera />
-              </IconButton>
+                Choose File
+              </Button>
             </label>
-            {form.filePicName && (
-              <Typography
-                variant="body1"
-                style={{ display: "inline", marginLeft: 10 }}
-              >
-                {form.filePicName}
-              </Typography>
-            )}
             <Button
               variant="contained"
               color="primary"
               onClick={handleUpload}
-              sx={{ ml: "72%" }}
             >
               Upload
             </Button>
           </Box>
+          {form.fileUrlName && (
+            <Typography
+              variant="body1"
+              sx={{ mt: 1, mb: 2 }}
+            >
+              {form.fileUrlName}
+            </Typography>
+          )}
+          {errors.assignmentUrl && (
+            <Alert severity="error" sx={{ mt: 2, mb: 2 }}>{errors.assignmentUrl}</Alert>
+          )}
           <TextField
             fullWidth
             label="Due Date"
@@ -297,19 +308,6 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
             </Button>
           </Box>
         </form>
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={3000}
-          onClose={handleSnackbarClose}
-        >
-          <Alert
-            onClose={handleSnackbarClose}
-            severity="success"
-            sx={{ width: "100%" }}
-          >
-            Upload Successfully
-          </Alert>
-        </Snackbar>
       </Box>
     </Modal>
   );

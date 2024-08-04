@@ -14,7 +14,6 @@ import {
   Grid,
   Divider,
   IconButton,
-  Snackbar,
 } from "@mui/material";
 import { PhotoCamera } from "@mui/icons-material";
 import styled from "@emotion/styled";
@@ -22,9 +21,10 @@ import PropTypes from "prop-types";
 import { SERVER_URL } from "@/constants/routes";
 import { validateField } from "@/utils/validation";
 import axios from "axios";
+import swal from "sweetalert";
 
 const CreateCourseModal = ({ open, handleClose, refreshCourses }) => {
-  const [form, setForm] = useState({
+  const initialFormState = {
     courseTitle: "",
     programId: "",
     instructorId: "",
@@ -32,20 +32,21 @@ const CreateCourseModal = ({ open, handleClose, refreshCourses }) => {
     longDescription: "",
     profilePic: null,
     profilePicName: "",
-  });
+  };
 
-  const [errors, setErrors] = useState({
+  const initialErrorState = {
     courseTitle: "",
     programId: "",
     instructorId: "",
     shortDescription: "",
     longDescription: "",
     common: "",
-  });
+  };
 
+  const [form, setForm] = useState(initialFormState);
+  const [errors, setErrors] = useState(initialErrorState);
   const [programs, setPrograms] = useState([]);
   const [instructors, setInstructors] = useState([]);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   useEffect(() => {
     const fetchPrograms = async () => {
@@ -101,9 +102,10 @@ const CreateCourseModal = ({ open, handleClose, refreshCourses }) => {
         ...prevForm,
         profilePicUrl: imageURL,
       }));
-      setSnackbarOpen(true);
+      swal("Success", "Image uploaded successfully!", "success");
     } catch (error) {
       console.error("Error uploading image:", error);
+      swal("Error", "Error uploading image. Please try again.", "error");
     }
   };
 
@@ -144,15 +146,19 @@ const CreateCourseModal = ({ open, handleClose, refreshCourses }) => {
       if (!response.ok) {
         if (data.error) {
           setErrors((prevErrors) => ({ ...prevErrors, common: data.error }));
+          swal("Error", data.error, "error");
         } else {
           setErrors((prevErrors) => ({ ...prevErrors, common: data.message }));
+          swal("Error", data.message, "error");
         }
       } else {
-        handleClose();
+        handleModalClose();
         refreshCourses();
+        swal("Success", "Course created successfully!", "success");
       }
     } catch (error) {
       setErrors({ common: "Registration failed. Please try again." });
+      swal("Error", "Registration failed. Please try again.", "error");
     }
   };
 
@@ -169,16 +175,18 @@ const CreateCourseModal = ({ open, handleClose, refreshCourses }) => {
     setErrors({});
   };
 
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
+  const handleModalClose = () => {
+    handleClose();
+    setForm(initialFormState);
+    setErrors(initialErrorState);
   };
 
   return (
-    <Modal open={open} onClose={handleClose}>
+    <Modal open={open} onClose={handleModalClose}>
       <ModalBox>
         <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
           <Typography variant="h5">Create New Course</Typography>
-          <Button variant="outlined" onClick={handleClose}>
+          <Button variant="outlined" onClick={handleModalClose}>
             Back to Course Page
           </Button>
         </Box>
@@ -300,7 +308,7 @@ const CreateCourseModal = ({ open, handleClose, refreshCourses }) => {
                     variant="contained"
                     color="primary"
                     onClick={handleUpload}
-                    sx={{ ml: '69%' }}
+                    sx={{ ml: '60%' }}
                   >
                     Upload
                   </Button>
@@ -317,15 +325,6 @@ const CreateCourseModal = ({ open, handleClose, refreshCourses }) => {
             </Button>
           </Box>
         </Form>
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={3000}
-          onClose={handleSnackbarClose}
-        >
-          <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: "100%" }}>
-            Upload Successfully
-          </Alert>
-        </Snackbar>
       </ModalBox>
     </Modal>
   );
@@ -344,7 +343,7 @@ const ModalBox = styled(Box)`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 1000px; /* Adjusted width */
+  width: 60%; 
   background-color: white;
   box-shadow: 24;
   padding: 16px;

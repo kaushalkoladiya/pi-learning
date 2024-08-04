@@ -11,8 +11,6 @@ import {
   MenuItem,
   Grid,
   IconButton,
-  Snackbar,
-  Alert,
   FormHelperText,
 } from "@mui/material";
 import { PhotoCamera } from "@mui/icons-material";
@@ -20,6 +18,7 @@ import PropTypes from "prop-types";
 import axios from "axios";
 import { SERVER_URL } from "@/constants/routes";
 import { validateForm } from "@/utils/validation";
+import swal from "sweetalert";
 
 const EditProgramModal = ({
   open,
@@ -28,20 +27,19 @@ const EditProgramModal = ({
   refreshPrograms,
 }) => {
   const [form, setForm] = useState({
-    program_id: programData.program_id || "",
-    program_title: programData.program_title || "",
-    short_description: programData.short_description || "",
-    long_description: programData.long_description || "",
+    programId: programData.program_id || "",
+    programTitle: programData.program_title || "",
+    shortDescription: programData.short_description || "",
+    longDescription: programData.long_description || "",
     price: programData.price || "",
-    department_code: programData.department_code || "",
-    duration_in_months: programData.duration_in_months || "",
-    profile_pic: null,
+    departmentCode: programData.department_code || "",
+    durationInMonths: programData.duration_in_months || "",
+    profilePic: null,
     profilePicName: "",
   });
 
   const [errors, setErrors] = useState({});
   const [departments, setDepartments] = useState([]);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   useEffect(() => {
     const fetchDepartments = async () => {
@@ -67,14 +65,14 @@ const EditProgramModal = ({
   const handleFileChange = (e) => {
     setForm({
       ...form,
-      profile_pic: e.target.files[0],
+      profilePic: e.target.files[0],
       profilePicName: e.target.files[0].name,
     });
   };
 
   const handleUpload = async () => {
     const formData = new FormData();
-    formData.append("file", form.profile_pic);
+    formData.append("file", form.profilePic);
 
     try {
       const response = await axios.post(`${SERVER_URL}/api/uploads`, formData, {
@@ -88,9 +86,10 @@ const EditProgramModal = ({
         profilePicName: "",
         profilePicUrl: imageURL,
       }));
-      setSnackbarOpen(true);
+      swal("Success", "Upload Successfully", "success");
     } catch (error) {
       console.error("Error uploading image:", error);
+      swal("Error", "Error uploading image", "error");
     }
   };
 
@@ -104,25 +103,19 @@ const EditProgramModal = ({
     }
     try {
       await axios.put(`${SERVER_URL}/api/programs/${programData.program_id}`, {
-        short_description: form.short_description,
-        long_description: form.long_description,
+        short_description: form.shortDescription,
+        long_description: form.longDescription,
         price: form.price,
-        duration_in_months: form.duration_in_months,
+        duration_in_months: form.durationInMonths,
         profile_pic: form.profilePicUrl || programData.profile_pic,
       });
       handleClose();
       refreshPrograms();
+      swal("Success", "Program updated successfully", "success");
     } catch (error) {
       console.error("Error updating program:", error);
+      swal("Error", "Error updating program. Please try again.", "error");
     }
-  };
-
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
-    setForm((prevForm) => ({
-      ...prevForm,
-      profilePicName: "",
-    }));
   };
 
   return (
@@ -133,7 +126,7 @@ const EditProgramModal = ({
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: 800,
+          width: '60%',
           backgroundColor: "white",
           boxShadow: 24,
           padding: 4,
@@ -153,8 +146,8 @@ const EditProgramModal = ({
                     <TextField
                       fullWidth
                       label="Program ID"
-                      name="program_id"
-                      value={form.program_id}
+                      name="programId"
+                      value={form.programId}
                       InputProps={{
                         readOnly: true,
                       }}
@@ -166,8 +159,8 @@ const EditProgramModal = ({
                     <TextField
                       fullWidth
                       label="Program Title"
-                      name="program_title"
-                      value={form.program_title}
+                      name="programTitle"
+                      value={form.programTitle}
                       InputProps={{
                         readOnly: true,
                       }}
@@ -191,26 +184,26 @@ const EditProgramModal = ({
                     <TextField
                       fullWidth
                       label="Duration in Months"
-                      name="duration_in_months"
-                      value={form.duration_in_months}
+                      name="durationInMonths"
+                      value={form.durationInMonths}
                       onChange={handleChange}
                       margin="normal"
-                      error={!!errors.duration_in_months}
-                      helperText={errors.duration_in_months}
+                      error={!!errors.durationInMonths}
+                      helperText={errors.durationInMonths}
                     />
                   </Grid>
                   <Grid item xs={12}>
                     <FormControl
                       fullWidth
                       margin="normal"
-                      error={!!errors.department_code}
+                      error={!!errors.departmentCode}
                     >
                       <InputLabel id="department-label">Department</InputLabel>
                       <Select
                         labelId="department-label"
-                        id="department_code"
-                        name="department_code"
-                        value={form.department_code}
+                        id="departmentCode"
+                        name="departmentCode"
+                        value={form.departmentCode}
                         label="Department"
                         InputProps={{
                           readOnly: true,
@@ -226,9 +219,9 @@ const EditProgramModal = ({
                           </MenuItem>
                         ))}
                       </Select>
-                      {errors.department_code && (
+                      {errors.departmentCode && (
                         <FormHelperText>
-                          {errors.department_code}
+                          {errors.departmentCode}
                         </FormHelperText>
                       )}
                     </FormControl>
@@ -256,28 +249,28 @@ const EditProgramModal = ({
                     <TextField
                       fullWidth
                       label="Short Description"
-                      name="short_description"
-                      value={form.short_description}
+                      name="shortDescription"
+                      value={form.shortDescription}
                       onChange={handleChange}
                       margin="normal"
                       multiline
                       rows={2}
-                      error={!!errors.short_description}
-                      helperText={errors.short_description}
+                      error={!!errors.shortDescription}
+                      helperText={errors.shortDescription}
                     />
                   </Grid>
                   <Grid item xs={12}>
                     <TextField
                       fullWidth
                       label="Long Description"
-                      name="long_description"
-                      value={form.long_description}
+                      name="longDescription"
+                      value={form.longDescription}
                       onChange={handleChange}
                       margin="normal"
                       multiline
                       rows={4}
-                      error={!!errors.long_description}
-                      helperText={errors.long_description}
+                      error={!!errors.longDescription}
+                      helperText={errors.longDescription}
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -313,7 +306,7 @@ const EditProgramModal = ({
                           variant="contained"
                           color="primary"
                           onClick={handleUpload}
-                          style={{ marginLeft: "41%" }}
+                          style={{ marginLeft: "59%" }}
                         >
                           Upload
                         </Button>
@@ -333,19 +326,6 @@ const EditProgramModal = ({
             </Button>
           </Box>
         </form>
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={3000}
-          onClose={handleSnackbarClose}
-        >
-          <Alert
-            onClose={handleSnackbarClose}
-            severity="success"
-            sx={{ width: "100%" }}
-          >
-            Upload Successfully
-          </Alert>
-        </Snackbar>
       </Box>
     </Modal>
   );

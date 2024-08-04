@@ -20,6 +20,7 @@ import { Box } from '@mui/material';
 import useAuth from '@/hooks/useAuth';
 import { APP_NAME } from '@/constants';
 import { SchoolSharp } from '@mui/icons-material';
+import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 
 const drawerWidth = 240;
 
@@ -71,6 +72,11 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 const ADMIN_ROUTES = [
+  {
+    text: "Home",
+    icon: <HomeRoundedIcon />,
+    path: "/admin",
+  },
   {
     text: "Instructor",
     icon: <Person4Icon />,

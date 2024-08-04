@@ -11,8 +11,6 @@ import {
   MenuItem,
   Grid,
   IconButton,
-  Snackbar,
-  Alert,
   FormHelperText,
 } from "@mui/material";
 import { PhotoCamera } from "@mui/icons-material";
@@ -20,11 +18,11 @@ import PropTypes from "prop-types";
 import axios from "axios";
 import { SERVER_URL } from "@/constants/routes";
 import { validateField } from "@/utils/validation";
+import swal from "sweetalert";
 
-const EditModal = ({ open, handleClose, userData, addressData, refreshUsers }) => {
-  console.log(addressData);
+const EditModal = ({ open, handleClose, userData, addressData, refreshInstructors }) => {
   const [form, setForm] = useState({
-    dateOfBirth: userData.date_of_birth || "",
+    dateOfBirth: userData?.date_of_birth?.split('T')[0] || "",
     phoneNumber: userData.phone_number || "",
     homeCountry: userData.home_country || "",
     departmentCode: userData.department_code || "",
@@ -41,7 +39,6 @@ const EditModal = ({ open, handleClose, userData, addressData, refreshUsers }) =
   const [departments, setDepartments] = useState([]);
   const [countries, setCountries] = useState([]);
   const [provinces, setProvinces] = useState([]);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   useEffect(() => {
     const fetchDepartments = async () => {
@@ -71,37 +68,9 @@ const EditModal = ({ open, handleClose, userData, addressData, refreshUsers }) =
       }
     };
 
-   /* const fetchUserData = async () => {
-      try {
-        const addressResponse = await axios.get(
-          `${SERVER_URL}/api/user_address/${userData.id}`
-        );
-        const addressData = addressResponse.data;
-
-        setForm((prevForm) => ({
-          ...prevForm,
-          dateOfBirth: userData.date_of_birth || "",
-          phoneNumber: userData.phone_number || "",
-          homeCountry: userData.home_country || "",
-          departmentCode: userData.department_code || "",
-          introduction: userData.biography || "",
-          address: addressData.address || "",
-          city: addressData.city || "",
-          provinceCode: addressData.province_code || "",
-          zipCode: addressData.zip_code || "",
-        }));
-        console.log("Updated form state with address data:", addressData);
-      } catch (error) {
-        console.error("Error fetching updated user data:", error);
-      }
-    };*/
-
     fetchDepartments();
     fetchCountries();
     fetchProvinces();
-    /*if (userData && userData.id) {
-      fetchUserData();
-    }*/
   }, []);
 
   const handleChange = (e) => {
@@ -137,9 +106,10 @@ const EditModal = ({ open, handleClose, userData, addressData, refreshUsers }) =
         profilePicName: "",
         profilePicUrl: imageURL,
       }));
-      setSnackbarOpen(true);
+      swal("Success", "Upload Successfully", "success");
     } catch (error) {
       console.error("Error uploading image:", error);
+      swal("Error", "Error uploading image", "error");
     }
   };
 
@@ -183,24 +153,20 @@ const EditModal = ({ open, handleClose, userData, addressData, refreshUsers }) =
       if (!response.ok) {
         if (data.error) {
           setErrors((prevErrors) => ({ ...prevErrors, phoneNumber: data.error }));
+          swal("Error", data.error, "error");
         } else {
           setErrors((prevErrors) => ({ ...prevErrors, common: data.message }));
+          swal("Error", data.message, "error");
         }
       } else {
         handleClose();
         refreshInstructors();
+        swal("Success", "Instructor updated successfully", "success");
       }
     } catch (error) {
       console.error("Error updating user:", error);
+      swal("Error", "Error updating user", "error");
     }
-  };
-
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
-    setForm((prevForm) => ({
-      ...prevForm,
-      profilePicName: "",
-    }));
   };
 
   return (
@@ -211,7 +177,7 @@ const EditModal = ({ open, handleClose, userData, addressData, refreshUsers }) =
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: 800,
+          width: '80%',
           backgroundColor: "white",
           boxShadow: 24,
           padding: 4,
@@ -293,8 +259,12 @@ const EditModal = ({ open, handleClose, userData, addressData, refreshUsers }) =
                       value={form.dateOfBirth}
                       onChange={handleChange}
                       margin="normal"
+                      sx={{ backgroundColor: "#f0f0f0" }}
                       InputLabelProps={{
                         shrink: true,
+                      }}
+                      InputProps={{
+                        readOnly: true,
                       }}
                       error={!!errors.dateOfBirth}
                       helperText={errors.dateOfBirth}
@@ -308,6 +278,10 @@ const EditModal = ({ open, handleClose, userData, addressData, refreshUsers }) =
                       value={form.phoneNumber}
                       onChange={handleChange}
                       margin="normal"
+                      sx={{ backgroundColor: "#f0f0f0" }}
+                      InputProps={{
+                        readOnly: true,
+                      }}
                       error={!!errors.phoneNumber}
                       helperText={errors.phoneNumber}
                     />
@@ -511,7 +485,7 @@ const EditModal = ({ open, handleClose, userData, addressData, refreshUsers }) =
                           variant="contained"
                           color="primary"
                           onClick={handleUpload}
-                          style={{ marginLeft: "41%" }}
+                          style={{ marginLeft: "69%" }}
                         >
                           Upload
                         </Button>
@@ -531,19 +505,6 @@ const EditModal = ({ open, handleClose, userData, addressData, refreshUsers }) =
             </Button>
           </Box>
         </form>
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={3000}
-          onClose={handleSnackbarClose}
-        >
-          <Alert
-            onClose={handleSnackbarClose}
-            severity="success"
-            sx={{ width: "100%" }}
-          >
-            Upload Successfully
-          </Alert>
-        </Snackbar>
       </Box>
     </Modal>
   );

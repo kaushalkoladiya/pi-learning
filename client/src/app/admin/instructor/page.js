@@ -5,25 +5,25 @@ import EditModal from "@/components/ModalUI/EditModal";
 import ViewModal from "@/components/ModalUI/ViewModal";
 import CardItem from "@/components/CardUI";
 import { SERVER_URL } from "@/constants/routes";
-import { Alert, Box, Button, Grid, Typography } from "@mui/material";
-import ActionWrapper from "@/components/ActionWrapper";
+import { Alert, Box, Button, Grid, Typography, Avatar, TextField } from "@mui/material";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import AdminWrapper from "@/components/AdminWrapper";
 import authMiddleware from "@/utils/authRoute";
+import swal from 'sweetalert';
 
 const Instructor = () => {
   const router = useRouter();
   const [instructors, setInstructors] = useState([]);
+  const [filteredInstructors, setFilteredInstructors] = useState([]);
   const [error, setError] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [selectedInstructor, setSelectedInstructor] = useState(null);
-  const [selectedInstructorAddress, setSelectedInstructorAddress] =
-    useState(null);
-  const [selectedInstructorDepartment, setSelectedInstructorDepartment] =
-    useState(null);
+  const [selectedInstructorAddress, setSelectedInstructorAddress] = useState(null);
+  const [selectedInstructorDepartment, setSelectedInstructorDepartment] = useState(null);
+  const [searchName, setSearchName] = useState("");
 
   useEffect(() => {
     fetchInstructors();
@@ -34,6 +34,7 @@ const Instructor = () => {
       const response = await fetch(`${SERVER_URL}/api/instructors`);
       const data = await response.json();
       setInstructors(data);
+      setFilteredInstructors(data);
     } catch (err) {
       setError("Failed to fetch instructors");
     }
@@ -41,9 +42,7 @@ const Instructor = () => {
 
   const fetchInstructorAddress = async (instructorId) => {
     try {
-      const response = await fetch(
-        `${SERVER_URL}/api/user_address/${instructorId}`
-      );
+      const response = await fetch(`${SERVER_URL}/api/user_address/${instructorId}`);
       const data = await response.json();
       return data;
     } catch (err) {
@@ -54,9 +53,7 @@ const Instructor = () => {
 
   const fetchInstructorDepartment = async (departmentCode) => {
     try {
-      const response = await fetch(
-        `${SERVER_URL}/api/departments/${departmentCode}`
-      );
+      const response = await fetch(`${SERVER_URL}/api/departments/${departmentCode}`);
       const data = await response.json();
       return data;
     } catch (err) {
@@ -73,35 +70,44 @@ const Instructor = () => {
   };
 
   const handleDelete = async (id) => {
-    try {
-      const response = await fetch(`${SERVER_URL}/api/instructors/${id}`, {
-        method: "DELETE",
-      });
+    const confirmation = await swal({
+      title: "Are you sure?",
+      text: "Do you really want to delete this instructor?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    });
 
-      if (!response.ok) {
-        const data = await response.json();
-        setError(data.error || "Failed to delete instructor");
-      } else {
-        setInstructors(
-          instructors.filter((instructor) => instructor.id !== id)
-        );
+    if (confirmation) {
+      try {
+        const response = await fetch(`${SERVER_URL}/api/instructors/${id}`, {
+          method: "DELETE",
+        });
+
+        if (!response.ok) {
+          const data = await response.json();
+          setError(data.error || "Failed to delete instructor");
+          swal("Error", data.error, "error");
+        } else {
+          setInstructors(instructors.filter((instructor) => instructor.id !== id));
+          setFilteredInstructors(instructors.filter((instructor) => instructor.id !== id));
+          swal("Deleted!", "The instructor has been deleted.", "success");
+        }
+      } catch (err) {
+        setError("Failed to delete instructor");
+        swal("Error", "Failed to delete instructor. Please try again.", "error");
       }
-    } catch (err) {
-      setError("Failed to delete instructor");
     }
   };
 
   const handleView = async (instructor) => {
     const addressData = await fetchInstructorAddress(instructor.id);
     if (instructor.department_code !== "null") {
-      const departmentData = await fetchInstructorDepartment(
-        instructor.department_code
-      );
+      const departmentData = await fetchInstructorDepartment(instructor.department_code);
       setSelectedInstructorDepartment(departmentData);
     }
     setSelectedInstructor(instructor);
     setSelectedInstructorAddress(addressData);
-
     setViewModalOpen(true);
   };
 
@@ -123,6 +129,19 @@ const Instructor = () => {
     setSelectedInstructor(null);
     setSelectedInstructorAddress(null);
     setSelectedInstructorDepartment(null);
+  };
+
+  const handleSearchChange = (e) => {
+    const { value } = e.target;
+    setSearchName(value);
+
+    const sanitizedSearchName = value.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+    const filtered = instructors.filter((instructor) => {
+      const combinedName = (instructor.first_name + instructor.last_name).replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+      return combinedName.includes(sanitizedSearchName);
+    });
+
+    setFilteredInstructors(filtered);
   };
 
   return (
@@ -148,22 +167,34 @@ const Instructor = () => {
             </Button>
           </Box>
 
-          {error && (
-            <Alert severity="error" onClose={() => setError("")}>
-              {error}
-            </Alert>
-          )}
+          <Box display="flex" mb={3} gap={2}>
+            <TextField
+              fullWidth
+              label="Search Instructor Name"
+              name="searchName"
+              value={searchName}
+              onChange={handleSearchChange}
+              margin="normal"
+            />
+          </Box>
 
           <Grid container spacing={2}>
-            {Array.isArray(instructors) && instructors.length > 0 ? (
-              instructors.map((instructor) => (
+            {Array.isArray(filteredInstructors) && filteredInstructors.length > 0 ? (
+              filteredInstructors.map((instructor) => (
                 <Grid item xs={12} sm={6} md={4} key={instructor?.id}>
                   <CardItem
-                    imageUrl={instructor?.profile_pic || "/default-profile.png"}
+                    imageUrl={instructor?.profile_pic || ""}
+                    avatar={
+                      !instructor?.profile_pic && (
+                        <Avatar>
+                          {instructor?.first_name?.[0] || ""}
+                          {instructor?.last_name?.[0] || ""}
+                        </Avatar>
+                      )
+                    }
                     title={`${instructor?.first_name} ${instructor?.last_name}`}
-                    subtitle={null} // No subtitle for instructor
-                    description={
-                      instructor?.biography || "No biography available"}
+                    subtitle={null}
+                    description={instructor?.biography || "No biography available"}
                     onView={() => handleView(instructor)}
                     onEdit={() => handleEdit(instructor)}
                     onDelete={() => handleDelete(instructor?.id)}
@@ -189,7 +220,7 @@ const Instructor = () => {
                 handleClose={handleEditModalClose}
                 userData={selectedInstructor}
                 addressData={selectedInstructorAddress}
-                refreshUsers={fetchInstructors}
+                refreshInstructors={fetchInstructors}
               />
               <ViewModal
                 open={viewModalOpen}
