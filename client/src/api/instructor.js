@@ -73,3 +73,7 @@ export const getUserSubmissionsByAssignment = async (assignmentId, userId) => {
     `/api/instructor/assignments/${assignmentId}/students/${userId}/submissions`
   );
 };
+
+export const issueCertificate = async (courseId, studentId) => {
+  return await axiosInstance.post(`/api/certificates/issue`, { courseId, studentId });
+};

@@ -11,10 +11,6 @@ function authMiddleware(Component) {
     const userRole = localStorage.getItem('role');
 
     useEffect(() => {
-      if(USER_ROLES.STUDENT === userRole && !Object.values(STUDENT_ROUTES).includes(pathname)) {
-        router.replace(ROUTES.LOGIN);
-      }
-
       if (!isAuthenticated) {
         router.replace(ROUTES.HOME);
       }
