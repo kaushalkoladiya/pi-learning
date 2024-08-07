@@ -1,7 +1,7 @@
 'use client';
 
 import { fetchCourseDetails, fetchCourseLessons, checkEnrollment, enrollInCourse } from '@/api';
-import { Box, Button, Card, CardContent, CircularProgress, Container, Grid, List, ListItem, ListItemText, Typography, Paper, Avatar } from '@mui/material';
+import { Box, Button, CardContent, CircularProgress, Container, Grid, List, ListItem, ListItemText, Typography, Paper, Avatar } from '@mui/material';
 import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import BackButton from '@/components/BackButton';
@@ -86,7 +86,7 @@ const CourseDetails = () => {
   return (
     <div>
       <Navbar />
-      <Box my={6}/>
+      <Box my={6} />
       <Box p={6}>
         <BackButton />
         <Container>
@@ -131,6 +131,35 @@ const CourseDetails = () => {
                       primary={lesson.lesson_name}
                       secondary={lesson.lesson_description}
                     />
+
+                    {isAuth && lesson.lesson_files && lesson.lesson_files.length > 0 && (
+                      <List>
+                        {lesson.lesson_files.map((file) => (
+                          <ListItem key={file.file_id}>
+                            <ListItemText
+                              primary={file.file_name}
+                              secondary={
+                                <Button
+                                  variant="contained"
+                                  color="primary"
+                                  href={file.file_url}
+                                  target="_blank"
+                                >
+                                  Download
+                                </Button>
+                              }
+                            />
+                          </ListItem>
+                        ))}
+                      </List>
+                    )}
+
+                    {!isAuth && (
+                      <Typography variant="body2" color="text.secondary">
+                        Login to download lesson files
+                      </Typography>
+                    )}
+
                   </ListItem>
                 ))}
               </List>

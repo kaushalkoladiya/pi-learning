@@ -4,6 +4,7 @@ import Certificate from "../models/CertificateModel.js";
 import Course from "../models/CourseModel.js";
 import Enrollment from "../models/EnrollmentModel.js";
 import IssuedCertificate from "../models/IssueCertificateModel.js";
+import LessonFile from "../models/LessonFileModel.js";
 import Lesson from "../models/LessonModel.js";
 import User from "../models/userModel.js";
 
@@ -100,10 +101,14 @@ export const getCourseLessons = async (req, res, next) => {
     const lessons = await Lesson.findAll({
       where: { course_id: courseId },
       order: [['created_at', 'ASC']],
+      include: {
+        model: LessonFile,
+      }
     });
 
     return res.status(200).json(lessons);
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ error: error.message });
   }
 };

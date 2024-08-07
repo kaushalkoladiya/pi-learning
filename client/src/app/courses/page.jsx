@@ -3,6 +3,7 @@
 import { getStudentCourses } from '@/api';
 import BackButton from '@/components/BackButton';
 import CourseCard from '@/components/CourseCard';
+import Navbar from '@/components/Navbar';
 import { Box, Grid, styled, Typography, Container, CircularProgress } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
@@ -29,9 +30,10 @@ const StudentCourseList = () => {
   }
 
   return (
-    <Box position={'relative'}>
-      <BackButton />
-      <HeroImage src='/images/courses-hero.jpg' alt='courses-hero' />
+    <Box mb={4}>
+      <Navbar />
+      <Box my={10} />
+      {/* <HeroImage src='/images/courses-hero.jpg' alt='courses-hero' /> */}
       <Container>
         {courseList.length > 0 && (
           <>
