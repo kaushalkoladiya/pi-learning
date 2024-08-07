@@ -52,7 +52,7 @@ const CardItem = ({
     )}
     <CardContent>
       <Box display="flex" justifyContent="space-between">
-        <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography variant="h6" component="div" sx={{ fontWeight: "bold", minHeight:"64px"}}>
           {title}
         </Typography>
         {subtitle && (
