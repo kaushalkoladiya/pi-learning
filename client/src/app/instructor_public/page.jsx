@@ -124,7 +124,7 @@ const InstructorPage = () => {
           <AnimatedTypography variant="h5" className={styles.heroSubtitle}>
             Become an instructor and change lives — including your own
           </AnimatedTypography>
-          <AnimatedButton variant="contained" className={styles.heroButton}>
+          <AnimatedButton href="/auth/signup" variant="contained" className={styles.heroButton}>
             Get started
           </AnimatedButton>
         </Box>

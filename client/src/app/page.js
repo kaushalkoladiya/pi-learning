@@ -104,12 +104,7 @@ const Home = () => {
           <AnimatedTypography variant="h5" className={styles.heroSubtitle}>
             Learn how to implement Pi Learning into your educational center.
           </AnimatedTypography>
-          <Box className={styles.searchBox}>
-            <input type="text" placeholder="Search the Teaching Center" className={styles.searchInput} />
-            <AnimatedButton variant="contained" className={styles.searchButton}>
-              Search
-            </AnimatedButton>
-          </Box>
+          
         </Box>
         <Box className={styles.heroImageContainer}>
           <img src="/images/hero.webp" alt="Pi Learning Hero" className={styles.heroImage} />

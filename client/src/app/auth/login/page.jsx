@@ -144,7 +144,6 @@ const Login = () => {
 
   return (
     <Box>
-      <PublicNavbar />
 
       <BackgroundContainer>
         <TransparentPaper elevation={6}>

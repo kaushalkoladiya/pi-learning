@@ -191,7 +191,6 @@ const Signup = () => {
 
   return (
     <Box>
-      <PublicNavbar />
       <BackgroundImage>
         <TransparentPaper elevation={6}>
           <LeftContainer>
