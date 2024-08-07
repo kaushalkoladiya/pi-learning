@@ -20,6 +20,7 @@ import {
 } from '@mui/material';
 import Link from 'next/link';
 import styles from './instructors.module.css';
+import { PublicNavbar } from '../page';
 
 const AnimatedBox = ({ children, ...props }) => (
   <Fade in={true} timeout={1000}>
@@ -113,36 +114,7 @@ const InstructorPage = () => {
 
   return (
     <AnimatedBox className={styles.pageContainer}>
-      <AnimatedAppBar position="static" className={styles.appBar}>
-        <AnimatedToolbar className={styles.toolbar}>
-          <Typography variant="h6" className={styles.logo}>
-            Pi Learning
-          </Typography>
-          <Box className={styles.navLinks}>
-            <MuiLink component={Link} href="/" color="inherit">
-              Teaching Center
-            </MuiLink>
-            <MuiLink component={Link} href="/instructor_public" color="inherit">
-              Teaching on Pi Learning
-            </MuiLink>
-            <MuiLink component={Link} href="/help" color="inherit">
-              Help
-            </MuiLink>
-            <MuiLink component={Link} href="/contactus" color="inherit">
-              Contact
-            </MuiLink>
-            <MuiLink component={Link} href="/search" color="inherit">
-              Search
-            </MuiLink>
-            <MuiLink component={Link} href="/auth/login" color="inherit">
-              Login
-            </MuiLink>
-            <MuiLink component={Link} href="/auth/signup" color="inherit">
-              Sign Up
-            </MuiLink>
-          </Box>
-        </AnimatedToolbar>
-      </AnimatedAppBar>
+      <PublicNavbar />
 
       <Box className={styles.hero}>
         <Box className={styles.heroContent}>

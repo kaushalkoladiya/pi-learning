@@ -26,6 +26,7 @@ import { validateForm } from "@/utils/validation";
 import CryptoJS from "crypto-js";
 import { fetchSecretKey, registerUser } from "@/api";
 import { styled } from '@mui/system';
+import { PublicNavbar } from "@/app/page";
 
 const BackgroundImage = styled('div')({
   position: 'relative',
@@ -52,8 +53,8 @@ const TransparentPaper = styled(Paper)({
   padding: '30px',
   borderRadius: '15px',
   boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
-  backdropFilter: 'blur(10px)', 
-  zIndex: 1, 
+  backdropFilter: 'blur(10px)',
+  zIndex: 1,
   display: 'flex',
   flexDirection: 'row',
   alignItems: 'center',
@@ -189,183 +190,186 @@ const Signup = () => {
   };
 
   return (
-    <BackgroundImage>
-      <TransparentPaper elevation={6}>
-        <LeftContainer>
-          <img src="/images/pi-learning-logo.png" alt="PI Learning Logo" style={{ width: '100%', maxWidth: "500px" }} />
-        </LeftContainer>
-        <Divider />
-        <RightContainer>
-          <Box component="form" onSubmit={handleSignup} sx={{ width: "100%" }}>
-            <Typography
-              variant="h5"
-              component="h1"
-              gutterBottom
-              align="center"
-              sx={{ mb: 2 }}
-            >
-              Create Account
-            </Typography>
-            {error && (
-              <Typography color="error" align="center">
-                {error}
-              </Typography>
-            )}
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <TextField
-                  margin="normal"
-                  autoFocus
-                  fullWidth
-                  id="firstName"
-                  label="First Name"
-                  name="firstName"
-                  autoComplete="given-name"
-                  value={form.firstName}
-                  onChange={handleChange}
-                  error={!!fieldErrors.firstName}
-                  helperText={fieldErrors.firstName}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  margin="normal"
-                  fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="lastName"
-                  autoComplete="family-name"
-                  value={form.lastName}
-                  onChange={handleChange}
-                  error={!!fieldErrors.lastName}
-                  helperText={fieldErrors.lastName}
-                />
-              </Grid>
-            </Grid>
-            <TextField
-              margin="normal"
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              value={form.email}
-              onChange={handleChange}
-              error={!!fieldErrors.email}
-              helperText={fieldErrors.email}
-            />
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <TextField
-                  margin="normal"
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type={showPassword ? 'text' : 'password'}
-                  id="password"
-                  autoComplete="new-password"
-                  value={form.password}
-                  onChange={handleChange}
-                  error={!!fieldErrors.password}
-                  helperText={fieldErrors.password}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={() => setShowPassword(!showPassword)}
-                          onMouseDown={(e) => e.preventDefault()}
-                          edge="end"
-                        >
-                          {showPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  margin="normal"
-                  fullWidth
-                  name="confirmPassword"
-                  label="Confirm Password"
-                  type={showConfirmPassword ? 'text' : 'password'}
-                  id="confirmPassword"
-                  autoComplete="new-password"
-                  value={form.confirmPassword}
-                  onChange={handleChange}
-                  error={!!fieldErrors.confirmPassword}
-                  helperText={fieldErrors.confirmPassword}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                          onMouseDown={(e) => e.preventDefault()}
-                          edge="end"
-                        >
-                          {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
-            </Grid>
-            <FormControl fullWidth margin="normal" error={!!fieldErrors.gender}>
-              <InputLabel id="gender-label">Gender</InputLabel>
-              <Select
-                labelId="gender-label"
-                id="gender"
-                name="gender"
-                value={form.gender}
-                onChange={handleChange}
-                label="Gender"
+    <Box>
+      <PublicNavbar />
+      <BackgroundImage>
+        <TransparentPaper elevation={6}>
+          <LeftContainer>
+            <img src="/images/pi-learning-logo.png" alt="PI Learning Logo" style={{ width: '100%', maxWidth: "500px" }} />
+          </LeftContainer>
+          <Divider />
+          <RightContainer>
+            <Box component="form" onSubmit={handleSignup} sx={{ width: "100%" }}>
+              <Typography
+                variant="h5"
+                component="h1"
+                gutterBottom
+                align="center"
+                sx={{ mb: 2 }}
               >
-                <MenuItem value="male">Male</MenuItem>
-                <MenuItem value="female">Female</MenuItem>
-                <MenuItem value="other">Other</MenuItem>
-              </Select>
-              {fieldErrors.gender && (
-                <FormHelperText>{fieldErrors.gender}</FormHelperText>
+                Create Account
+              </Typography>
+              {error && (
+                <Typography color="error" align="center">
+                  {error}
+                </Typography>
               )}
-            </FormControl>
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <Button
-                  type="button"
-                  fullWidth
-                  variant="outlined"
-                  onClick={handleClear}
-                  sx={{ mt: 2, mb: 2 }}
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <TextField
+                    margin="normal"
+                    autoFocus
+                    fullWidth
+                    id="firstName"
+                    label="First Name"
+                    name="firstName"
+                    autoComplete="given-name"
+                    value={form.firstName}
+                    onChange={handleChange}
+                    error={!!fieldErrors.firstName}
+                    helperText={fieldErrors.firstName}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    margin="normal"
+                    fullWidth
+                    id="lastName"
+                    label="Last Name"
+                    name="lastName"
+                    autoComplete="family-name"
+                    value={form.lastName}
+                    onChange={handleChange}
+                    error={!!fieldErrors.lastName}
+                    helperText={fieldErrors.lastName}
+                  />
+                </Grid>
+              </Grid>
+              <TextField
+                margin="normal"
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                value={form.email}
+                onChange={handleChange}
+                error={!!fieldErrors.email}
+                helperText={fieldErrors.email}
+              />
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <TextField
+                    margin="normal"
+                    fullWidth
+                    name="password"
+                    label="Password"
+                    type={showPassword ? 'text' : 'password'}
+                    id="password"
+                    autoComplete="new-password"
+                    value={form.password}
+                    onChange={handleChange}
+                    error={!!fieldErrors.password}
+                    helperText={fieldErrors.password}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={() => setShowPassword(!showPassword)}
+                            onMouseDown={(e) => e.preventDefault()}
+                            edge="end"
+                          >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    margin="normal"
+                    fullWidth
+                    name="confirmPassword"
+                    label="Confirm Password"
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    id="confirmPassword"
+                    autoComplete="new-password"
+                    value={form.confirmPassword}
+                    onChange={handleChange}
+                    error={!!fieldErrors.confirmPassword}
+                    helperText={fieldErrors.confirmPassword}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                            onMouseDown={(e) => e.preventDefault()}
+                            edge="end"
+                          >
+                            {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Grid>
+              </Grid>
+              <FormControl fullWidth margin="normal" error={!!fieldErrors.gender}>
+                <InputLabel id="gender-label">Gender</InputLabel>
+                <Select
+                  labelId="gender-label"
+                  id="gender"
+                  name="gender"
+                  value={form.gender}
+                  onChange={handleChange}
+                  label="Gender"
                 >
-                  Clear
-                </Button>
+                  <MenuItem value="male">Male</MenuItem>
+                  <MenuItem value="female">Female</MenuItem>
+                  <MenuItem value="other">Other</MenuItem>
+                </Select>
+                {fieldErrors.gender && (
+                  <FormHelperText>{fieldErrors.gender}</FormHelperText>
+                )}
+              </FormControl>
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <Button
+                    type="button"
+                    fullWidth
+                    variant="outlined"
+                    onClick={handleClear}
+                    sx={{ mt: 2, mb: 2 }}
+                  >
+                    Clear
+                  </Button>
+                </Grid>
+                <Grid item xs={6}>
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    sx={{ mt: 2, mb: 2 }}
+                  >
+                    Sign Up
+                  </Button>
+                </Grid>
               </Grid>
-              <Grid item xs={6}>
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  sx={{ mt: 2, mb: 2 }}
-                >
-                  Sign Up
-                </Button>
+              <Grid container justifyContent="center">
+                <Grid item>
+                  <StyledLink href="#" underline="hover" onClick={() => router.push('/auth/login')}>
+                    {"Already have an account? Login"}
+                  </StyledLink>
+                </Grid>
               </Grid>
-            </Grid>
-            <Grid container justifyContent="center">
-              <Grid item>
-                <StyledLink href="#" underline="hover" onClick={() => router.push('/auth/login')}>
-                  {"Already have an account? Login"}
-                </StyledLink>
-              </Grid>
-            </Grid>
-          </Box>
-        </RightContainer>
-      </TransparentPaper>
-    </BackgroundImage>
+            </Box>
+          </RightContainer>
+        </TransparentPaper>
+      </BackgroundImage>
+    </Box>
   );
 };
 
