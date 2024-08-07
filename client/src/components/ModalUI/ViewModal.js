@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Modal, Typography, Grid, IconButton } from "@mui/material";
+import { Box, Modal, Typography, Grid, IconButton, Avatar } from "@mui/material";
 import { Close } from "@mui/icons-material";
 import PropTypes from "prop-types";
 
@@ -41,11 +41,12 @@ const ViewModal = ({
         <Box mt={2}>
           <Grid container spacing={2}>
             <Grid item xs={6}>
-              <Box display="flex" flexDirection="column" alignItems="center">
-                <img
-                  src={userData?.profile_pic || "/default-profile.png"}
-                  alt="Profile"
-                  style={{ width: "200px", height: "auto" }}
+            <Box display="flex" justifyContent="center"alignItems="center" height="100%">
+                <Avatar
+                  src={userData?.profile_pic}
+                  alt={`Photo of ${userData?.first_name || "N/A"} ${userData?.last_name || "N/A"}`}
+                  sx={{ width: '50%', height: 'auto', objectFit: "scale-down" }}
+                  variant="square"
                 />
               </Box>
             </Grid>
@@ -72,7 +73,7 @@ const ViewModal = ({
               </Typography>
               <Typography variant="body1">
                 <strong>Date of Birth:</strong>{" "}
-                {userData?.date_of_birth || "N/A"}
+                {userData?.date_of_birth?.split('T')[0] || "N/A"}
               </Typography>
               <Typography variant="body1">
                 <strong>Address:</strong>{" "}

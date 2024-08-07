@@ -12,6 +12,7 @@ import {
   Typography,
   IconButton,
   Alert,
+  TextField,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { SERVER_URL } from "@/constants/routes";
@@ -21,15 +22,17 @@ import CreateLessonModal from "@/components/ModalUI/CreateLessonModal";
 import CreateFileModal from "@/components/ModalUI/CreateFileModal";
 import AdminWrapper from "@/components/AdminWrapper";
 import authMiddleware from "@/utils/authRoute";
+import swal from "sweetalert";
 
 const LessonsPage = () => {
   const router = useRouter();
   const [lessons, setLessons] = useState([]);
+  const [filteredLessons, setFilteredLessons] = useState([]);
   const [error, setError] = useState("");
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [fileModalOpen, setFileModalOpen] = useState(false);
   const [selectedLesson, setSelectedLesson] = useState([]);
-  const [selectedfiles, setSelectedfiles] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     fetchLessons();
@@ -43,7 +46,7 @@ const LessonsPage = () => {
         data.map(async (lesson) => {
           const courseDetails = await fetchCourseDetails(lesson.course_id);
           const programDetails = await fetchProgramDetails(lesson.program_id);
-          const fileData = await fetchfiles(lesson.lesson_id);
+          const fileData = await fetchFiles(lesson.lesson_id);
           return {
             ...lesson,
             course_name: courseDetails.course_title,
@@ -53,11 +56,12 @@ const LessonsPage = () => {
         })
       );
       setLessons(lessonsWithDetails);
+      setFilteredLessons(lessonsWithDetails);
     } catch (err) {
       setError("Failed to fetch lessons");
     }
   };
-  console.log(lessons);
+
   const fetchCourseDetails = async (courseId) => {
     try {
       const response = await fetch(`${SERVER_URL}/api/courses/details/${courseId}`);
@@ -80,11 +84,9 @@ const LessonsPage = () => {
     }
   };
 
-  const fetchfiles = async (lessonId) => {
+  const fetchFiles = async (lessonId) => {
     try {
-      const response = await fetch(
-        `${SERVER_URL}/api/lessons/${lessonId}/files`
-      );
+      const response = await fetch(`${SERVER_URL}/api/lessons/${lessonId}/files`);
       const data = await response.json();
       return data;
     } catch (err) {
@@ -111,7 +113,14 @@ const LessonsPage = () => {
   };
 
   const handleDelete = async (id) => {
-    const confirmed = confirm("Are you sure you want to delete this lesson?");
+    const confirmed = await swal({
+      title: "Are you sure?",
+      text: "Do you really want to delete this lesson?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    });
+
     if (confirmed) {
       try {
         const response = await fetch(`${SERVER_URL}/api/lessons/${id}`, {
@@ -119,78 +128,87 @@ const LessonsPage = () => {
         });
         if (response.ok) {
           await fetchLessons();
+          swal("Deleted!", "The lesson has been deleted.", "success");
         } else {
           console.error("Failed to delete lesson");
+          swal("Error", "Failed to delete the lesson. Please try again.", "error");
         }
       } catch (error) {
         console.error("Error deleting lesson:", error);
+        swal("Error", "An error occurred while deleting the lesson. Please try again.", "error");
       }
     }
   };
 
-  const handleDeletefile = async (lessonId, fileId) => {
-    const confirmed = confirm("Are you sure you want to delete this file?");
+  const handleDeleteFile = async (lessonId, fileId) => {
+    const confirmed = await swal({
+      title: "Are you sure?",
+      text: "Do you really want to delete this file?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    });
+
     if (confirmed) {
       try {
-        const response = await fetch(
-          `${SERVER_URL}/api/lessons/${lessonId}/files/${fileId}`,
-          {
-            method: "DELETE",
-          }
-        );
+        const response = await fetch(`${SERVER_URL}/api/lessons/${lessonId}/files/${fileId}`, {
+          method: "DELETE",
+        });
         if (response.ok) {
           await fetchLessons();
+          swal("Deleted!", "The file has been deleted.", "success");
         } else {
           console.error("Failed to delete file");
+          swal("Error", "Failed to delete the file. Please try again.", "error");
         }
       } catch (error) {
         console.error("Error deleting file:", error);
+        swal("Error", "An error occurred while deleting the file. Please try again.", "error");
       }
     }
+  };
+
+  const handleSearch = (event) => {
+    const query = event.target.value.toLowerCase();
+    setSearchQuery(query);
+    const filtered = lessons.filter((lesson) => lesson.lesson_name.toLowerCase().includes(query));
+    setFilteredLessons(filtered);
   };
 
   return (
     <AdminWrapper>
       <Box sx={{ bgcolor: "#f5f5f5", minHeight: "100vh", py: 4 }}>
         <Box sx={{ maxWidth: "1200px", mx: "auto", p: 3 }}>
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            mb={3}
-          >
+          <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
             <Typography variant="h4">Lessons Management</Typography>
-            <Button
-              size="medium"
-              variant="contained"
-              color="primary"
-              onClick={handleCreateModalOpen}
-            >
+            <Button size="medium" variant="contained" color="primary" onClick={handleCreateModalOpen}>
               Create New Lesson
             </Button>
           </Box>
 
-          {error && (
-            <Alert severity="error" onClose={() => setError("")}>
-              {error}
-            </Alert>
-          )}
+          <TextField
+            fullWidth
+            label="Search Lesson Name"
+            value={searchQuery}
+            onChange={handleSearch}
+            margin="normal"
+          />
 
           <Table>
             <TableHead>
               <TableRow>
                 <TableCell>ID</TableCell>
                 <TableCell>Name</TableCell>
-                <TableCell>Description</TableCell>
+                <TableCell sx={{ width: "30%" }}>Description</TableCell>
                 <TableCell>Program Name</TableCell>
                 <TableCell>Course Name</TableCell>
-                <TableCell sx={{ width: "30%" }}>Files</TableCell>
+                <TableCell>Files</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {lessons.length > 0 ? (
-                lessons.map((lesson) => (
+              {filteredLessons.length > 0 ? (
+                filteredLessons.map((lesson) => (
                   <TableRow key={lesson.lesson_id}>
                     <TableCell>{lesson.lesson_id}</TableCell>
                     <TableCell>{lesson.lesson_name}</TableCell>
@@ -198,26 +216,22 @@ const LessonsPage = () => {
                     <TableCell>{lesson.program_name}</TableCell>
                     <TableCell>{lesson.course_name}</TableCell>
                     <TableCell>
-                      {console.log('Files:', lesson.files)}
                       {lesson.files && lesson.files.length > 0 ? (
                         lesson.files.map((file) => (
-                          <Box
-                            key={file.file_id}
-                            display="flex"
-                            alignItems="center"
-                          >
+                          <Box key={file.file_id} display="flex" alignItems="center">
                             <Typography
                               component="a"
                               href={file.file_url}
                               target="_blank"
-                              style={{ textDecoration: "none" }}
+                              style={{
+                                textDecoration: "underline",
+                                color: "#1769aa",
+                              }}
                             >
                               {file.file_name}
                             </Typography>
                             <IconButton
-                              onClick={() =>
-                                handleDeletefile(lesson.lesson_id, file.file_id)
-                              }
+                              onClick={() => handleDeleteFile(lesson.lesson_id, file.file_id)}
                               size="small"
                               color="error"
                             >

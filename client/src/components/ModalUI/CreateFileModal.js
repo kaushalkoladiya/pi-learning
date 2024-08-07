@@ -6,8 +6,6 @@ import {
   TextField,
   Typography,
   Alert,
-  IconButton,
-  Snackbar,
 } from "@mui/material";
 import { PhotoCamera } from "@mui/icons-material";
 import styled from "@emotion/styled";
@@ -15,22 +13,23 @@ import PropTypes from "prop-types";
 import { SERVER_URL } from "@/constants/routes";
 import { validateField } from "@/utils/validation";
 import axios from "axios";
+import swal from "sweetalert";
 
 const LessonFilesModal = ({ open, handleClose, lessonId, refreshFiles }) => {
   const [form, setForm] = useState({
     lessonId: lessonId || "",
     fileName: "",
-    filePic: null,
-    filePicName: "",
+    fileUrl: null,
+    fileUrlName: "",
+    fileUrl: "",
   });
 
   const [errors, setErrors] = useState({
     lessonId: "",
     fileName: "",
+    fileUrl: "",
     common: "",
   });
-
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -43,8 +42,8 @@ const LessonFilesModal = ({ open, handleClose, lessonId, refreshFiles }) => {
   const handleFileChange = (e) => {
     setForm({
       ...form,
-      filePic: e.target.files[0],
-      filePicName: e.target.files[0].name,
+      fileUrl: e.target.files[0],
+      fileUrlName: e.target.files[0].name,
     });
   };
 
@@ -63,9 +62,14 @@ const LessonFilesModal = ({ open, handleClose, lessonId, refreshFiles }) => {
         ...prevForm,
         fileUrl: fileURL,
       }));
-      setSnackbarOpen(true);
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        fileUrl: "", 
+      }));
+      swal("Success", "File uploaded successfully!", "success");
     } catch (error) {
       console.error("Error uploading image:", error);
+      swal("Error", "Failed to upload file. Please try again.", "error");
     }
   };
 
@@ -101,15 +105,19 @@ const LessonFilesModal = ({ open, handleClose, lessonId, refreshFiles }) => {
       if (!response.ok) {
         if (data.error) {
           setErrors((prevErrors) => ({ ...prevErrors, common: data.error }));
+          swal("Error", data.error, "error");
         } else {
           setErrors((prevErrors) => ({ ...prevErrors, common: data.message }));
+          swal("Error", data.message, "error");
         }
       } else {
         handleClose();
         refreshFiles();
+        swal("Success", "File added to lesson successfully!", "success");
       }
     } catch (error) {
       setErrors({ common: "Failed to upload the file. Please try again." });
+      swal("Error", "Failed to upload the file. Please try again.", "error");
     }
   };
 
@@ -117,14 +125,11 @@ const LessonFilesModal = ({ open, handleClose, lessonId, refreshFiles }) => {
     setForm({
       lessonId: lessonId || "",
       fileName: "",
-      filePic: null,
-      filePicName: "",
+      fileUrl: null,
+      fileUrlName: "",
+      fileUrl: "",
     });
     setErrors({});
-  };
-
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
   };
 
   return (
@@ -161,40 +166,41 @@ const LessonFilesModal = ({ open, handleClose, lessonId, refreshFiles }) => {
             helperText={errors.fileName}
             sx={{ mb: 2 }}
           />
-          <Box mt={2}>
+          <Box mt={2} display="flex" alignItems="center" justifyContent="space-between">
             <input
               accept="*/*"
               style={{ display: "none" }}
-              id="profile-pic"
+              id="file-upload"
               type="file"
               onChange={handleFileChange}
             />
-            <label htmlFor="profile-pic">
-              <IconButton
+            <label htmlFor="file-upload">
+              <Button
+                variant="outlined"
                 color="primary"
-                aria-label="upload picture"
                 component="span"
+                startIcon={<PhotoCamera />}
               >
-                <PhotoCamera />
-              </IconButton>
+                Choose File
+              </Button>
             </label>
-            {form.filePicName && (
+            {form.fileUrlName && (
               <Typography
                 variant="body1"
-                style={{ display: "inline", marginLeft: 10 }}
+                style={{ marginLeft: 10, flexGrow: 1 }}
               >
-                {form.filePicName}
+                {form.fileUrlName}
               </Typography>
             )}
             <Button
               variant="contained"
               color="primary"
               onClick={handleUpload}
-              sx={{ ml: "74%" }}
             >
               Upload
             </Button>
           </Box>
+          {errors.fileUrl && <Alert severity="error" sx={{ mt: 2 }}>{errors.fileUrl}</Alert>}
           <Box display="flex" justifyContent="space-between" mt={4}>
             <Button onClick={handleClear} variant="outlined" color="secondary">
               Clear
@@ -204,15 +210,6 @@ const LessonFilesModal = ({ open, handleClose, lessonId, refreshFiles }) => {
             </Button>
           </Box>
         </Form>
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={3000}
-          onClose={handleSnackbarClose}
-        >
-          <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: "100%" }}>
-            Upload Successfully
-          </Alert>
-        </Snackbar>
       </ModalBox>
     </Modal>
   );
@@ -232,7 +229,7 @@ const ModalBox = styled(Box)`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 500px; /* Adjusted width */
+  width: 60%;
   background-color: white;
   box-shadow: 24;
   padding: 16px;

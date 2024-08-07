@@ -11,8 +11,6 @@ import {
   MenuItem,
   Grid,
   IconButton,
-  Snackbar,
-  Alert,
   FormHelperText,
 } from "@mui/material";
 import { PhotoCamera } from "@mui/icons-material";
@@ -20,23 +18,23 @@ import PropTypes from "prop-types";
 import axios from "axios";
 import { SERVER_URL } from "@/constants/routes";
 import { validateForm } from "@/utils/validation";
+import swal from "sweetalert";
 
 const EditCourseModal = ({ open, handleClose, courseData, refreshCourses }) => {
   const [form, setForm] = useState({
-    course_id: courseData.course_id || "",
-    course_title: courseData.course_title || "",
-    program_id: courseData.program_id || "",
-    instructor_id: courseData.instructor_id || "",
-    short_description: courseData.short_description || "",
-    long_description: courseData.long_description || "",
-    profile_pic: null,
+    courseId: courseData.course_id || "",
+    courseTitle: courseData.course_title || "",
+    programId: courseData.program_id || "",
+    instructorId: courseData.instructor_id || "",
+    shortDescription: courseData.short_description || "",
+    longDescription: courseData.long_description || "",
+    profilePic: null,
     profilePicName: "",
   });
 
   const [errors, setErrors] = useState({});
   const [instructors, setInstructors] = useState([]);
   const [programs, setPrograms] = useState([]);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   useEffect(() => {
     const fetchInstructors = async () => {
@@ -72,14 +70,14 @@ const EditCourseModal = ({ open, handleClose, courseData, refreshCourses }) => {
   const handleFileChange = (e) => {
     setForm({
       ...form,
-      profile_pic: e.target.files[0],
+      profilePic: e.target.files[0],
       profilePicName: e.target.files[0].name,
     });
   };
 
   const handleUpload = async () => {
     const formData = new FormData();
-    formData.append("file", form.profile_pic);
+    formData.append("file", form.profilePic);
 
     try {
       const response = await axios.post(`${SERVER_URL}/api/uploads`, formData, {
@@ -93,9 +91,10 @@ const EditCourseModal = ({ open, handleClose, courseData, refreshCourses }) => {
         profilePicName: "",
         profilePicUrl: imageURL,
       }));
-      setSnackbarOpen(true);
+      swal("Success", "Image uploaded successfully!", "success");
     } catch (error) {
       console.error("Error uploading image:", error);
+      swal("Error", "Error uploading image. Please try again.", "error");
     }
   };
 
@@ -109,24 +108,18 @@ const EditCourseModal = ({ open, handleClose, courseData, refreshCourses }) => {
     }
     try {
       await axios.put(`${SERVER_URL}/api/courses/${courseData.course_id}`, {
-        instructor_id: form.instructor_id,
-        short_description: form.short_description,
-        long_description: form.long_description,
+        instructor_id: form.instructorId,
+        short_description: form.shortDescription,
+        long_description: form.longDescription,
         profile_pic: form.profilePicUrl,
       });
       handleClose();
       refreshCourses();
+      swal("Success", "Course updated successfully!", "success");
     } catch (error) {
       console.error("Error updating course:", error);
+      swal("Error", "Error updating course. Please try again.", "error");
     }
-  };
-
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
-    setForm((prevForm) => ({
-      ...prevForm,
-      profilePicName: "",
-    }));
   };
 
   return (
@@ -137,7 +130,7 @@ const EditCourseModal = ({ open, handleClose, courseData, refreshCourses }) => {
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: 1000,
+          width: '60%',
           backgroundColor: "white",
           boxShadow: 24,
           padding: 4,
@@ -157,8 +150,8 @@ const EditCourseModal = ({ open, handleClose, courseData, refreshCourses }) => {
                     <TextField
                       fullWidth
                       label="Course ID"
-                      name="course_id"
-                      value={form.course_id}
+                      name="courseId"
+                      value={form.courseId}
                       InputProps={{
                         readOnly: true,
                       }}
@@ -170,29 +163,29 @@ const EditCourseModal = ({ open, handleClose, courseData, refreshCourses }) => {
                     <TextField
                       fullWidth
                       label="Course Title"
-                      name="course_title"
-                      value={form.course_title}
+                      name="courseTitle"
+                      value={form.courseTitle}
                       InputProps={{
                         readOnly: true,
                       }}
                       margin="normal"
                       sx={{ backgroundColor: "#f0f0f0" }}
-                      error={!!errors.course_title}
-                      helperText={errors.course_title}
+                      error={!!errors.courseTitle}
+                      helperText={errors.courseTitle}
                     />
                   </Grid>
                   <Grid item xs={12}>
                     <FormControl
                       fullWidth
                       margin="normal"
-                      error={!!errors.program_id}
+                      error={!!errors.programId}
                     >
                       <InputLabel id="program-label">Program</InputLabel>
                       <Select
                         labelId="program-label"
-                        id="program_id"
-                        name="program_id"
-                        value={form.program_id}
+                        id="programId"
+                        name="programId"
+                        value={form.programId}
                         onChange={handleChange}
                         label="Program"
                         InputProps={{
@@ -209,8 +202,8 @@ const EditCourseModal = ({ open, handleClose, courseData, refreshCourses }) => {
                           </MenuItem>
                         ))}
                       </Select>
-                      {errors.program_id && (
-                        <FormHelperText>{errors.program_id}</FormHelperText>
+                      {errors.programId && (
+                        <FormHelperText>{errors.programId}</FormHelperText>
                       )}
                     </FormControl>
                   </Grid>
@@ -218,14 +211,14 @@ const EditCourseModal = ({ open, handleClose, courseData, refreshCourses }) => {
                     <FormControl
                       fullWidth
                       margin="normal"
-                      error={!!errors.instructor_id}
+                      error={!!errors.instructorId}
                     >
                       <InputLabel id="instructor-label">Instructor</InputLabel>
                       <Select
                         labelId="instructor-label"
-                        id="instructor_id"
-                        name="instructor_id"
-                        value={form.instructor_id}
+                        id="instructorId"
+                        name="instructorId"
+                        value={form.instructorId}
                         onChange={handleChange}
                         label="Instructor"
                       >
@@ -235,8 +228,8 @@ const EditCourseModal = ({ open, handleClose, courseData, refreshCourses }) => {
                           </MenuItem>
                         ))}
                       </Select>
-                      {errors.instructor_id && (
-                        <FormHelperText>{errors.instructor_id}</FormHelperText>
+                      {errors.instructorId && (
+                        <FormHelperText>{errors.instructorId}</FormHelperText>
                       )}
                     </FormControl>
                   </Grid>
@@ -263,28 +256,28 @@ const EditCourseModal = ({ open, handleClose, courseData, refreshCourses }) => {
                     <TextField
                       fullWidth
                       label="Short Description"
-                      name="short_description"
-                      value={form.short_description}
+                      name="shortDescription"
+                      value={form.shortDescription}
                       onChange={handleChange}
                       margin="normal"
                       multiline
-                      rows={4} // Increased the width of textarea
-                      error={!!errors.short_description}
-                      helperText={errors.short_description}
+                      rows={4}
+                      error={!!errors.shortDescription}
+                      helperText={errors.shortDescription}
                     />
                   </Grid>
                   <Grid item xs={12}>
                     <TextField
                       fullWidth
                       label="Long Description"
-                      name="long_description"
-                      value={form.long_description}
+                      name="longDescription"
+                      value={form.longDescription}
                       onChange={handleChange}
                       margin="normal"
                       multiline
-                      rows={6} // Increased the width of textarea
-                      error={!!errors.long_description}
-                      helperText={errors.long_description}
+                      rows={6}
+                      error={!!errors.longDescription}
+                      helperText={errors.longDescription}
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -340,19 +333,6 @@ const EditCourseModal = ({ open, handleClose, courseData, refreshCourses }) => {
             </Button>
           </Box>
         </form>
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={3000}
-          onClose={handleSnackbarClose}
-        >
-          <Alert
-            onClose={handleSnackbarClose}
-            severity="success"
-            sx={{ width: "100%" }}
-          >
-            Upload Successfully
-          </Alert>
-        </Snackbar>
       </Box>
     </Modal>
   );

@@ -29,11 +29,15 @@ const useAuth = () => {
     return authSlice.role === USER_ROLES.STUDENT;
   };
 
+  const isUserInstructor = () => {
+    return authSlice.role === USER_ROLES.INSTRUCTOR;
+  }
+
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
 
-    router.replace(ROUTES.HOME)
+    window.location.href = ROUTES.HOME
   };
 
   return {
@@ -41,6 +45,7 @@ const useAuth = () => {
     isUserAdmin,
     logout,
     isUserStudent,
+    isUserInstructor,
     isAuth: !!authSlice.token,
   };
 }

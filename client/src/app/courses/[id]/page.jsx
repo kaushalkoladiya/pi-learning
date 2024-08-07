@@ -1,99 +1,174 @@
 'use client';
 
-import { getCourseById } from '@/api';
-import { Accordion, AccordionDetails, AccordionSummary, Avatar, Box, CardHeader, Grid, Typography } from '@mui/material';
-import { useParams } from 'next/navigation'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import React, { useEffect, useState } from 'react'
+import { fetchCourseDetails, fetchCourseLessons, checkEnrollment, enrollInCourse } from '@/api';
+import { Box, Button, CardContent, CircularProgress, Container, Grid, List, ListItem, ListItemText, Typography, Paper, Avatar } from '@mui/material';
+import { useParams, useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
 import BackButton from '@/components/BackButton';
+import useAuth from '@/hooks/useAuth';
+import Navbar from '@/components/Navbar';
 
 const CourseDetails = () => {
+  const { isAuth } = useAuth();
   const params = useParams();
+  const router = useRouter();
 
-  const [courseDetails, setCourseDetails] = useState(null);
-  const [assignments, setAssignments] = useState([]);
+  const [course, setCourse] = useState(null);
   const [lessons, setLessons] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [isEnrolled, setIsEnrolled] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     (async () => {
-      if (!params.id) {
+      const courseId = params.id;
+      if (!courseId) {
         return;
       }
 
-      const { data } = await getCourseById(params.id);
-      setCourseDetails(data.course);
-      setLessons(data.lessons);
-      setAssignments(data.assignments);
-    })()
-  }, [params.id])
+      try {
+        const { data: courseData } = await fetchCourseDetails(courseId);
+        const { data: lessonData } = await fetchCourseLessons(courseId);
+        setCourse(courseData);
+        setLessons(lessonData);
+
+        if (isAuth) {
+          const { data: enrollmentStatus } = await checkEnrollment(courseId);
+          setIsEnrolled(enrollmentStatus?.isEnrolled);
+        }
+
+        setLoading(false);
+      } catch (error) {
+        console.log('Error fetching course details:', error);
+        setError('Error fetching course details. Please try again later.');
+        setLoading(false);
+      }
+    })();
+  }, [params.id, isAuth]);
+
+  const handleEnroll = async () => {
+    if (!isAuth) {
+      router.push('/login');
+    } else {
+      try {
+        await enrollInCourse(params.id);
+        setIsEnrolled(true);
+      } catch (error) {
+        console.error('Error enrolling in course:', error);
+      }
+    }
+  };
+
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+        <Typography variant="h6">{error}</Typography>
+      </Box>
+    );
+  }
+
+  if (!course) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+        <Typography variant="h6">Course not found</Typography>
+      </Box>
+    );
+  }
 
   return (
-    <Box p={6}>
-      <BackButton />
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Typography variant="h4">{courseDetails?.course_name}</Typography>
-          <Typography variant="body1">{courseDetails?.course_code}</Typography>
-          <Typography variant="body2">{courseDetails?.course_description}</Typography>
-        </Grid>
-        <Grid item xs={12}>
-          <Typography variant="h5">Lessons</Typography>
-          {assignments.length === 0 && <Typography>No assignments</Typography>}
-          {lessons.map(lesson => (
-            <Accordion key={`lesson-${lesson.id}`}>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-              >
-                {lesson.lesson_name}
-              </AccordionSummary>
-              <AccordionDetails>
-                <Typography>
-                  {lesson.lesson_description}
-                </Typography>
-                <Typography>
-                  {lesson.lesson_content}
-                </Typography>
-              </AccordionDetails>
-            </Accordion>
-          ))}
-        </Grid>
-        <Grid item xs={12}>
-          <Typography variant="h5">Assignments</Typography>
-          {assignments.length === 0 && <Typography>No assignments</Typography>}
+    <div>
+      <Navbar />
+      <Box my={6} />
+      <Box p={6}>
+        <BackButton />
+        <Container>
+          <Paper elevation={3}>
+            <CardContent>
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={4}>
+                  {course.profile_pic && (
+                    <Avatar
+                      alt={`${course.course_title} profile`}
+                      src={course.profile_pic}
+                      variant="square"
+                      sx={{ width: '100%', height: 'auto' }}
+                    />
+                  )}
+                </Grid>
+                <Grid item xs={12} md={8}>
+                  <Typography variant="h4" component="div" gutterBottom>
+                    {course.course_title}
+                  </Typography>
+                  <Typography variant="body1" color="text.primary" gutterBottom>
+                    {course.long_description}
+                  </Typography>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleEnroll}
+                    disabled={isEnrolled}
+                    sx={{ mt: 2 }}
+                  >
+                    {isEnrolled ? 'Enrolled' : 'Enroll in this course'}
+                  </Button>
+                </Grid>
+              </Grid>
+              <Typography variant="h5" component="div" gutterBottom mt={3}>
+                Lessons
+              </Typography>
+              <List>
+                {lessons.map((lesson) => (
+                  <ListItem key={lesson.lesson_id} divider>
+                    <ListItemText
+                      primary={lesson.lesson_name}
+                      secondary={lesson.lesson_description}
+                    />
 
-          {assignments.map(assignment => (
-            <Accordion key={`ass-${assignment.id}`}>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel1-content"
-                id="panel1-header"
-              >
-                {assignment.assignment_name}
-              </AccordionSummary>
-              <AccordionDetails>
-                <Typography>
-                  {assignment.assignment_description}
-                </Typography>
-              </AccordionDetails>
-            </Accordion>
-          ))}
+                    {isAuth && lesson.lesson_files && lesson.lesson_files.length > 0 && (
+                      <List>
+                        {lesson.lesson_files.map((file) => (
+                          <ListItem key={file.file_id}>
+                            <ListItemText
+                              primary={file.file_name}
+                              secondary={
+                                <Button
+                                  variant="contained"
+                                  color="primary"
+                                  href={file.file_url}
+                                  target="_blank"
+                                >
+                                  Download
+                                </Button>
+                              }
+                            />
+                          </ListItem>
+                        ))}
+                      </List>
+                    )}
 
-        </Grid>
-        <Grid item xs={12}>
-          <Typography variant="h5">Instructor</Typography>
+                    {!isAuth && (
+                      <Typography variant="body2" color="text.secondary">
+                        Login to download lesson files
+                      </Typography>
+                    )}
 
-          <CardHeader
-            avatar={
-              <Avatar aria-label="recipe">
-                R
-              </Avatar>
-            }
-            title={`${courseDetails?.Instructor?.first_name} ${courseDetails?.Instructor?.last_name}`}
-          />
-        </Grid>
-      </Grid>
-    </Box>
-  )
-}
+                  </ListItem>
+                ))}
+              </List>
+            </CardContent>
+          </Paper>
+        </Container>
+      </Box>
+    </div>
+  );
+};
 
-export default CourseDetails
+export default CourseDetails;

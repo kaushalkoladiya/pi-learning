@@ -10,7 +10,7 @@ const inter = Inter({ subsets: ["latin"] });
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body style={{margin: 0}} className={inter.className}>
         <StoreProvider>
           <ThemeProvider theme={theme}>
             <Box component="main" sx={{ flexGrow: 1 }}>

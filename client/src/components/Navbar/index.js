@@ -1,9 +1,13 @@
 import { APP_NAME } from '@/constants'
 import useAuth from '@/hooks/useAuth'
-import { AppBar as MuiAppBar, Box, Button, Toolbar, Typography, styled } from '@mui/material'
+import { AppBar as MuiAppBar, Box, Button, Toolbar, Typography, styled, Avatar,
+  Menu,
+  MenuItem,
+  IconButton } from '@mui/material'
 import { useRouter } from 'next/navigation'
-import React from 'react'
+import React, { useState } from 'react'
 import AdminSidebar from './AdminSidebar'
+
 
 
 const AppBar = styled(MuiAppBar, {
@@ -26,10 +30,28 @@ const AppBar = styled(MuiAppBar, {
 
 const Navbar = () => {
   const router = useRouter();
-  const { logout, isUserStudent, isUserAdmin } = useAuth();
+  const { logout, isUserStudent, isUserAdmin, isUserInstructor } = useAuth();
 
-  const handleRoute = (path) => {
+  const handleNavigation = (path) => {
     router.push(path);
+  };
+
+  const firstName = localStorage.getItem('firstName') || '';
+  const lastName = localStorage.getItem('lastName') || '';
+  const profilePic = localStorage.getItem('profilePic');
+
+  const getInitials = (firstName, lastName) => {
+    return `${firstName.charAt(0)}${lastName.charAt(0)}`;
+  };
+
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
   };
 
   return (
@@ -42,12 +64,31 @@ const Navbar = () => {
             </Typography>
             <Box display="flex" alignItems="center">
               {isUserStudent() && (
-                <Button color="inherit" onClick={() => handleRoute('/courses')}>Courses</Button>
+                <>
+                  <Button color="inherit" onClick={() => handleNavigation('/student')}>Home</Button>
+                  <Button color="inherit" onClick={() => handleNavigation('/courses')}>Courses</Button>
+                </>
               )}
-              <Button color="inherit" onClick={() => handleRoute('/profile')}>
-                Profile
-              </Button>
-              <Button color="inherit" onClick={logout}>Logout</Button>
+              <IconButton color="inherit" onClick={handleMenuOpen}>
+                {profilePic ? (
+                  <Avatar src={profilePic} alt="Profile Picture" />
+                ) : (
+                  <Avatar>
+                    {getInitials(firstName, lastName)}
+                  </Avatar>
+                )}
+              </IconButton>
+              <Box ml={1} onClick={handleMenuOpen} style={{ cursor: 'pointer' }}>
+                <Typography variant="body1">{firstName} {lastName}</Typography>
+              </Box>
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleMenuClose}
+              >
+                <MenuItem onClick={() => handleNavigation('/profile')}>Manage Profile</MenuItem>
+                <MenuItem onClick={logout}>Logout</MenuItem>
+              </Menu>
             </Box>
           </Box>
         </Toolbar>

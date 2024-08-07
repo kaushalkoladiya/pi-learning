@@ -7,7 +7,6 @@ import {
   Typography,
   Alert,
   IconButton,
-  Snackbar,
 } from "@mui/material";
 import { PhotoCamera } from "@mui/icons-material";
 import styled from "@emotion/styled";
@@ -15,6 +14,17 @@ import PropTypes from "prop-types";
 import { SERVER_URL } from "@/constants/routes";
 import { validateField } from "@/utils/validation";
 import axios from "axios";
+import swal from "sweetalert";
+
+const formatDateForInput = (dateString) => {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+};
 
 const EditAssignmentModal = ({
   open,
@@ -36,7 +46,6 @@ const EditAssignmentModal = ({
     common: "",
   });
 
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   useEffect(() => {
     if (assignment?.lesson_id) {
@@ -95,9 +104,10 @@ const EditAssignmentModal = ({
         ...prevForm,
         assignmentUrl: fileURL,
       }));
-      setSnackbarOpen(true);
+      swal("Success", "File uploaded successfully!", "success");
     } catch (error) {
       console.error("Error uploading file:", error);
+      swal("Error", "Failed to upload file. Please try again.", "error");
     }
   };
 
@@ -129,7 +139,7 @@ const EditAssignmentModal = ({
             assignment_name: form.assignmentName,
             assignment_url: form.assignmentUrl,
             due_date: form.dueDate,
-            lesson_id: assignment.lesson_id, // assuming lesson_id is static and coming from the assignment prop
+            lesson_id: assignment.lesson_id,
           }),
         }
       );
@@ -137,12 +147,15 @@ const EditAssignmentModal = ({
       const data = await response.json();
       if (!response.ok) {
         setErrors({ common: data.message || "Failed to update assignment" });
+        swal("Error", data.message || "Failed to update assignment", "error");
       } else {
         handleClose();
         refreshAssignments();
+        swal("Success", "Assignment updated successfully!", "success");
       }
     } catch (error) {
       setErrors({ common: "Failed to update assignment. Please try again." });
+      swal("Error", "Failed to update assignment. Please try again.", "error");
     }
   };
 
@@ -225,7 +238,7 @@ const EditAssignmentModal = ({
               variant="contained"
               color="primary"
               onClick={handleUpload}
-              sx={{ ml: "72%" }}
+              sx={{ ml: "88%" }}
             >
               Upload
             </Button>
@@ -235,7 +248,7 @@ const EditAssignmentModal = ({
             label="Due Date"
             name="dueDate"
             type="datetime-local"
-            value={form.dueDate}
+            value={form.dueDate ? formatDateForInput(form.dueDate): ' '}
             onChange={handleChange}
             error={!!errors.dueDate}
             helperText={errors.dueDate}
@@ -253,19 +266,6 @@ const EditAssignmentModal = ({
             </Button>
           </Box>
         </form>
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={3000}
-          onClose={() => setSnackbarOpen(false)}
-        >
-          <Alert
-            onClose={() => setSnackbarOpen(false)}
-            severity="success"
-            sx={{ width: "100%" }}
-          >
-            File Uploaded Successfully
-          </Alert>
-        </Snackbar>
       </ModalBox>
     </Modal>
   );
@@ -285,7 +285,7 @@ const ModalBox = styled(Box)`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 500px;
+  width: 60%;
   background-color: white;
   box-shadow: 24;
   padding: 16px;

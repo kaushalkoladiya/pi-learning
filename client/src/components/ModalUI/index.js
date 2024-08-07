@@ -19,9 +19,10 @@ import PropTypes from "prop-types";
 import { SERVER_URL } from "@/constants/routes";
 import { validateField } from "@/utils/validation";
 import axios from "axios";
+import swal from 'sweetalert';
 
 const CreateInstructorModal = ({ open, handleClose, refreshInstructors }) => {
-  const [form, setForm] = useState({
+  const initialFormState = {
     firstName: "",
     lastName: "",
     email: "",
@@ -31,8 +32,9 @@ const CreateInstructorModal = ({ open, handleClose, refreshInstructors }) => {
     city: "",
     provinceCode: "",
     zipCode: "",
-  });
-  const [errors, setErrors] = useState({
+  };
+
+  const initialErrorState = {
     firstName: "",
     lastName: "",
     email: "",
@@ -43,8 +45,10 @@ const CreateInstructorModal = ({ open, handleClose, refreshInstructors }) => {
     provinceCode: "",
     zipCode: "",
     common: "",
-  });
+  };
 
+  const [form, setForm] = useState(initialFormState);
+  const [errors, setErrors] = useState(initialErrorState);
   const [provinces, setProvinces] = useState([]);
 
   useEffect(() => {
@@ -108,15 +112,19 @@ const CreateInstructorModal = ({ open, handleClose, refreshInstructors }) => {
       if (!response.ok) {
         if (data.error) {
           setErrors((prevErrors) => ({ ...prevErrors, email: data.error }));
+          swal("Error", data.error, "error");
         } else {
           setErrors((prevErrors) => ({ ...prevErrors, common: data.message }));
+          swal("Error", data.message, "error");
         }
       } else {
-        handleClose();
+        handleModalClose();
         refreshInstructors();
+        swal("Success", "Instructor created successfully", "success");
       }
     } catch (error) {
       setErrors({ common: "Registration failed. Please try again." });
+      swal("Error", "Registration failed. Please try again.", "error");
     }
   };
 
@@ -135,8 +143,14 @@ const CreateInstructorModal = ({ open, handleClose, refreshInstructors }) => {
     setErrors({});
   };
 
+  const handleModalClose = () => {
+    handleClose();
+    setForm(initialFormState);
+    setErrors(initialErrorState);
+  };
+
   return (
-    <Modal open={open} onClose={handleClose}>
+    <Modal open={open} onClose={handleModalClose}>
       <ModalBox>
         <Box
           display="flex"
@@ -145,7 +159,7 @@ const CreateInstructorModal = ({ open, handleClose, refreshInstructors }) => {
           mb={2}
         >
           <Typography variant="h5">Create New Instructor</Typography>
-          <Button variant="outlined" onClick={handleClose}>
+          <Button variant="outlined" onClick={handleModalClose}>
             Back to Instructor Page
           </Button>
         </Box>
@@ -329,7 +343,7 @@ const ModalBox = styled(Box)`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 800px; /* Increased width */
+  width: 60%;
   background-color: white;
   box-shadow: 24;
   padding: 16px;

@@ -8,7 +8,10 @@ const zipCodeRegex = /^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$/;
 const priceRegex = /^\d+(\.\d{1,2})?$/;
 const titleRegex = /^[a-zA-Z\s]+$/;
 const fileNameRegex = /^[a-zA-Z0-9_]+(\.[a-zA-Z]{2,4})$/;
-const assignmentFileRegex = /^[a-zA-Z0-9]+_Assignment+(\.[a-zA-Z]{2,4})$/
+const assignmentFileRegex = /^[a-zA-Z0-9]+_Assignment+(\.[a-zA-Z]{2,4})$/;
+const wordCount = (text) => {
+  return text.trim().split(/\s+/).length;
+};
 
 export const validateEmail = (email) => emailRegex.test(email);
 export const validateName = (name) => nameRegex.test(name);
@@ -21,7 +24,10 @@ export const validatePrice = (price) =>
   priceRegex.test(price) && parseFloat(price) > 0;
 export const validateTitle = (title) => titleRegex.test(title);
 export const validateFileName = (fileName) => fileNameRegex.test(fileName);
-export const validateAssigmentFileName = (assignmentName) => assignmentFileRegex.test(assignmentName);
+export const validateAssigmentFileName = (assignmentName) =>
+  assignmentFileRegex.test(assignmentName);
+export const validateShortDescription = (description) => wordCount(description) <= 30;
+export const validateLongDescription = (description) => wordCount(description) <= 100;
 
 export const validateField = (fieldName, value) => {
   switch (fieldName) {
@@ -106,11 +112,25 @@ export const validateField = (fieldName, value) => {
     case "shortDescription":
       if (!value) {
         return "Short description is required";
+      } else if (!validateShortDescription(value)) {
+        return "Short description must not be more than 30 words";
       }
       break;
     case "longDescription":
       if (!value) {
         return "Long description is required";
+      } else if (!validateLongDescription(value)) {
+        return "Long description must not be more than 100 words";
+      }
+      break;
+    case "programId":
+      if (!value) {
+        return "Program ID is required";
+      }
+      break;
+    case "courseId":
+      if (!value) {
+        return "Course ID is required";
       }
       break;
     case "programTitle":
@@ -146,6 +166,11 @@ export const validateField = (fieldName, value) => {
         return "Instructor ID is required";
       }
       break;
+      case "lessonId":
+        if (!value) {
+          return "Lesson ID is required";
+        }
+        break;
     case "lessonName":
       if (!value) {
         return "Lesson name is required";
@@ -156,25 +181,32 @@ export const validateField = (fieldName, value) => {
     case "lessonDescription":
       if (!value) {
         return "Lesson description is required";
+      } else if (!validateShortDescription(value)) {
+        return "Lesson description must not be more than 30 words";
       }
       break;
-      case "fileName":
+    case "fileName":
       if (!value) {
         return "File name is required";
       } else if (!validateFileName(value)) {
         return "File name invalid Format (Use FileName.jpeg or File_Name.docx)";
       }
       break;
-      case "assignmentName":
+    case "assignmentName":
       if (!value) {
         return "Assignment name is required";
       } else if (!validateAssigmentFileName(value)) {
         return "File name invalid Format (Use FileName_Assignment.docx)";
       }
       break;
-      case "dueDate":
+    case "dueDate":
       if (!value) {
         return "Due Date is required";
+      }
+      break;
+    case "fileUrl":
+      if (!value) {
+        return "File must be uploaded before submitting";
       }
       break;
     default:

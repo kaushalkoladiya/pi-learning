@@ -57,19 +57,7 @@ export const getStudentDashboard = async () => {
 
 export const getStudentCourses = async () => {
   return await axiosInstance.get(
-    `/courses`
-  );
-};
-
-export const getCourseById = async (courseId) => {
-  return await axiosInstance.get(
-    `/courses/${courseId}`
-  );
-};
-
-export const enrollCourse = async (courseId) => {
-  return await axiosInstance.post(
-    `/courses/${courseId}/enroll`
+    `/api/courses`
   );
 };
 
@@ -127,4 +115,24 @@ export const getProvinces = async () => {
   return await axiosInstance.get(
     `/api/provinces`
   );
+};
+
+export const fetchCourseDetails = async (courseId) => {
+  return await axiosInstance.get(`/api/student/courses/${courseId}`);
+};
+
+export const fetchCourseLessons = async (courseId) => {
+  return await axiosInstance.get(`/api/student/courses/${courseId}/lessons`);
+};
+
+export const checkEnrollment = async (courseId) => {
+  return await axiosInstance.get(`/api/student/courses/${courseId}/enrollment`);
+};
+
+export const enrollInCourse = async (courseId) => {
+  return await axiosInstance.post(`/api/student/courses/${courseId}/enroll`);
+};
+
+export const fetchStudentDashboardData = async () => {
+  return await axiosInstance.get('/api/student/dashboard');
 };
