@@ -27,6 +27,7 @@ import CryptoJS from "crypto-js";
 import { fetchSecretKey, registerUser } from "@/api";
 import { styled } from '@mui/system';
 import { PublicNavbar } from "@/app/page";
+import { PublicNavbar } from "@/app/page";
 
 const BackgroundImage = styled('div')({
   position: 'relative',

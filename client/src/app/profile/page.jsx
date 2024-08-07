@@ -7,12 +7,12 @@ import { getCountries, getDepartments, getProfile, getProvinces, updateProfile, 
 import { AZURE_BASE_URL } from '@/constants';
 import authMiddleware from '@/utils/authRoute';
 import Navbar from '@/components/Navbar';
-import useAuth from '@/hooks/useAuth';
+import useAuth from '@/hooks/useAuth'
 import { useRouter } from 'next/navigation';
 
 const ProfileEdit = () => {
-  const { isUserAdmin } = useAuth();
   const router = useRouter();
+  const { logout, isUserStudent, isUserAdmin } = useAuth();
 
   const [profile, setProfile] = useState({
     first_name: '',
@@ -133,7 +133,7 @@ const ProfileEdit = () => {
   };
 
   return (
-    <Container>
+    <Container sx={{mx:"22%"}}>
       <Navbar />
       <Paper elevation={3} sx={{ p: 4, mt: 12, mb: 4, backgroundColor: "#f5f5f5" }}>
         <Typography variant="h4" gutterBottom align="center">
@@ -242,7 +242,7 @@ const ProfileEdit = () => {
                 helperText={errors.phone_number}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <FormControl fullWidth required error={!!errors.home_country}>
                 <InputLabel>Home Country</InputLabel>
                 <Select
@@ -262,8 +262,8 @@ const ProfileEdit = () => {
                   </Typography>
                 )}
               </FormControl>
-            </Grid>
-            {!isUserAdmin && (
+            </Grid> */}
+            {!isUserAdmin() && (
               <Grid item xs={12} sm={6}>
                 <FormControl
                   fullWidth

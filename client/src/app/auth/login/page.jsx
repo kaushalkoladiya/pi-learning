@@ -24,6 +24,7 @@ import { ROUTES } from "@/constants/routes";
 import { fetchSecretKey, loginUser } from "@/api";
 import { styled } from "@mui/system";
 import { PublicNavbar } from "@/app/page";
+import { PublicNavbar } from "@/app/page";
 
 const BackgroundContainer = styled("div")({
   position: "relative",

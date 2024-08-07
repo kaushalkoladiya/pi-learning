@@ -23,6 +23,7 @@ import assignmentRouter from './routers/assignmentRouter.js';
 import studentRouter from './routers/studentRouter.js';
 import tokenRoute from './routers/tokenRoute.js';
 import instructorRouter from './routers/instructorRouter.js';
+import countRouter from './routers/counts.js';
 
 import Country from './models/CountryModel.js';
 import Province from './models/ProvinceModel.js';
@@ -79,6 +80,7 @@ app.use('/api/assignments', assignmentRouter);
 app.use('/api/student', studentRouter);
 app.use('/api/instructor', instructorRouter);
 app.use('/api/certificates', certificateRouter);
+app.use('/api/counts', countRouter);
 
 // Global error handler
 app.use((err, req, res, next) => {
