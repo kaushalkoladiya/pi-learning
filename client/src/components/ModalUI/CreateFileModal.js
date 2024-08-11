@@ -57,14 +57,16 @@ const LessonFilesModal = ({ open, handleClose, lessonId, refreshFiles }) => {
           "Content-Type": "multipart/form-data",
         },
       });
-      const fileURL = 'https://pilearningcapstone.blob.core.windows.net/pi-learning/' + response.data[0].blobName;
+      const fileURL =
+        "https://pilearningcapstone.blob.core.windows.net/pi-learning/" +
+        response.data[0].blobName;
       setForm((prevForm) => ({
         ...prevForm,
         fileUrl: fileURL,
       }));
       setErrors((prevErrors) => ({
         ...prevErrors,
-        fileUrl: "", 
+        fileUrl: "",
       }));
       swal("Success", "File uploaded successfully!", "success");
     } catch (error) {
@@ -135,7 +137,12 @@ const LessonFilesModal = ({ open, handleClose, lessonId, refreshFiles }) => {
   return (
     <Modal open={open} onClose={handleClose}>
       <ModalBox>
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mb={2}
+        >
           <Typography variant="h5">Upload Lesson File</Typography>
           <Button variant="outlined" onClick={handleClose}>
             Back to Lessons
@@ -166,7 +173,14 @@ const LessonFilesModal = ({ open, handleClose, lessonId, refreshFiles }) => {
             helperText={errors.fileName}
             sx={{ mb: 2 }}
           />
-          <Box mt={2} display="flex" alignItems="center" justifyContent="space-between">
+          <Typography variant="h6" mb={1}>
+            File Upload
+          </Typography>
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+          >
             <input
               accept="*/*"
               style={{ display: "none" }}
@@ -192,15 +206,15 @@ const LessonFilesModal = ({ open, handleClose, lessonId, refreshFiles }) => {
                 {form.fileUrlName}
               </Typography>
             )}
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleUpload}
-            >
+            <Button variant="contained" color="primary" onClick={handleUpload}>
               Upload
             </Button>
           </Box>
-          {errors.fileUrl && <Alert severity="error" sx={{ mt: 2 }}>{errors.fileUrl}</Alert>}
+          {errors.fileUrl && (
+            <Alert severity="error" sx={{ mt: 2 }}>
+              {errors.fileUrl}
+            </Alert>
+          )}
           <Box display="flex" justifyContent="space-between" mt={4}>
             <Button onClick={handleClear} variant="outlined" color="secondary">
               Clear

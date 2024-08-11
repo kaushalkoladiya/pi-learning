@@ -19,10 +19,10 @@ import swal from "sweetalert";
 const formatDateForInput = (dateString) => {
   const date = new Date(dateString);
   const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  const hours = String(date.getHours()).padStart(2, '0');
-  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
   return `${year}-${month}-${day}T${hours}:${minutes}`;
 };
 
@@ -45,7 +45,6 @@ const EditAssignmentModal = ({
     filePic: "",
     common: "",
   });
-
 
   useEffect(() => {
     if (assignment?.lesson_id) {
@@ -99,7 +98,9 @@ const EditAssignmentModal = ({
           "Content-Type": "multipart/form-data",
         },
       });
-      const fileURL = 'https://pilearningcapstone.blob.core.windows.net/pi-learning/' + response.data[0].blobName;
+      const fileURL =
+        "https://pilearningcapstone.blob.core.windows.net/pi-learning/" +
+        response.data[0].blobName;
       setForm((prevForm) => ({
         ...prevForm,
         assignmentUrl: fileURL,
@@ -209,7 +210,10 @@ const EditAssignmentModal = ({
             }}
             sx={{ mb: 2 }}
           />
-          <Box mt={2} mb={2}>
+          <Typography variant="h6" mb={1}>
+            File Upload
+          </Typography>
+          <Box mb={2}>
             <input
               accept="*/*"
               style={{ display: "none" }}
@@ -248,7 +252,7 @@ const EditAssignmentModal = ({
             label="Due Date"
             name="dueDate"
             type="datetime-local"
-            value={form.dueDate ? formatDateForInput(form.dueDate): ' '}
+            value={form.dueDate ? formatDateForInput(form.dueDate) : " "}
             onChange={handleChange}
             error={!!errors.dueDate}
             helperText={errors.dueDate}

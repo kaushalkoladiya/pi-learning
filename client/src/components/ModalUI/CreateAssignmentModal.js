@@ -57,7 +57,9 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
 
   const fetchLessons = async (courseId) => {
     try {
-      const response = await fetch(`${SERVER_URL}/api/lessons/course/${courseId}`);
+      const response = await fetch(
+        `${SERVER_URL}/api/lessons/course/${courseId}`
+      );
       const data = await response.json();
       setLessons(data);
     } catch (error) {
@@ -73,7 +75,9 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
     });
 
     if (name === "courseId") {
-      const selectedCourse = courses.find(course => course.course_id === value);
+      const selectedCourse = courses.find(
+        (course) => course.course_id === value
+      );
       setForm({
         ...form,
         courseId: value,
@@ -102,14 +106,16 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
           "Content-Type": "multipart/form-data",
         },
       });
-      const fileURL = 'https://pilearningcapstone.blob.core.windows.net/pi-learning/' + response.data[0].blobName;
+      const fileURL =
+        "https://pilearningcapstone.blob.core.windows.net/pi-learning/" +
+        response.data[0].blobName;
       setForm((prevForm) => ({
         ...prevForm,
         assignmentUrl: fileURL,
       }));
       setErrors((prevErrors) => ({
         ...prevErrors,
-        assignmentUrl: "", 
+        assignmentUrl: "",
       }));
       swal("Success", "File uploaded successfully!", "success");
     } catch (error) {
@@ -182,10 +188,15 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
           bgcolor: "background.paper",
           boxShadow: 24,
           p: 4,
-          borderRadius: '8px',
+          borderRadius: "8px",
         }}
       >
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mb={2}
+        >
           <Typography variant="h5">Create New Lesson</Typography>
           <Button variant="outlined" onClick={handleClose}>
             Back to Assignment Page
@@ -229,9 +240,7 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
                   </MenuItem>
                 ))
               ) : (
-                <MenuItem value="">
-                  Selected course has no lessons
-                </MenuItem>
+                <MenuItem value="">Selected course has no lessons</MenuItem>
               )}
             </Select>
             {errors.lessonId && (
@@ -248,7 +257,16 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
             helperText={errors.assignmentName}
             sx={{ mb: 2 }}
           />
-          <Box mt={2} mb={2} display="flex" justifyContent="space-between" alignItems="center" error={!!errors.assignmentUrl}>
+          <Typography variant="h6" mb={1}>
+            File Upload
+          </Typography>
+          <Box
+            mb={2}
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            error={!!errors.assignmentUrl}
+          >
             <input
               accept="*/*"
               style={{ display: "none" }}
@@ -266,24 +284,19 @@ const CreateAssignmentModal = ({ open, handleClose, refreshAssignments }) => {
                 Choose File
               </Button>
             </label>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleUpload}
-            >
+            <Button variant="contained" color="primary" onClick={handleUpload}>
               Upload
             </Button>
           </Box>
           {form.fileUrlName && (
-            <Typography
-              variant="body1"
-              sx={{ mt: 1, mb: 2 }}
-            >
+            <Typography variant="body1" sx={{ mt: 1, mb: 2 }}>
               {form.fileUrlName}
             </Typography>
           )}
           {errors.assignmentUrl && (
-            <Alert severity="error" sx={{ mt: 2, mb: 2 }}>{errors.assignmentUrl}</Alert>
+            <Alert severity="error" sx={{ mt: 2, mb: 2 }}>
+              {errors.assignmentUrl}
+            </Alert>
           )}
           <TextField
             fullWidth
