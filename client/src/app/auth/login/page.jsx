@@ -23,6 +23,7 @@ import { USER_ROLES } from "@/constants/roles";
 import { ROUTES } from "@/constants/routes";
 import { fetchSecretKey, loginUser } from "@/api";
 import { styled } from "@mui/system";
+import { PublicNavbar } from "@/app/page";
 
 const BackgroundContainer = styled("div")({
   position: "relative",
@@ -142,101 +143,101 @@ const Login = () => {
   };
 
   return (
-    <BackgroundContainer>
-      <TransparentPaper elevation={6}>
-        <LoginBox>
-          <img
-            src="/images/pi-learning-logo.png"
-            alt="PI Learning Logo"
-            style={{
-              height: "150px",
-              display: "block",
-              margin: "0 auto 0px auto",
-            }}
-          />
-          <Typography
-            variant="h5"
-            component="h1"
-            gutterBottom
-            align="center"
-            sx={{ mb: 2 }}
-          >
-            Welcome Back
-          </Typography>
-          {error && (
-            <Typography color="error" align="center">
-              {error}
-            </Typography>
-          )}
-          <Box component="form" onSubmit={handleLogin} sx={{ width: "100%" }}>
-            <TextField
-              margin="normal"
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              autoFocus
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              error={!!fieldErrors.email}
-              helperText={fieldErrors.email}
-            />
-            <TextField
-              margin="normal"
-              fullWidth
-              name="password"
-              label="Password"
-              type={showPassword ? "text" : "password"}
-              id="password"
-              autoComplete="current-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              error={!!fieldErrors.password}
-              helperText={fieldErrors.password}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={() => setShowPassword(!showPassword)}
-                      onMouseDown={(e) => e.preventDefault()}
-                      edge="end"
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
+    <Box>
+      <PublicNavbar />
+
+      <BackgroundContainer>
+        <TransparentPaper elevation={6}>
+          <LoginBox>
+            <img
+              src="/images/pi-learning-logo.png"
+              alt="PI Learning Logo"
+              style={{
+                height: "150px",
+                display: "block",
+                margin: "0 auto 0px auto",
               }}
             />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 2, mb: 2 }}
+            <Typography
+              variant="h5"
+              component="h1"
+              gutterBottom
+              align="center"
+              sx={{ mb: 2 }}
             >
-              LOGIN
-            </Button>
-            <Grid container justifyContent="space-between">
-              <Grid item>
-                <StyledLink href="#" underline="hover">
-                  Forgot password?
-                </StyledLink>
+              Welcome Back
+            </Typography>
+            {error && (
+              <Typography color="error" align="center">
+                {error}
+              </Typography>
+            )}
+            <Box component="form" onSubmit={handleLogin} sx={{ width: "100%" }}>
+              <TextField
+                margin="normal"
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                autoFocus
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                error={!!fieldErrors.email}
+                helperText={fieldErrors.email}
+              />
+              <TextField
+                margin="normal"
+                fullWidth
+                name="password"
+                label="Password"
+                type={showPassword ? "text" : "password"}
+                id="password"
+                autoComplete="current-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                error={!!fieldErrors.password}
+                helperText={fieldErrors.password}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={() => setShowPassword(!showPassword)}
+                        onMouseDown={(e) => e.preventDefault()}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 2, mb: 2 }}
+              >
+                LOGIN
+              </Button>
+              <Grid container justifyContent="space-between">
+                <Grid item />
+                <Grid item>
+                  <StyledLink
+                    href="#"
+                    underline="hover"
+                    onClick={() => navigate.push("/auth/signup")}
+                  >
+                    {"Don't have an account? Sign Up"}
+                  </StyledLink>
+                </Grid>
               </Grid>
-              <Grid item>
-                <StyledLink
-                  href="#"
-                  underline="hover"
-                  onClick={() => navigate.push("/auth/signup")}
-                >
-                  {"Don't have an account? Sign Up"}
-                </StyledLink>
-              </Grid>
-            </Grid>
-          </Box>
-        </LoginBox>
-      </TransparentPaper>
-    </BackgroundContainer>
+            </Box>
+          </LoginBox>
+        </TransparentPaper>
+      </BackgroundContainer>
+    </Box>
   );
 };
 
