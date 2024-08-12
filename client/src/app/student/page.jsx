@@ -31,16 +31,18 @@ const StudentDashboard = () => {
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+      <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" height="100vh">
         <CircularProgress />
+        <Typography variant="body1" mt={2}>Loading your dashboard...</Typography>
       </Box>
     );
   }
 
   if (!dashboardData) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-        <Typography variant="h6">Failed to load dashboard data</Typography>
+      <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" height="100vh">
+        <Typography variant="h6" gutterBottom>Failed to load dashboard data</Typography>
+        <Button variant="contained" onClick={() => router.reload()}>Retry</Button>
       </Box>
     );
   }
@@ -51,26 +53,30 @@ const StudentDashboard = () => {
       <Box my={6} />
       <Box p={4}>
         <Typography variant="h5" gutterBottom>
-          Welcome, {dashboardData.user.first_name} {dashboardData.user.last_name}
+          Welcome, {dashboardData?.user?.first_name} {dashboardData?.user?.last_name}
         </Typography>
 
         <Typography variant="h6" gutterBottom mt={4}>Overview</Typography>
         <Grid container spacing={4}>
-        <Grid item xs={12}>
+          <Grid item xs={12}>
             <StudentAssignmentSection assignments={dashboardData.assignments} />
           </Grid>
-          <Grid item xs={12} >
+          <Grid item xs={12}>
             <Card elevation={3}>
               <CardContent>
                 <Typography variant="h6">Recent Courses</Typography>
-                {dashboardData.enrolledCourses.slice(0, 3).map(enrollment => (
-                  <CourseCard key={enrollment.course_id} course={enrollment.Course} />
-                ))}
+                <Grid container spacing={2} mt={2}>
+                  {dashboardData.enrolledCourses.slice(0, 3).map(enrollment => (
+                    <Grid key={enrollment.course_id} item xs={6} md={4}>
+                      <CourseCard course={enrollment.Course} />
+                    </Grid>
+                  ))}
+                </Grid>
               </CardContent>
             </Card>
           </Grid>
-          <Grid item xs={12} >
-              <CourseCompletionCertificates user={dashboardData.user} />
+          <Grid item xs={12}>
+            <CourseCompletionCertificates user={dashboardData.user} />
           </Grid>
         </Grid>
       </Box>

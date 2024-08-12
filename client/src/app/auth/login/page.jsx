@@ -130,11 +130,11 @@ const Login = () => {
 
       // Redirect based on user type
       if (user_type === USER_ROLES.ADMIN) {
-        navigate.push(ROUTES.ADMIN);
+        window.location.href = ROUTES.ADMIN;
       } else if (user_type === USER_ROLES.INSTRUCTOR) {
-        navigate.push(ROUTES.INSTRUCTOR);
+        window.location.href = ROUTES.INSTRUCTOR;
       } else if (user_type === USER_ROLES.STUDENT) {
-        navigate.push(ROUTES.STUDENT);
+        window.location.href = ROUTES.STUDENT;
       }
     } catch (error) {
       console.error("Invalid credentials");

@@ -288,23 +288,6 @@ const InstructorPage = () => {
       </Box>
 
       <Box className={styles.footer}>
-        <Box className={styles.footerLinks}>
-          <MuiLink component={Link} href="/business" color="inherit">
-            Pi Learning Business
-          </MuiLink>
-          <MuiLink component={Link} href="/about" color="inherit">
-            About Us
-          </MuiLink>
-          <MuiLink component={Link} href="/blog" color="inherit">
-            Blog
-          </MuiLink>
-          <MuiLink component={Link} href="/terms" color="inherit">
-            Terms
-          </MuiLink>
-          <MuiLink component={Link} href="/cookie" color="inherit">
-            Cookie Settings
-          </MuiLink>
-        </Box>
         <Typography variant="body2" color="inherit">
           © 2024 Pi Learning
         </Typography>

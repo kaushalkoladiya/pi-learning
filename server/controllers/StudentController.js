@@ -26,7 +26,7 @@ export const getStudentDashboard = async (req, res, next) => {
       include: [{
         model: Course,
         as: 'Course',
-        attributes: ['course_id', 'course_title', 'short_description', 'long_description'],
+        attributes: ['course_id', 'course_title', 'short_description', 'long_description', 'profile_pic'],
       }],
     });
 

@@ -291,7 +291,7 @@ const CreateInstructorModal = ({ open, handleClose, refreshInstructors }) => {
                     <FormHelperText>{errors.provinceCode}</FormHelperText>
                   )}
                 </FormControl>
-                <TextField
+                {/* <TextField
                   fullWidth
                   label="Country"
                   name="country"
@@ -301,7 +301,7 @@ const CreateInstructorModal = ({ open, handleClose, refreshInstructors }) => {
                   }}
                   margin="normal"
                   sx={{ backgroundColor: "#f0f0f0", mt: "0" }}
-                />
+                /> */}
                 <TextField
                   fullWidth
                   label="Zip Code"
