@@ -66,7 +66,7 @@ const StudentDashboard = () => {
               <CardContent>
                 <Typography variant="h6">Recent Courses</Typography>
                 <Grid container spacing={2} mt={2}>
-                  {dashboardData.enrolledCourses.slice(0, 3).map(enrollment => (
+                  {dashboardData.enrolledCourses.map(enrollment => (
                     <Grid key={enrollment.course_id} item xs={6} md={4}>
                       <CourseCard course={enrollment.Course} />
                     </Grid>
