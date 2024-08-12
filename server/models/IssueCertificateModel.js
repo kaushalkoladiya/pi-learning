@@ -32,8 +32,7 @@ IssuedCertificate.init({
 }, {
   sequelize,
   modelName: 'IssuedCertificate',
-  tableName: 'issued_certificates',
-  timestamps: true,
+  tableName: 'issued_certificates'
 });
 
 

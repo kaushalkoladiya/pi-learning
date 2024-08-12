@@ -2,9 +2,17 @@ import Lesson from "../models/LessonModel.js";
 import LessonFile from "../models/LessonFileModel.js";
 
 export const createLesson = async (req, res) => {
+  const existingLesson = await Lesson.findOne({
+    where: { lesson_id: req.body.lesson_id },
+  });
+  if (existingLesson) {
+    return res.status(400).send({ error: "Lesson ID must be unique" });
+  }
+
   try {
     // Create new lesson
     const lesson = await Lesson.create({
+      lesson_id: req.body.lesson_id,
       lesson_name: req.body.lesson_name,
       lesson_description: req.body.lesson_description,
       program_id: req.body.program_id,
@@ -33,18 +41,6 @@ export const getAllLessons = async (req, res) => {
 export const getLessonById = async (req, res) => {
   try {
     const lesson = await Lesson.findOne({where: {lesson_id: req.params.id}});
-    if (!lesson) {
-      return res.status(404).send({ error: "Lesson not found" });
-    }
-    res.send(lesson);
-  } catch (error) {
-    res.status(500).send(error);
-  }
-};
-
-export const getLessonByCourseId = async (req, res) => {
-  try {
-    const lesson = await Lesson.findAll({where: {course_id: req.params.id}});
     if (!lesson) {
       return res.status(404).send({ error: "Lesson not found" });
     }

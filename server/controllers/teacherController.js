@@ -24,7 +24,7 @@ export const getStudentsByCourse = async (req, res) => {
       where: { course_id: courseId },
       include: { 
         model: User, as: 'Student',
-        attributes: ['id', 'first_name', 'last_name', 'email'],
+        attributes: ['id', 'first_name', 'last_name'],
       },
     });
     res.status(200).json(students.map(enrollment => enrollment.Student));

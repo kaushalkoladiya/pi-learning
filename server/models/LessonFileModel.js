@@ -33,17 +33,12 @@ LessonFile.init(
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
     },
-    updated_at: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
-    },
   },
   {
     sequelize: sequelize,
     modelName: DATABASE_TABLES.LESSON_FILE,
     timestamps: true,
-    createdAt: 'created_at',
-    updatedAt: 'updated_at',
+    createdAt: "created_at",
   }
 );
 
