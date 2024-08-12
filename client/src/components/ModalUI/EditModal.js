@@ -314,7 +314,7 @@ const EditModal = ({
                       helperText={errors.phoneNumber}
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  {/* <Grid item xs={6}>
                     <FormControl
                       fullWidth
                       margin="normal"
@@ -339,7 +339,7 @@ const EditModal = ({
                         <FormHelperText>{errors.homeCountry}</FormHelperText>
                       )}
                     </FormControl>
-                  </Grid>
+                  </Grid> */}
                   <Grid item xs={6}>
                     <FormControl
                       fullWidth

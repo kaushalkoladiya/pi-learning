@@ -133,7 +133,7 @@ const ProfileEdit = () => {
   };
 
   return (
-    <Container sx={{mx:"22%"}}>
+    <Container>
       <Navbar />
       <Paper elevation={3} sx={{ p: 4, mt: 12, mb: 4, backgroundColor: "#f5f5f5" }}>
         <Typography variant="h4" gutterBottom align="center">

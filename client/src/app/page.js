@@ -75,10 +75,10 @@ export const PublicNavbar = () => (
       </Typography>
       <Box className={styles.navLinks}>
         <MuiLink component={Link} href="/" color="inherit">
-          Teaching Center
+          Home
         </MuiLink>
         <MuiLink component={Link} href="/instructor_public" color="inherit">
-          Teaching on Pi Learning
+          For Teachers
         </MuiLink>
         <MuiLink component={Link} href="/auth/login" color="inherit">
           Login
@@ -104,12 +104,6 @@ const Home = () => {
           <AnimatedTypography variant="h5" className={styles.heroSubtitle}>
             Learn how to implement Pi Learning into your educational center.
           </AnimatedTypography>
-          <Box className={styles.searchBox}>
-            <input type="text" placeholder="Search the Teaching Center" className={styles.searchInput} />
-            <AnimatedButton variant="contained" className={styles.searchButton}>
-              Search
-            </AnimatedButton>
-          </Box>
         </Box>
         <Box className={styles.heroImageContainer}>
           <img src="/images/hero.webp" alt="Pi Learning Hero" className={styles.heroImage} />
@@ -128,7 +122,7 @@ const Home = () => {
               <Typography variant="body2">
                 Learn the best practices for preparing your course content.
               </Typography>
-              <MuiLink component={Link} href="/plan" color="primary">
+              <MuiLink component={Link} href="/auth/login" color="primary">
                 Learn more
               </MuiLink>
             </AnimatedCard>
@@ -140,7 +134,7 @@ const Home = () => {
               <Typography variant="body2">
                 Discover the best ways to write a script and find the tools you need to capture your course.
               </Typography>
-              <MuiLink component={Link} href="/record" color="primary">
+              <MuiLink component={Link} href="/auth/login" color="primary">
                 Learn more
               </MuiLink>
             </AnimatedCard>
@@ -152,7 +146,7 @@ const Home = () => {
               <Typography variant="body2">
                 Get inside knowledge on driving enrollments and getting reviews.
               </Typography>
-              <MuiLink component={Link} href="/market" color="primary">
+              <MuiLink component={Link} href="/auth/login" color="primary">
                 Learn more
               </MuiLink>
             </AnimatedCard>
@@ -172,7 +166,7 @@ const Home = () => {
               <Typography variant="body2">
                 Find answers to frequently asked questions and review troubleshooting and how-to articles.
               </Typography>
-              <MuiLink component={Link} href="/help" color="primary">
+              <MuiLink component={Link} href="/auth/login" color="primary">
                 Learn more
               </MuiLink>
             </AnimatedCard>
@@ -184,7 +178,7 @@ const Home = () => {
               <Typography variant="body2">
                 Get support and inspiration from new and experienced instructors.
               </Typography>
-              <MuiLink component={Link} href="/community" color="primary">
+              <MuiLink component={Link} href="/auth/login" color="primary">
                 Learn more
               </MuiLink>
             </AnimatedCard>
@@ -196,7 +190,7 @@ const Home = () => {
               <Typography variant="body2">
                 Learn about course requirements and policies for instructors and learners.
               </Typography>
-              <MuiLink component={Link} href="/safety" color="primary">
+              <MuiLink component={Link} href="/auth/login" color="primary">
                 Learn more
               </MuiLink>
             </AnimatedCard>
@@ -205,23 +199,6 @@ const Home = () => {
       </Box>
 
       <Box className={styles.footer}>
-        <Box className={styles.footerLinks}>
-          <MuiLink component={Link} href="/business" color="inherit">
-            Pi Learning Business
-          </MuiLink>
-          <MuiLink component={Link} href="/about" color="inherit">
-            About Us
-          </MuiLink>
-          <MuiLink component={Link} href="/blog" color="inherit">
-            Blog
-          </MuiLink>
-          <MuiLink component={Link} href="/terms" color="inherit">
-            Terms
-          </MuiLink>
-          <MuiLink component={Link} href="/cookie" color="inherit">
-            Cookie Settings
-          </MuiLink>
-        </Box>
         <Typography variant="body2" color="inherit">
           © 2024 Pi Learning
         </Typography>

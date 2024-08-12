@@ -1,0 +1,8 @@
+{
+  "appService.zipIgnorePattern": [
+    "node_modules{,/**}",
+    ".vscode{,/**}"
+  ],
+  "appService.defaultWebAppToDeploy": "/subscriptions/f636da66-e12c-44a1-9236-63567059f608/resourceGroups/capstone/providers/Microsoft.Web/sites/pi-learning-backend",
+  "appService.deploySubpath": "."
+}

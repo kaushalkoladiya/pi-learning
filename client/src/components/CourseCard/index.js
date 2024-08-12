@@ -76,15 +76,15 @@ export default function CourseCard({ course, isHero }) {
   };
 
   return isHero ? (
-    <HeroCard>
+    <HeroCard onClick={handleCourseClick}>
       <CardMedia
-        onClick={handleCourseClick}
         component="img"
         image={course?.profile_pic || "https://placehold.co/600x400"}
         alt={course?.course_title}
+        sx={{ height: '200px' }}
       />
       <CardContent>
-        <Typography gutterBottom variant="h4" component="div">
+        <Typography gutterBottom variant="h4">
           {course?.course_title}
         </Typography>
         <Typography variant="body2">
@@ -106,10 +106,11 @@ export default function CourseCard({ course, isHero }) {
       </CardContent>
     </HeroCard>
   ) : (
-    <RegularCard>
+    <RegularCard
+      onClick={handleCourseClick}
+    >
       <CardActionArea>
         <CardMedia
-          onClick={handleCourseClick}
           component="img"
           image={course?.profile_pic || "https://placehold.co/600x400"}
           alt={course?.course_title}

@@ -12,7 +12,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 
 import Person4Icon from '@mui/icons-material/Person4';
 import SubjectIcon from '@mui/icons-material/Subject';
@@ -98,7 +98,7 @@ const ADMIN_ROUTES = [
     path: "/admin/lessons",
   },
   {
-    text: "Assingments",
+    text: "Assignments",
     icon: <AssignmentIcon />,
     path: "/admin/assignments",
   },
@@ -107,6 +107,7 @@ const ADMIN_ROUTES = [
 const AdminSidebar = () => {
   const { isUserAdmin, logout } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
 
   const handleRoute = (path) => {
     router.push(path);
@@ -131,8 +132,13 @@ const AdminSidebar = () => {
           <ListItem
             key={route.text}
             disablePadding
-            sx={{ display: "block" }}
+            sx={{ 
+              display: "block",
+              bgcolor: pathname === route.path ? "primary.main" : "inherit",
+              color: pathname === route.path ? "white" : "inherit"
+            }}
             onClick={() => handleRoute(route.path)}
+            
           >
             <ListItemButton
               sx={{
@@ -146,6 +152,7 @@ const AdminSidebar = () => {
                   minWidth: 0,
                   mr: 3,
                   justifyContent: "center",
+                  color: pathname === route.path ? "white" : "inherit"
                 }}
               >
                 {route.icon}
