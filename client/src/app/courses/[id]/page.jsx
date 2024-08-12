@@ -1,15 +1,17 @@
 'use client';
 
-import { fetchCourseDetails, fetchCourseLessons, checkEnrollment, enrollInCourse } from '@/api';
-import { Box, Button, CardContent, CircularProgress, Container, Grid, List, ListItem, ListItemText, Typography, Paper, Avatar } from '@mui/material';
-import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
+import { fetchCourseDetails, fetchCourseLessons, checkEnrollment, enrollInCourse } from '@/api';
+import { Box, Button, CardContent, CircularProgress, Container, Grid, List, ListItem, ListItemText, Typography, Paper, Avatar, Alert, Modal } from '@mui/material';
+import { useParams, useRouter } from 'next/navigation';
 import BackButton from '@/components/BackButton';
 import useAuth from '@/hooks/useAuth';
 import Navbar from '@/components/Navbar';
+import emailjs from '@emailjs/browser';
+import swal from 'sweetalert';
 
 const CourseDetails = () => {
-  const { isAuth } = useAuth();
+  const { isAuth, ...rest } = useAuth();
   const params = useParams();
   const router = useRouter();
 
@@ -18,6 +20,10 @@ const CourseDetails = () => {
   const [loading, setLoading] = useState(true);
   const [isEnrolled, setIsEnrolled] = useState(false);
   const [error, setError] = useState(null);
+  const [quiz, setQuiz] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  console.log(rest)
 
   useEffect(() => {
     (async () => {
@@ -53,10 +59,36 @@ const CourseDetails = () => {
       try {
         await enrollInCourse(params.id);
         setIsEnrolled(true);
+
+        swal('Success', 'You have successfully enrolled in this course', 'success');
+
+        const firstName = localStorage.getItem('firstName') || '';
+
+        // Send email to user
+        emailjs.send(
+          process.env.NEXT_EMAILJS_SERVICE_ID,
+          process.env.NEXT_EMAILJS_TEMPLATE_ID,
+          {
+            message: `You have successfully enrolled in course : ${course.course_title}`,
+            to_name: firstName || 'Learner',
+            from_name: 'Course Enroll'
+          },
+          {
+            publicKey: process.env.NEXT_EMAILJS_PUBLIC_KEY,
+          },
+        );
       } catch (error) {
         console.error('Error enrolling in course:', error);
       }
     }
+  };
+
+  const handleOpenQuizModal = async () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
   };
 
   if (loading) {
@@ -84,13 +116,22 @@ const CourseDetails = () => {
   }
 
   return (
-    <div>
+    <Box>
       <Navbar />
       <Box my={6} />
       <Box p={6}>
         <BackButton />
         <Container>
+          <Alert severity="success" >
+            Explore our AI module!{' '}
+            <Button color="inherit" variant='contained' onClick={handleOpenQuizModal}>
+              Click here to start
+            </Button>
+          </Alert>
           <Paper elevation={3}>
+
+            <Box my={4} />
+
             <CardContent>
               <Grid container spacing={3}>
                 <Grid item xs={12} md={4}>
@@ -167,7 +208,34 @@ const CourseDetails = () => {
           </Paper>
         </Container>
       </Box>
-    </div>
+
+      <Modal open={isModalOpen} onClose={handleCloseModal}>
+        <Box sx={{
+          p: 4,
+          backgroundColor: 'white',
+          margin: 'auto',
+          maxWidth: '80%',
+          borderRadius: 2,
+          mt: 8,
+          minHeight: '80vh',
+        }}>
+          <iframe
+            src={process.env.NEXT_AI_SERVER_URL}
+            title="AI Module Quiz"
+            width="100%"
+            height="700px"
+            style={{ border: 'none' }}
+          />
+          <Button
+            variant="contained"
+            onClick={handleCloseModal}
+            sx={{ mt: 2, display: 'block', marginLeft: 'auto' }}
+          >
+            Close
+          </Button>
+        </Box>
+      </Modal>
+    </Box>
   );
 };
 

@@ -184,22 +184,24 @@ const StudentAssignmentSection = ({ assignments = [] }) => {
                 </Box>
               </Grid>
               <Grid item xs={12} md={6}>
-                <Typography variant="h6" gutterBottom mt={3}>Previous Submissions</Typography>
-                {loadingSubmissions ? (
-                  <CircularProgress />
-                ) : (
-                  submissions.map((submission) => (
-                    <Card key={submission.id} variant="outlined" sx={{ mb: 2 }}>
-                      <CardContent>
-                        <Typography variant="body2">Submission Date: {submission.submission_date}</Typography>
-                        <Typography variant="body2">Content: {submission.submission_content}</Typography>
-                        {submission.submission_url && <Typography variant="body2">URL: <a href={AZURE_BASE_URL + submission.submission_url} target="_blank" rel="noopener noreferrer">download</a></Typography>}
-                        <Typography variant="body2">Grade: {submission.grade || 'Not graded yet'}</Typography>
-                        <Typography variant="body2">Feedback: {submission.feedback}</Typography>
-                      </CardContent>
-                    </Card>
-                  ))
-                )}
+                <Paper elevation={3} sx={{ p: 2, bgcolor: 'gainsboro' }}>
+                  <Typography variant="h6" gutterBottom mt={3}>Previous Submissions</Typography>
+                  {loadingSubmissions ? (
+                    <CircularProgress />
+                  ) : (
+                    submissions.map((submission) => (
+                      <Card key={submission.id} variant="outlined" sx={{ mb: 2 }}>
+                        <CardContent>
+                          <Typography variant="body2">Submission Date: {submission.submission_date}</Typography>
+                          <Typography variant="body2">Content: {submission.submission_content}</Typography>
+                          {submission.submission_url && <Typography variant="body2">URL: <a href={AZURE_BASE_URL + submission.submission_url} target="_blank" rel="noopener noreferrer">download</a></Typography>}
+                          <Typography variant="body2">Grade: {submission.grade || 'Not graded yet'}</Typography>
+                          <Typography variant="body2">Feedback: {submission.feedback}</Typography>
+                        </CardContent>
+                      </Card>
+                    ))
+                  )}
+                </Paper>
               </Grid>
             </Grid>
           )}
