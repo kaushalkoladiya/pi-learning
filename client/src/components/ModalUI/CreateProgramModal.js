@@ -88,7 +88,9 @@ const CreateProgramModal = ({ open, handleClose, refreshPrograms }) => {
           "Content-Type": "multipart/form-data",
         },
       });
-      const imageURL = 'https://pilearningcapstone.blob.core.windows.net/pi-learning/' + response.data[0].blobName;
+      const imageURL =
+        "https://pilearningcapstone.blob.core.windows.net/pi-learning/" +
+        response.data[0].blobName;
       setForm((prevForm) => ({
         ...prevForm,
         profilePicUrl: imageURL,
@@ -173,11 +175,15 @@ const CreateProgramModal = ({ open, handleClose, refreshPrograms }) => {
     setErrors(initialErrorState);
   };
 
-
   return (
     <Modal open={open} onClose={handleModalClose}>
       <ModalBox>
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mb={2}
+        >
           <Typography variant="h5">Create New Program</Typography>
           <Button variant="outlined" onClick={handleModalClose}>
             Back to Program Page
@@ -220,7 +226,11 @@ const CreateProgramModal = ({ open, handleClose, refreshPrograms }) => {
                   error={!!errors.durationInMonths}
                   helperText={errors.durationInMonths}
                 />
-                <FormControl fullWidth margin="normal" error={!!errors.departmentCode}>
+                <FormControl
+                  fullWidth
+                  margin="normal"
+                  error={!!errors.departmentCode}
+                >
                   <InputLabel id="department-label">Department</InputLabel>
                   <Select
                     labelId="department-label"
@@ -243,7 +253,11 @@ const CreateProgramModal = ({ open, handleClose, refreshPrograms }) => {
               </Box>
             </Grid>
             <Grid item xs={1}>
-              <Divider orientation="vertical" flexItem sx={{ margin: '0 auto', height: '100%', mr:'50%'}} />
+              <Divider
+                orientation="vertical"
+                flexItem
+                sx={{ margin: "0 auto", height: "100%", mr: "50%" }}
+              />
             </Grid>
             <Grid item xs={5}>
               <Box>
@@ -273,6 +287,9 @@ const CreateProgramModal = ({ open, handleClose, refreshPrograms }) => {
                   rows={4}
                 />
                 <Box mt={2}>
+                  <Typography variant="h6" mb={1}>
+                    Photo Upload
+                  </Typography>
                   <input
                     accept="image/*"
                     style={{ display: "none" }}
@@ -301,7 +318,7 @@ const CreateProgramModal = ({ open, handleClose, refreshPrograms }) => {
                     variant="contained"
                     color="primary"
                     onClick={handleUpload}
-                    sx={{ ml: '64%' }}
+                    sx={{ ml: "69%" }}
                   >
                     Upload
                   </Button>

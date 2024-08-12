@@ -85,7 +85,9 @@ const EditCourseModal = ({ open, handleClose, courseData, refreshCourses }) => {
           "Content-Type": "multipart/form-data",
         },
       });
-      const imageURL = 'https://pilearningcapstone.blob.core.windows.net/pi-learning/' + response.data[0].blobName;;
+      const imageURL =
+        "https://pilearningcapstone.blob.core.windows.net/pi-learning/" +
+        response.data[0].blobName;
       setForm((prevForm) => ({
         ...prevForm,
         profilePicName: "",
@@ -130,7 +132,7 @@ const EditCourseModal = ({ open, handleClose, courseData, refreshCourses }) => {
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: '60%',
+          width: "60%",
           backgroundColor: "white",
           boxShadow: 24,
           padding: 4,
@@ -248,9 +250,7 @@ const EditCourseModal = ({ open, handleClose, courseData, refreshCourses }) => {
             </Grid>
             <Grid item xs={5}>
               <Box mb={2}>
-                <Typography variant="h6">
-                  Description and Profile Pic
-                </Typography>
+                <Typography variant="h6">Description</Typography>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
                     <TextField
@@ -281,6 +281,9 @@ const EditCourseModal = ({ open, handleClose, courseData, refreshCourses }) => {
                     />
                   </Grid>
                   <Grid item xs={12}>
+                    <Typography variant="h6" mb={1}>
+                      Photo Upload
+                    </Typography>
                     <Grid container spacing={2}>
                       <Grid item xs={6}>
                         <input

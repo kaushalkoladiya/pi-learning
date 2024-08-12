@@ -114,6 +114,8 @@ export const validateField = (fieldName, value) => {
         return "Short description is required";
       } else if (!validateShortDescription(value)) {
         return "Short description must not be more than 30 words";
+      } else if (!validateTitle(value)){
+        return "Short Description contains only letters and spaces."
       }
       break;
     case "longDescription":
@@ -121,6 +123,8 @@ export const validateField = (fieldName, value) => {
         return "Long description is required";
       } else if (!validateLongDescription(value)) {
         return "Long description must not be more than 100 words";
+      }else if (!validateTitle(value)){
+        return "Long description contains only letters and spaces."
       }
       break;
     case "programId":
@@ -137,7 +141,7 @@ export const validateField = (fieldName, value) => {
       if (!value) {
         return "Program title is required";
       } else if (!validateTitle(value)) {
-        return "Program title contains only letters";
+        return "Program title contains only letters and spaces";
       }
       break;
     case "price":
@@ -183,6 +187,8 @@ export const validateField = (fieldName, value) => {
         return "Lesson description is required";
       } else if (!validateShortDescription(value)) {
         return "Lesson description must not be more than 30 words";
+      } else if (!validateTitle(value)){
+        return "Lesson description contains only letters and spaces."
       }
       break;
     case "fileName":

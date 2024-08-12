@@ -13,22 +13,28 @@ import {
   IconButton,
   FormHelperText,
 } from "@mui/material";
-import { PhotoCamera } from "@mui/icons-material";
+import { PhotoCamera, Close as CloseIcon } from "@mui/icons-material";
 import PropTypes from "prop-types";
 import axios from "axios";
 import { SERVER_URL } from "@/constants/routes";
 import { validateField } from "@/utils/validation";
 import swal from "sweetalert";
 
-const EditModal = ({ open, handleClose, userData, addressData, refreshInstructors }) => {
+const EditModal = ({
+  open,
+  handleClose,
+  userData,
+  addressData,
+  refreshInstructors,
+}) => {
   const [form, setForm] = useState({
-    dateOfBirth: userData?.date_of_birth?.split('T')[0] || "",
+    dateOfBirth: userData?.date_of_birth?.split("T")[0] || "",
     phoneNumber: userData.phone_number || "",
     homeCountry: userData.home_country || "",
     departmentCode: userData.department_code || "",
     introduction: userData.biography || "",
     address: addressData.address || "",
-    city: addressData.city ||"",
+    city: addressData.city || "",
     provinceCode: addressData.province_code || "",
     zipCode: addressData.zip_code || "",
     profilePic: null,
@@ -99,7 +105,9 @@ const EditModal = ({ open, handleClose, userData, addressData, refreshInstructor
           "Content-Type": "multipart/form-data",
         },
       });
-      const imageURL = 'https://pilearningcapstone.blob.core.windows.net/pi-learning/' + response.data[0].blobName;
+      const imageURL =
+        "https://pilearningcapstone.blob.core.windows.net/pi-learning/" +
+        response.data[0].blobName;
       console.log(imageURL);
       setForm((prevForm) => ({
         ...prevForm,
@@ -130,29 +138,35 @@ const EditModal = ({ open, handleClose, userData, addressData, refreshInstructor
 
     // Submit form if no errors
     try {
-      const response = await fetch(`${SERVER_URL}/api/instructors/${userData.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          date_of_birth: form.dateOfBirth,
-        phone_number: form.phoneNumber,
-        home_country: form.homeCountry,
-        department_code: form.departmentCode,
-        address: form.address,
-        city: form.city,
-        province_code: form.provinceCode,
-        zip_code: form.zipCode,
-        biography: form.introduction,
-        profile_pic: form.profilePicUrl,
-        }),
-      });
+      const response = await fetch(
+        `${SERVER_URL}/api/instructors/${userData.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            date_of_birth: form.dateOfBirth,
+            phone_number: form.phoneNumber,
+            home_country: form.homeCountry,
+            department_code: form.departmentCode,
+            address: form.address,
+            city: form.city,
+            province_code: form.provinceCode,
+            zip_code: form.zipCode,
+            biography: form.introduction,
+            profile_pic: form.profilePicUrl,
+          }),
+        }
+      );
 
       const data = await response.json();
       if (!response.ok) {
         if (data.error) {
-          setErrors((prevErrors) => ({ ...prevErrors, phoneNumber: data.error }));
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            phoneNumber: data.error,
+          }));
           swal("Error", data.error, "error");
         } else {
           setErrors((prevErrors) => ({ ...prevErrors, common: data.message }));
@@ -177,13 +191,27 @@ const EditModal = ({ open, handleClose, userData, addressData, refreshInstructor
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: '80%',
+          width: "80%",
           backgroundColor: "white",
           boxShadow: 24,
+          maxHeight: "90vh",
           padding: 4,
           borderRadius: 2,
+          overflowY: "auto",
         }}
       >
+        <IconButton
+          aria-label="close"
+          onClick={handleClose}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
         <Typography variant="h5" mb={2}>
           Edit Profile Information
         </Typography>
@@ -453,6 +481,9 @@ const EditModal = ({ open, handleClose, userData, addressData, refreshInstructor
                     />
                   </Grid>
                   <Grid item xs={12}>
+                    <Typography variant="h6" mb={1}>
+                      Photo Upload
+                    </Typography>
                     <Grid container spacing={2}>
                       <Grid item xs={6}>
                         <input

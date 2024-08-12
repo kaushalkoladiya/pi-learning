@@ -97,7 +97,9 @@ const CreateCourseModal = ({ open, handleClose, refreshCourses }) => {
           "Content-Type": "multipart/form-data",
         },
       });
-      const imageURL = 'https://pilearningcapstone.blob.core.windows.net/pi-learning/' + response.data[0].blobName;
+      const imageURL =
+        "https://pilearningcapstone.blob.core.windows.net/pi-learning/" +
+        response.data[0].blobName;
       setForm((prevForm) => ({
         ...prevForm,
         profilePicUrl: imageURL,
@@ -184,7 +186,12 @@ const CreateCourseModal = ({ open, handleClose, refreshCourses }) => {
   return (
     <Modal open={open} onClose={handleModalClose}>
       <ModalBox>
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mb={2}
+        >
           <Typography variant="h5">Create New Course</Typography>
           <Button variant="outlined" onClick={handleModalClose}>
             Back to Course Page
@@ -207,7 +214,11 @@ const CreateCourseModal = ({ open, handleClose, refreshCourses }) => {
                   error={!!errors.courseTitle}
                   helperText={errors.courseTitle}
                 />
-                <FormControl fullWidth margin="normal" error={!!errors.programId}>
+                <FormControl
+                  fullWidth
+                  margin="normal"
+                  error={!!errors.programId}
+                >
                   <InputLabel id="program-label">Program</InputLabel>
                   <Select
                     labelId="program-label"
@@ -218,7 +229,10 @@ const CreateCourseModal = ({ open, handleClose, refreshCourses }) => {
                     label="Program"
                   >
                     {programs.map((program) => (
-                      <MenuItem key={program.program_id} value={program.program_id}>
+                      <MenuItem
+                        key={program.program_id}
+                        value={program.program_id}
+                      >
                         {program.program_title}
                       </MenuItem>
                     ))}
@@ -227,7 +241,11 @@ const CreateCourseModal = ({ open, handleClose, refreshCourses }) => {
                     <FormHelperText>{errors.programId}</FormHelperText>
                   )}
                 </FormControl>
-                <FormControl fullWidth margin="normal" error={!!errors.instructorId}>
+                <FormControl
+                  fullWidth
+                  margin="normal"
+                  error={!!errors.instructorId}
+                >
                   <InputLabel id="instructor-label">Instructor</InputLabel>
                   <Select
                     labelId="instructor-label"
@@ -250,7 +268,11 @@ const CreateCourseModal = ({ open, handleClose, refreshCourses }) => {
               </Box>
             </Grid>
             <Grid item xs={1}>
-              <Divider orientation="vertical" flexItem sx={{ margin: '0 auto', height: '100%', mr:'50%'}} />
+              <Divider
+                orientation="vertical"
+                flexItem
+                sx={{ margin: "0 auto", height: "100%", mr: "50%" }}
+              />
             </Grid>
             <Grid item xs={5}>
               <Box>
@@ -280,6 +302,9 @@ const CreateCourseModal = ({ open, handleClose, refreshCourses }) => {
                   rows={4}
                 />
                 <Box mt={2}>
+                  <Typography variant="h6" mb={1}>
+                    Photo Upload
+                  </Typography>
                   <input
                     accept="image/*"
                     style={{ display: "none" }}
@@ -308,7 +333,7 @@ const CreateCourseModal = ({ open, handleClose, refreshCourses }) => {
                     variant="contained"
                     color="primary"
                     onClick={handleUpload}
-                    sx={{ ml: '60%' }}
+                    sx={{ ml: "69%" }}
                   >
                     Upload
                   </Button>
@@ -343,7 +368,7 @@ const ModalBox = styled(Box)`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 60%; 
+  width: 60%;
   background-color: white;
   box-shadow: 24;
   padding: 16px;
